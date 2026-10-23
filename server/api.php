@@ -3,7 +3,7 @@ declare(strict_types=1);
 require __DIR__.'/lib.php';
 $origin=$_SERVER['HTTP_ORIGIN']??'';
 header('Vary: Origin');
-if($origin===$cfg['origin']){header('Access-Control-Allow-Origin: '.$origin);header('Access-Control-Allow-Headers: Content-Type, X-BusTimer-Token');header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');}
+if($origin===$cfg['origin']){header('Access-Control-Allow-Origin: '.$origin);header('Access-Control-Allow-Headers: Content-Type, X-BusTimer-Token, X-BusTimer-Device');header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');}
 if($_SERVER['REQUEST_METHOD']==='OPTIONS'){http_response_code($origin===$cfg['origin']?204:403);exit;}
 if($origin!==''&&$origin!==$cfg['origin'])respond(403,['error'=>'Forbidden origin']);
 $action=$_GET['action']??'';
