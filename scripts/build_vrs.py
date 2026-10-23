@@ -30,7 +30,7 @@ def write(path, data):
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(data,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
 
-def build(zip_path, out):
+def build(zip_path, out, *, bounds=(49.5,52.5,5.5,9.5), source=DEFAULT_URL, license="Datenlizenz Deutschland Zero 2.0 — VRS", timezone_name="Europe/Berlin", min_stops=100):
     with zipfile.ZipFile(zip_path) as z:
         missing={"stops.txt","trips.txt","routes.txt","stop_times.txt"}-set(z.namelist())
         if missing:
@@ -64,7 +64,7 @@ def build(zip_path, out):
             if sid not in by_stop:continue
             try:lat,lon=float(s["stop_lat"]),float(s["stop_lon"])
             except (ValueError,KeyError):continue
-            if not (49.5<=lat<=52.5 and 5.5<=lon<=9.5):continue
+            if not (bounds[0]<=lat<=bounds[1] and bounds[2]<=lon<=bounds[3]):continue
             index.append({"id":sid,"name":s["stop_name"],"lat":lat,"lon":lon})
             safe=re.sub(r"[^A-Za-z0-9_-]","_",sid)
             if safe!=sid:
@@ -75,11 +75,11 @@ def build(zip_path, out):
             filenames.add(safe)
             index[-1]["file"]=safe
             write(out/"stops"/(safe+".json"),sorted(set(tuple(x) for x in by_stop[sid])))
-        if len(index)<100:
+        if len(index)<min_stops:
             raise ValueError("Suspiciously small VRS import: "+str(len(index)))
         if not any((row["from"]<=datetime.now(timezone.utc).strftime("%Y%m%d")<=row["to"]) for row in calendar.values()) and not any(datetime.now(timezone.utc).strftime("%Y%m%d") in ex for ex in exceptions.values()):
             raise ValueError("GTFS has no calendar service for current date")
-        metadata={"updated":datetime.now(timezone.utc).isoformat(),"timezone":"Europe/Berlin","source":DEFAULT_URL,"license":"Datenlizenz Deutschland Zero 2.0 — VRS"}
+        metadata={"updated":datetime.now(timezone.utc).isoformat(),"timezone":timezone_name,"source":source,"license":license}
         write(out/"search.json",{**metadata,"stops":index})
         write(out/"services.json",{**metadata,"calendar":calendar,"exceptions":exceptions})
         print("Built",len(index),"VRS stops")
