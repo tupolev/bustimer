@@ -56,15 +56,6 @@ If an API is unavailable, the app shows an error instead of simulated prediction
 
 Stop search and departure data require internet. App-shell resources may be accessible offline after installation. Browsers may suspend background tabs; this app does not claim background monitoring or push notifications.
 
-## GitHub Pages deployment
-
-1. Open [Repository → Settings → Pages](https://github.com/tupolev/bustimer/settings/pages).
-2. In **Build and deployment**, select **Deploy from a branch**.
-3. Set branch **main**, folder **/(root)**, then **Save**.
-4. Your expected URL is **https://tupolev.github.io/bustimer/**.
-
-Assets use relative paths, so GitHub Pages project-path hosting works. HTTPS enables service-worker registration and installation. Some browsers may have specific requirements for PWA icons/install prompts.
-
 ## Development
 
 Serve locally over HTTP (not `file://`) for service workers:
