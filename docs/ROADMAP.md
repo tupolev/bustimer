@@ -353,3 +353,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Add separate `browser` CI job installing Playwright Chromium, running `npm run test:e2e` and uploading traces on failure. Existing JS/Python `checks` job remains intact.
 - [ ] Verify a complete successful `browser` job in GitHub Actions. The new test has been committed but no successful Playwright run has yet been observed. Inspect traces and fix fixture or production issues as evidence demands.
 - [ ] Expand tests to other Belgian operators and German/Spanish regression cases, plus real Pages smoke tests (mocked sources do not prove current real GTFS correctness).
+
+
+## Browser locale persistence regression (2026-10-23)
+
+- [x] Extend the Belgian Playwright smoke flow to switch to Spanish, verify the original literal stop/direction labels are preserved, and confirm the locale and favorite persist after a second reload (`e2e/belgium.spec.mjs`, commit `108cb6c5`).
+- [ ] Browser CI result still requires an observed run: the available GitHub connector returns PR-only commit workflow runs and the container cannot resolve github.com. Do not claim a successful browser run until jobs/logs are retrieved.
