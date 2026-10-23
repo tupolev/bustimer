@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.5** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.6** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -186,3 +186,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Implement optional Luxembourg static stop discovery, departures, service calendar, and source-namespaced IDs (`lux:`). Not enabled in country selector until published source and browser checks.
 - [x] Fix VRS absent-time guard for DST gap; retain schedule-only provenance for both feeds.
 - [ ] Publish Luxembourg GTFS and verify index/stop URLs under GitHub Pages; then enable only after test fixtures and browser smoke validation.
+
+## Luxembourg experimental launch (2026-10-23)
+
+- [x] Successful official publication [run 39945847058](https://github.com/tupolev/bustimer/actions/runs/39945847058). Verified `data/luxembourg/search.json` with **2,767** stops (295,489 bytes), `services.json` with **217** calendars and **202** exception sets (38,906 bytes), and Hamilius stop file with 5,108 scheduled service records.
+- [x] Enable Luxembourg in country catalog as **experimental**; extend hard-coded catalog allowlist; fix provider namespace stripping in merged stop references so Luxembourg/VRS IDs route correctly.
+- [ ] Browser smoke test GitHub Pages and several saved departures in Luxembourg City; verify search, refresh, DST, direction filtering, and operator GTFS semantics. Experimental does not imply field-validation complete.
+- [ ] Evaluate scheduling a weekly Luxembourg feed refresh after real browser validation.
