@@ -1,0 +1,40 @@
+name: Validate Luxembourg official GTFS
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate importer with synthetic fixtures
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Download and compile current official Luxembourg GTFS
+        run: python3 scripts/build_luxembourg.py --out "$RUNNER_TEMP/luxembourg"
+      - name: Validate staged dataset
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"luxembourg"
+          search=json.loads((root/"search.json").read_text())
+          services=json.loads((root/"services.json").read_text())
+          assert len(search["stops"])>=100
+          assert search["timezone"]=="Europe/Luxembourg"
+          assert services["calendar"] or services["exceptions"]
+          assert all((root/"stops"/(s["file"]+".json")).exists() for s in search["stops"])
+          print(f'VALIDATED: {len(search["stops"])} Luxembourg stops; {len(services["calendar"])} calendars')
+          PY
+      - name: Upload validation index for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: luxembourg-validation-index
+          path: |
+            ${{ runner.temp }}/luxembourg/search.json
+            ${{ runner.temp }}/luxembourg/services.json
+          retention-days: 7
