@@ -1,0 +1,75 @@
+name: Deploy BusTimer to DreamHost
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dreamhost-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dreamhost-production
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate application
+        run: npm run ci
+      - name: Validate PHP sources
+        run: |
+          for f in server/*.php; do php -l "$f"; done
+      - name: Install PHP production dependencies
+        run: composer install --working-dir=server --no-dev --no-interaction --prefer-dist --optimize-autoloader
+      - name: Prepare deployable files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p stage/server
+          cp index.html sw.js icon.svg manifest.webmanifest countries.json .nojekyll stage/
+          cp -a data i18n stage/
+          cp server/*.php server/composer.json server/.htaccess stage/server/
+          cp -a server/vendor stage/server/vendor
+          # Never ship local private credentials, database or runtime state.
+          test ! -e stage/server/settings.php
+          test ! -d stage/server/private
+          test -f stage/server/vendor/autoload.php
+      - name: Configure pinned SSH host and deploy key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DREAMHOST_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DREAMHOST_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Upload release without touching server settings or database
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DREAMHOST_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DREAMHOST_WEB_ROOT }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
+          [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
+          [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
+          [[ "$DEPLOY_PATH" =~ ^/home/[a-zA-Z0-9_-]+/[a-zA-Z0-9_./-]+$ ]]
+          [[ "$DEPLOY_PATH" != "/" && "$DEPLOY_PATH" != *".."* ]]
+          ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
+          rsync -az --itemize-changes \
+            --exclude='server/settings.php' \
+            --exclude='server/private/' \
+            --exclude='*.sqlite' --exclude='*.sqlite-shm' --exclude='*.sqlite-wal' \
+            -e 'ssh -o StrictHostKeyChecking=yes' \
+            stage/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+      - name: Verify public health endpoint
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/ >/dev/null
+          echo 'PWA is reachable. API will be functional only after private settings and cron are configured.'
