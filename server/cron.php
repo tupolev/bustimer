@@ -35,7 +35,7 @@ foreach($records as $alarm){
   $best=null;$bestTime=PHP_INT_MAX;
   foreach(departuresFor($alarm['stop_id']) as $dep){
    if(!is_array($dep)||($dep['cancelled']??false)||($dep['tripCancelled']??false))continue;
-   $line=(string)($dep['routeShortName']?:($dep['displayName']?:($dep['routeLongName']??'')));
+   $line=(string)(($dep['routeShortName']??'')?: (($dep['displayName']??'')?:($dep['routeLongName']??'')));
    if($line!==$alarm['line'])continue;
    if(normalizedMode((string)($dep['mode']??''))!==$alarm['mode'])continue;
    $direction=(string)($dep['headsign']??'');
