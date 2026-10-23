@@ -290,3 +290,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Prioritize prefix matching, then geographic proximity to the selected city so the limited result list favors local stops.
 - [x] Add regression fixture for same-operator STIB Gare Centrale platforms.
 - [ ] Confirm language and platform selection in live browser for Brussels Central, Gent and Liège.
+
+
+## Belgian interchange regression and documentation alignment (2026-10-23)
+
+- [x] Add mocked Belgian interchange regression fixtures: STIB platforms with separate IDs remain separate; a co-located SNCB/TEC stop can merge with one platform without erasing the other; distant same-name stops remain distinct. See `tests/core.test.mjs`, commit `fe6bf010`.
+- [x] Align README's headline version and description of country-first city search, direction-aware saved lines and available test coverage; synchronize `package.json` to v0.12.0.
+- [ ] Confirm GitHub Actions CI is green after these changes. Source updates alone do not count as test execution.
+- [ ] Run real browser smoke checks for Brussels Central, Gent and Liège, including all language modes, route/direction selection, saved favorite refresh and actual static schedule dates. This environment's GitHub repository connector does not provide a browser session; no browser test is claimed.
