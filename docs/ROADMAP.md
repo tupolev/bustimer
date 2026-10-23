@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.8.0** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.0** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -20,7 +20,7 @@ Last reviewed: 2026-10-23 · Current application version: **0.8.0** (tests rollo
 - [ ] **P0-02 — Browser smoke tests on GitHub Pages.** Test each tab, language, theme, favorite save/remove, PWA update, offline shell and restored localStorage. **Done when:** reproducible Playwright or equivalent tests run in CI and are documented.
 - [ ] **P0-03 — Validate Transitous API integration.** Confirm request paths, schemas, CORS, stop search, timetable, delay, cancellation and error behavior. **Done when:** fixtures and at least one tested stop per enabled country pass.
 - [ ] **P0-04 — Fix provider identity and stop matching.** Avoid incorrect merging of different platforms or stop IDs; preserve source-specific IDs and coordinates. **Done when:** tests cover nearby distinct platforms, aliases and duplicates.
-- [ ] **P0-05 — Direction-aware monitored lines.** Save route direction or trip pattern so two opposite-direction vehicles do not mix. **Done when:** same route can be monitored independently in both directions.
+- [x] **P0-05 — Direction-aware monitored lines (implementation).** New favorites store the selected destination/direction and filter departures accordingly; opposite directions can be saved separately. Legacy favorites without a direction continue to display both until re-added. Browser verification remains under P0-02.
 - [ ] **P0-06 — Robust error / offline / stale-data states.** Never represent stale data as live. **Done when:** offline, API failure and expired schedule scenarios are explicitly labeled and tested.
 - [ ] **P0-07 — Check GitHub Pages deployment.** Validate generated URLs, service-worker update cycle, cache migration and required data files on a published build. **Done when:** live pages and a fresh private browser session pass.
 
