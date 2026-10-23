@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.6** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.7** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -199,3 +199,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Add GitHub Actions weekly Tuesday 05:43 UTC schedule, workflow-file push trigger and concurrency guard to official Luxembourg GTFS publisher. This avoids needing a manual Run workflow for ordinary refreshes and workflow updates.
 - [x] Validate source HTTPS, CC BY 4.0 attribution and bounded stop count before publishing.
 - [ ] Confirm first workflow-file push-triggered automatic publication and ongoing weekly execution. Check Pages deployment and browser stops independently.
+
+## City-first stop discovery (v0.9.7)
+
+- [x] Add mandatory city/town text input between country and stop search (EN/ES/DE translations).
+- [x] Disable stop search until city is supplied; reset dependent choices on city changes, preserving saved favorites unchanged.
+- [x] Qualify Transitous stop queries with city and country; locally narrow regional results by town names where present.
+- [ ] Improve city UX with geocoded city suggestion/selection and radius-based filtering of regional stops, especially stations not named after their municipality.
+- [ ] Browser smoke-test city-to-stop flows in Germany, Spain and Luxembourg.
