@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.5.0** · No build step · No backend · MIT licensed
+**Version 0.5.1** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -123,3 +123,9 @@ This does not imply full Spanish operator coverage; national GTFS ingestion is s
 ## Automatic data-provider selection (v0.5.0)
 
 Internal adapters for Transitous, EMT Málaga, VBB and DB now select sources without asking users to choose providers. Spain stop search merges matching names within 75 metres when coordinates are available, retaining upstream IDs. New favorites remember all known provider IDs, older favorites remain compatible. Each supported provider is queried independently; a failing source does not suppress successful sources. Departure candidates are deduplicated by line, mode, direction and close planned times, with realtime preferred. Stop matching is heuristic, and direction-specific favorites and complete national GTFS coverage remain future work.
+
+## Country-only network selection (v0.5.1)
+
+The public dropdown now shows only **Deutschland** and **España**. VBB, DB and EMT Málaga are internal provider adapters, not selectable cities. Existing previously saved Berlin/VBB, Köln/DB, Düsseldorf/DB and Málaga/EMT favorites retain their original identifiers and continue using their original provider.
+
+German stop searches combine Transitous national search and the VBB regional API results. Candidates with matching names and geocoordinates within 75 metres can be merged while keeping both providers' actual stop IDs; no foreign IDs are sent to another provider. DB remains available for previously saved favorites; an automatic DB stop-ID mapping for other German regions is not implemented yet. Results may remain duplicated when identifiers or coordinates are insufficient. This is a safe incremental step, not a claim of complete provider arbitration across Germany.
