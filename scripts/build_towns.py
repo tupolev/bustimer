@@ -3,7 +3,7 @@
 import csv,io,json,sys,urllib.request,zipfile
 from collections import defaultdict
 from pathlib import Path
-COUNTRIES={"DE","ES","FR","PT","LU","BE","NL","AT","CH","IT","CZ"}
+COUNTRIES={"DE","ES","FR","PT","LU","BE","NL","AT","CH","IT","CZ","PL","DK","SE"}
 SRC="https://download.geonames.org/export/dump/"
 def build(text,admin):
     towns=defaultdict(list)
