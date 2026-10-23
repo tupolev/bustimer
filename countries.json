@@ -103,13 +103,13 @@
       "name": "Nederland",
       "flag": "🇳🇱",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first through Transitous HTTPS geocoding and stop times; no bulk GTFS assets required. Disabled pending browser smoke tests for Dutch cities and CORS/coverage verification.",
+      "notes": "Experimental API-first service via Transitous HTTPS geocoding and stop-times. Coverage and realtime depend on underlying operators. No national GTFS mirror required; stop/town names remain literal.",
       "geocode": "Nederland",
       "bounds": [
         50.73,
