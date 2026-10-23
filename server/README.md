@@ -57,15 +57,15 @@ Note: the subscription endpoint permits only known Apple, Mozilla, Google FCM an
 
 The workflow [deploy-dreamhost.yml](../.github/workflows/deploy-dreamhost.yml) is **manual** (Actions → Deploy BusTimer to DreamHost → Run workflow), uses the environment `dreamhost-production`, and never deletes files at the destination. Prepare production before its first run:
 
-1. Generate a dedicated key locally: `ssh-keygen -t ed25519 -f ~/.ssh/bustimer_dreamhost -C bustimer-github-actions`. Do not set a passphrase for this unattended **dedicated** CI key; restrict its use and rotate it if exposed.
-2. Add the exact content of `~/.ssh/bustimer_dreamhost.pub` to `~/.ssh/authorized_keys` on DreamHost for `dh_ikhr5d` (using an already authorized SSH login or the DreamHost panel). Keep this user restricted to the deployment account. Test: `ssh -i ~/.ssh/bustimer_dreamhost dh_ikhr5d@bustimer.kodesoft.net 'php -v; php -m'`.
-3. Verify the server's SSH host key **out of band** (DreamHost control panel or documented host fingerprint). `ssh-keyscan -H bustimer.kodesoft.net` can collect the host key but does **not** authenticate it; compare the fingerprint before trusting it.
-4. In GitHub repository **Settings → Environments → dreamhost-production**, add Environment secrets:
-   - `DREAMHOST_SSH_KEY`: contents of `~/.ssh/bustimer_dreamhost`, including BEGIN/END lines (never commit or paste in chat)
+1. Use a dedicated DreamHost SSH password for the account `dh_ikhr5d` and confirm that password authentication is enabled on the host. Never paste the password into issues, commits or chat.
+2. Verify the server's SSH host key **out of band** via DreamHost. `ssh-keyscan -H bustimer.kodesoft.net` collects host key lines but does **not** authenticate them; compare fingerprints before trusting.
+3. In GitHub repository **Settings → Environments → dreamhost-production**, add Environment secrets:
+   - `DREAMHOST_SSH_PASSWORD`: your DreamHost SSH password
    - `DREAMHOST_KNOWN_HOSTS`: verified known_hosts line(s) for `bustimer.kodesoft.net`
    - `DREAMHOST_SSH_HOST`: `bustimer.kodesoft.net`
    - `DREAMHOST_SSH_USER`: `dh_ikhr5d`
    - `DREAMHOST_WEB_ROOT`: `/home/dh_ikhr5d/bustimer.kodesoft.net/`
+4. GitHub Actions uses `sshpass -e` and the protected `SSHPASS` environment variable to authenticate without displaying the password in commands. SSH host-key checking remains enabled. Key-based authentication is preferable long term.
 5. Ensure that the domain serves that exact directory with HTTPS, that PHP CLI **and web PHP** are at least 8.2 with `pdo_sqlite`, `curl`, `openssl`, and `mbstring`, and Apache honors `.htaccess`. If SSH defaults to an old PHP but a modern binary exists, arrange an explicit binary in the workflow and cron rather than bypassing the check.
 6. Store `settings.php` only on DreamHost in `/home/dh_ikhr5d/bustimer.kodesoft.net/server/settings.php`. Create its database directory outside the document root, e.g. `/home/dh_ikhr5d/bustimer-private/` with owner-only permissions. Run VAPID generation privately. Preserve keys and SQLite across releases.
 7. After deployment check `/server/api.php?action=config` returns `enabled:true` and only the public key; ensure `/server/cron.php`, `/server/settings.php`, `/server/lib.php` and `/server/vendor/autoload.php` cannot be read over HTTP. Schedule the minute cron only after manual CLI validation. The workflow does not create the server-side cron, secrets, or VAPID keys.
