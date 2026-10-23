@@ -107,7 +107,25 @@
       "enabled": false,
       "regional": [],
       "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "notes": "Official feed identified. Pending importer, dataset integrity tests, transitous interoperability, and browser validation.",
+      "geocode": "Nederland",
+      "bounds": [
+        50.73,
+        53.75,
+        3.25,
+        7.3
+      ],
+      "priority": 2,
+      "officialFeeds": [
+        {
+          "kind": "GTFS",
+          "url": "https://gtfs.ovapi.nl/nl/gtfs-nl.zip",
+          "publisher": "openOV / NDOV",
+          "license": "CC0 (verify feed-specific metadata)",
+          "access": "bulk download",
+          "notes": "Large national feed; do not download in the browser"
+        }
+      ]
     },
     {
       "id": "belgium",
@@ -119,7 +137,25 @@
       "enabled": false,
       "regional": [],
       "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "notes": "Official feed identified. Pending importer, dataset integrity tests, transitous interoperability, and browser validation.",
+      "geocode": "Belgium",
+      "bounds": [
+        49.48,
+        51.52,
+        2.5,
+        6.42
+      ],
+      "priority": 2,
+      "officialFeeds": [
+        {
+          "kind": "GTFS",
+          "url": "https://data.belgianmobility.io/en/data.html",
+          "publisher": "Belgian Mobility Company",
+          "license": "Operator-specific verification required",
+          "access": "catalog; static and realtime per operator",
+          "notes": "De Lijn, STIB-MIVB, LETEC, NMBS-SNCB"
+        }
+      ]
     },
     {
       "id": "luxembourg",
@@ -131,7 +167,25 @@
       "enabled": false,
       "regional": [],
       "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "notes": "Official feed identified. Pending importer, dataset integrity tests, transitous interoperability, and browser validation.",
+      "geocode": "Luxembourg",
+      "bounds": [
+        49.43,
+        50.2,
+        5.72,
+        6.55
+      ],
+      "priority": 1,
+      "officialFeeds": [
+        {
+          "kind": "GTFS",
+          "url": "https://data.public.lu/en/datasets/horaires-et-arrets-des-transport-publics-gtfs/",
+          "publisher": "Administration des transports publics",
+          "license": "CC BY 4.0",
+          "access": "open ZIP",
+          "notes": "Weekly feed, national schedule, ~16MB downloaded"
+        }
+      ]
     },
     {
       "id": "austria",
