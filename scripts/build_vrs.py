@@ -22,9 +22,9 @@ DAYS = ("monday","tuesday","wednesday","thursday","friday","saturday","sunday")
 
 def rows(z, name):
     if name not in z.namelist():
-        return []
+        return
     with z.open(name) as file:
-        return csv.DictReader(io.TextIOWrapper(file,encoding="utf-8-sig",newline=""))
+        yield from csv.DictReader(io.TextIOWrapper(file,encoding="utf-8-sig",newline=""))
 
 def write(path, data):
     path.parent.mkdir(parents=True,exist_ok=True)
