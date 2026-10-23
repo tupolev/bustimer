@@ -171,3 +171,5 @@ For full NRW fallback, the official [VRS GTFS static data](https://www.vrs.de/fu
 ## VRS GTFS import pipeline (staged)
 
 The optional VRS static-data build is in `scripts/build_vrs.py`, using the VRS global-ID GTFS download under Datenlizenz Deutschland Zero 2.0. Run `python3 scripts/build_vrs.py` to generate `data/vrs/index.json` and per-stop JSON files. There is a **manual-only** workflow at [Refresh VRS scheduled timetables](https://github.com/tupolev/bustimer/actions/workflows/vrs-gtfs.yml). It is intentionally **not wired to the app yet**; run and validate the import and repository size before enabling automatic updates. Source: https://www.vrs.de/fuer-unternehmen/open-data-service . Public scheduled data only: realtime VRS access requires a separate agreement.
+
+**VRS feed correction (2026-10-23):** the official VRS site currently links `https://download.vrs.de/gtfs/google_transit_goR.zip`; this supersedes the previously assumed URL. The importer also writes a filename mapping per stop to safely support global stop identifiers. Until the first successful export and integration tests, the app does not advertise VRS departures.
