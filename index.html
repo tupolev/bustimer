@@ -179,7 +179,28 @@ async function belgiumDepartures(provider,id){
  }
  return all.sort((a,b)=>new Date(a._time)-new Date(b._time));
 }
+async function netherlandsIndex(){return cachedJSON("./data/netherlands/search.json",3600000)}
+async function netherlandsServices(){return cachedJSON("./data/netherlands/services.json",3600000)}
+async function netherlandsDepartures(id){
+ const [index,services]=await Promise.all([netherlandsIndex(),netherlandsServices()]);
+ const stop=index.stops.find(s=>String(s.id)===String(id));
+ if(!stop)throw Error("Netherlands stop not found");
+ const rows=await cachedJSON("./data/netherlands/stops/"+stop.file+".json",MIN_REFRESH_MS);
+ const local=berlinParts(new Date()),now=Date.now(),all=[];
+ for(let offset=-1;offset<=1;offset++){
+  const day=gtfsDateUTC(local,offset);
+  for(const [minute,service,line,direction,kind] of rows){
+   if(!serviceRuns(services,service,day))continue;
+   const clock=berlinTimestamp(day,minute);
+   if(!clock||clock.getTime()<now-30000||clock.getTime()>now+120*60000)continue;
+   const code=String(kind),product=code==="0"||code==="900"?"tram":code==="1"||code==="400"?"subway":code==="2"||code==="100"?"regional":code==="4"||code==="1000"?"ferry":"bus";
+   all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:product,_line:String(line),direction:direction||"",line:{name:String(line),product}});
+  }
+ }
+ return all.sort((a,b)=>new Date(a._time)-new Date(b._time));
+}
 const DATA_PROVIDERS={
+  nl:id=>netherlandsDepartures(id),
   belgiumRail: id=>belgiumDepartures("belgiumRail",id),
   belgiumStib: id=>belgiumDepartures("belgiumStib",id),
   belgiumTec: id=>belgiumDepartures("belgiumTec",id),
@@ -191,8 +212,8 @@ const DATA_PROVIDERS={
   vbb: id=>cachedJSON(url("berlin","/stops/"+encodeURIComponent(id)+"/departures",{duration:90,results:100,remarks:false,pretty:false}),MIN_REFRESH_MS).then(extractDepartures),
   db: id=>cachedJSON(url("cologne","/stops/"+encodeURIComponent(id)+"/departures",{duration:90,results:100,remarks:false,pretty:false}),MIN_REFRESH_MS).then(extractDepartures)
 };
-function defaultProvider(city,id){return city==="malaga"||String(id).startsWith("emt:")?"emt":String(id).startsWith("vrs:")?"vrs":String(id).startsWith("lux:")?"lux":String(id).startsWith("belgiumRail:")?"belgiumRail":String(id).startsWith("belgiumStib:")?"belgiumStib":String(id).startsWith("belgiumTec:")?"belgiumTec":String(id).startsWith("belgiumDelijn:")?"belgiumDelijn":city==="berlin"?"vbb":city==="cologne"||city==="dusseldorf"?"db":"transitous"}
-function providerLinks(city,id,more=[]){const first={provider:defaultProvider(city,id),id:String(id).replace(/^(?:emt|vrs|lux|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};return [first,...more].filter((s,i,a)=>s&&DATA_PROVIDERS[s.provider]&&a.findIndex(x=>x&&x.provider===s.provider&&String(x.id)===String(s.id))===i)}
+function defaultProvider(city,id){return city==="malaga"||String(id).startsWith("emt:")?"emt":String(id).startsWith("vrs:")?"vrs":String(id).startsWith("lux:")?"lux":String(id).startsWith("nl:")?"nl":String(id).startsWith("belgiumRail:")?"belgiumRail":String(id).startsWith("belgiumStib:")?"belgiumStib":String(id).startsWith("belgiumTec:")?"belgiumTec":String(id).startsWith("belgiumDelijn:")?"belgiumDelijn":city==="berlin"?"vbb":city==="cologne"||city==="dusseldorf"?"db":"transitous"}
+function providerLinks(city,id,more=[]){const first={provider:defaultProvider(city,id),id:String(id).replace(/^(?:emt|vrs|lux|nl|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};return [first,...more].filter((s,i,a)=>s&&DATA_PROVIDERS[s.provider]&&a.findIndex(x=>x&&x.provider===s.provider&&String(x.id)===String(s.id))===i)}
 function mergeDepartures(rows){const prioritized=[...rows].sort((a,b)=>Number(Boolean(b._realtime))-Number(Boolean(a._realtime)));const out=[];for(const d of prioritized){const planned=new Date(d.plannedWhen||d._time).getTime();if(out.some(x=>x._source!==d._source&&x._line===d._line&&x._product===d._product&&x.direction===d.direction&&Math.abs(new Date(x.plannedWhen||x._time).getTime()-planned)<90000))continue;out.push(d)}return out.sort((a,b)=>new Date(a._time)-new Date(b._time))}
 async function departures(city,id,more=[]){const refs=providerLinks(city,id,more);const results=await Promise.allSettled(refs.map(s=>DATA_PROVIDERS[s.provider](s.id)));if(results.every(x=>x.status==="rejected"))throw Error("All sources failed");return mergeDepartures(results.flatMap((r,i)=>r.status==="fulfilled"?r.value.map(d=>({...d,_source:refs[i].provider})):[]))}
 
@@ -232,6 +253,11 @@ async function regionalStops(provider,query){if(BELGIUM_OPERATORS.includes(provi
    .map(s=>({id:String(s.id),name:s.name,type:"stop",lat:s.latitude,lon:s.longitude,provider:"db"}))
    .filter(s=>inBounds(s,REGION_BOUNDS.db));
  }
+ if(provider==="nl"){
+   const index=await netherlandsIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").trim();
+   if(q.length<2)return [];
+   return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").includes(q)).map(s=>({id:"nl:"+s.id,name:s.name,type:"stop",lat:s.lat,lon:s.lon,provider:"nl"}));
+ }
  if(provider==="lux"){
    const index=await luxIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
    if(q.length<2)return [];
@@ -245,7 +271,7 @@ async function regionalStops(provider,query){if(BELGIUM_OPERATORS.includes(provi
  if(provider==="emt"){const q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/malaga/g,"").trim();if(q.length<2)return [];const index=await malagaIndex();return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q)).slice(0,15).map(s=>({id:"emt:"+s.id,name:s.name+" · Málaga",type:"stop",lat:s.lat,lon:s.lon,provider:"emt"})).filter(s=>inBounds(s,REGION_BOUNDS.emt))}
  return []}
 let COUNTRY_CATALOG=COUNTRY_FALLBACK;
-async function searchCountryStops(country,query,town){const cfg=COUNTRY_CATALOG[country];if(!cfg)throw Error("Country unavailable");const url="https://api.transitous.org/api/v1/geocode?"+new URLSearchParams({text:query+", "+town+", "+cfg.geocode,type:"STOP"});const nationalRequest=country==="belgium"?Promise.resolve([]):cachedJSON(url,120000).then(motisStops).then(stops=>stops.map(s=>({...s,lat:s.latitude,lon:s.longitude,provider:"transitous"})).filter(s=>inBounds(s,cfg.bounds))).catch(()=>[]);const jobs=[nationalRequest,...cfg.regional.map(p=>regionalStops(p,query).catch(()=>[]))];const [allNational,...other]=await Promise.all(jobs);const national=allNational.filter(s=>stopDistance(s,chosenTown)<20000||canonicalStopName(s.name).includes(canonicalStopName(town)));let local=other.flat();if(country==="spain"&&!/m[aá]laga/i.test(query)&&!national.some(s=>inBounds(s,REGION_BOUNDS.emt)))local=[];const townName=canonicalStopName(town);local=local.filter(s=>!townName||canonicalStopName(s.name).includes(townName)||chosenTown&&stopDistance(s,chosenTown)<18000);const list=joinProviderStops([...local,...national]);if(!list.length)return [];const normalizedQuery=canonicalStopName(query);return list.sort((a,b)=>{const match=Number(canonicalStopName(b.name).startsWith(normalizedQuery))-Number(canonicalStopName(a.name).startsWith(normalizedQuery));return match||stopDistance(a,chosenTown)-stopDistance(b,chosenTown)}).slice(0,20)}
+async function searchCountryStops(country,query,town){const cfg=COUNTRY_CATALOG[country];if(!cfg)throw Error("Country unavailable");const url="https://api.transitous.org/api/v1/geocode?"+new URLSearchParams({text:query+", "+town+", "+cfg.geocode,type:"STOP"});const nationalRequest=(country==="belgium"||country==="netherlands")?Promise.resolve([]):cachedJSON(url,120000).then(motisStops).then(stops=>stops.map(s=>({...s,lat:s.latitude,lon:s.longitude,provider:"transitous"})).filter(s=>inBounds(s,cfg.bounds))).catch(()=>[]);const jobs=[nationalRequest,...cfg.regional.map(p=>regionalStops(p,query).catch(()=>[]))];const [allNational,...other]=await Promise.all(jobs);const national=allNational.filter(s=>stopDistance(s,chosenTown)<20000||canonicalStopName(s.name).includes(canonicalStopName(town)));let local=other.flat();if(country==="spain"&&!/m[aá]laga/i.test(query)&&!national.some(s=>inBounds(s,REGION_BOUNDS.emt)))local=[];const townName=canonicalStopName(town);local=local.filter(s=>!townName||canonicalStopName(s.name).includes(townName)||chosenTown&&stopDistance(s,chosenTown)<18000);const list=joinProviderStops([...local,...national]);if(!list.length)return [];const normalizedQuery=canonicalStopName(query);return list.sort((a,b)=>{const match=Number(canonicalStopName(b.name).startsWith(normalizedQuery))-Number(canonicalStopName(a.name).startsWith(normalizedQuery));return match||stopDistance(a,chosenTown)-stopDistance(b,chosenTown)}).slice(0,20)}
 async function searchGermanyStops(query){return searchCountryStops("germany",query)}
 async function searchSpainStops(query){return searchCountryStops("spain",query)}
 
@@ -329,7 +355,7 @@ $("#town-query").addEventListener("keydown",e=>{
  if(e.key==="Escape"){clearTownSuggestions();return}
  if(e.key==="Enter"){const first=$("#town-results button");if(first){e.preventDefault();first.click()}}
 });
-$("#stop-query").addEventListener("input",()=>{clearTimeout(searchTimer);const query=$("#stop-query").value.trim();state.stop=null;state.departures=[];$("#chosen-stop").textContent="";$("#transport").disabled=true;$("#line").disabled=true;$("#save").disabled=true;const seq=++debounceSeq;$("#stop-results").hidden=!query;if(query.length<2||!chosenTown){$("#stop-results").hidden=true;return}$("#stop-results").textContent=t("searching");searchTimer=setTimeout(async()=>{try{const list=state.city==="malaga"?(await malagaIndex()).stops.filter(s=>s.name.toLocaleLowerCase("es").includes(query.toLocaleLowerCase("es"))||String(s.id)===query).slice(0,20).map(s=>({...s,type:"stop"})):["germany","spain","france","portugal","luxembourg","belgium"].includes(state.city)?await searchCountryStops(state.city,query,chosenTown.name):await cachedJSON(url(state.city,"/locations",{query,results:12,stops:true,addresses:false,poi:false,pretty:false}),120000);if(seq!==debounceSeq)return;state.results=(Array.isArray(list)?list:[]).filter(x=>(x.type==="stop"||x.type==="station")&&x.id);renderResults()}catch(e){if(seq===debounceSeq)$("#stop-results").textContent=t("searchError")}},SEARCH_DEBOUNCE_MS)});
+$("#stop-query").addEventListener("input",()=>{clearTimeout(searchTimer);const query=$("#stop-query").value.trim();state.stop=null;state.departures=[];$("#chosen-stop").textContent="";$("#transport").disabled=true;$("#line").disabled=true;$("#save").disabled=true;const seq=++debounceSeq;$("#stop-results").hidden=!query;if(query.length<2||!chosenTown){$("#stop-results").hidden=true;return}$("#stop-results").textContent=t("searching");searchTimer=setTimeout(async()=>{try{const list=state.city==="malaga"?(await malagaIndex()).stops.filter(s=>s.name.toLocaleLowerCase("es").includes(query.toLocaleLowerCase("es"))||String(s.id)===query).slice(0,20).map(s=>({...s,type:"stop"})):["germany","spain","france","portugal","luxembourg","belgium","netherlands"].includes(state.city)?await searchCountryStops(state.city,query,chosenTown.name):await cachedJSON(url(state.city,"/locations",{query,results:12,stops:true,addresses:false,poi:false,pretty:false}),120000);if(seq!==debounceSeq)return;state.results=(Array.isArray(list)?list:[]).filter(x=>(x.type==="stop"||x.type==="station")&&x.id);renderResults()}catch(e){if(seq===debounceSeq)$("#stop-results").textContent=t("searchError")}},SEARCH_DEBOUNCE_MS)});
 function renderResults(){const box=$("#stop-results");box.replaceChildren();box.hidden=false;if(!state.results.length){box.textContent=t("noResults");return}state.results.forEach(s=>{const button=document.createElement("button");button.className="result";button.type="button";button.textContent=s.name;button.addEventListener("click",()=>chooseStop(s));box.append(button)})}
 async function chooseStop(stop){++debounceSeq;state.stop=stop;state.departures=[];$("#stop-results").hidden=true;$("#stop-query").value=stop.name;$("#chosen-stop").className="selected";$("#chosen-stop").textContent="✓ "+stop.name;$("#form-error").textContent=t("linesLoading");const seq=++requestCounter;try{const dep=await departures(state.city,stop.id,stop.providers||[]);if(seq!==requestCounter)return;state.departures=dep;$("#form-error").textContent=dep.length?"":t("noLines");renderTransportOptions()}catch(e){if(seq===requestCounter)$("#form-error").textContent=t("error")+" · "+t("retry")}}
 const productLabels={suburban:"S-Bahn",subway:"U-Bahn",tram:"Tram",bus:"Bus",ferry:"Ferry",regional:"Regional",express:"Express",national:"Train",nationalExpress:"Express",regionalExp:"Regional",regionalExpress:"Regional"}; // Stable literal labels; unknown types keep their source codes.
@@ -360,7 +386,7 @@ async function initializeCountryCatalog(){
   if(config.schemaVersion!==1||!Array.isArray(config.countries))throw Error("invalid country catalog");
   const enabled=config.countries.filter(c=>c.enabled===true&&c.status!=="candidate"&&
    Array.isArray(c.bounds)&&c.bounds.length===4&&typeof c.geocode==="string"&&
-   c.bounds.every(Number.isFinite)&&["germany","spain","france","portugal","luxembourg","belgium"].includes(c.id));
+   c.bounds.every(Number.isFinite)&&["germany","spain","france","portugal","luxembourg","belgium","netherlands"].includes(c.id));
   if(!enabled.some(c=>c.id==="germany")||!enabled.some(c=>c.id==="spain"))throw Error("missing core countries");
   COUNTRY_CATALOG=Object.fromEntries(enabled.map(c=>[c.id,c]));
   const selector=$("#city"),previous=selector.value;
