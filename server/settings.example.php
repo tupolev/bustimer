@@ -5,6 +5,6 @@ return [
  'vapid_subject'=>'mailto:admin@example.org',
  'vapid_public'=>'REPLACE_WITH_VAPID_PUBLIC_KEY',
  'vapid_private'=>'REPLACE_WITH_VAPID_PRIVATE_KEY',
- 'origin'=>'https://tupolev.github.io',
+ 'origin'=>'https://bustimer.kodesoft.net',
  'api_source'=>'https://api.transitous.org',
 ];
