@@ -100,7 +100,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 
 - [x] Add `scripts/build_vrs.py` to download official global-ID VRS GTFS, compile service calendars and stop-centric schedules, protect against empty datasets, and stage output atomically into `data/vrs/`.
 - [x] Add `.github/workflows/vrs-gtfs.yml` **manual workflow** for first verification. Daily scheduling is intentionally disabled until tested and repository size reviewed.
-- [ ] Execute workflow, confirm the VRS download works and generated index/calendar/date exceptions, IDs, license, file counts and total repository size are correct. **Not yet executed.**
+- [ ] Execute workflow, confirm the corrected official VRS download works and generated index/calendar/date exceptions, IDs, license, file counts and total repository size are correct. **Not yet executed.**
 - [ ] Wire `vrs` into Germany stop discovery and departure adapter with Europe/Berlin timezone handling; don't label static times realtime.
 - [ ] Verify stop matching, midnight/DST and VRS direction labels with sample Bonn/Köln stops, and regression-test old favorites.
 - [ ] Only after successful tests, enable a conservative scheduled refresh and record source freshness in UI.
+
+- [x] Correct VRS GTFS download URL to the **current official link** (`google_transit_goR.zip`), store explicit `file` mapping for non-filesystem-safe stop IDs and detect filename collisions; this importer change is not yet validated against a complete live feed.
