@@ -24,5 +24,5 @@ test("Berlin autumn repeated hour chooses the first occurrence",()=>{
  assert.equal(at("2026-10-25",210).toISOString(),"2026-10-25T02:30:00.000Z");
 });
 test("GTFS service time beyond midnight advances the date",()=>{
- assert.equal(at("2026-10-23",1515).toISOString(),"2026-10-24T00:15:00.000Z");
+ assert.equal(at("2026-10-23",1515).toISOString(),"2026-10-23T23:15:00.000Z");
 });
