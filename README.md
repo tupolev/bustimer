@@ -16,6 +16,18 @@ A lightweight, responsive, installable PWA to monitor the next departures of sav
 - Web app manifest, service worker and SVG icon for PWA installation.
 - Static site deployable to GitHub Pages from the root of `main`.
 
+## Data quality and graceful degradation
+
+BusTimer is **schedule-first**, and improves the estimate whenever more reliable information is available. An unavailable realtime feed is not the same as an unavailable transport service.
+
+1. **Realtime prediction**: when the provider supplies a realtime departure or arrival estimate, show the predicted clock time and countdown. If the provider also supplies a planned time, compute or display the reported delay.
+2. **Published timetable**: when realtime information is missing, fall back to the provider's planned departure time and label it **Scheduled / Horario / Fahrplan**. Show no invented delay.
+3. **No timetable available**: only when neither a current departure nor an applicable published timetable can be obtained, show **Unavailable** or **No upcoming service** as appropriate. Never invent departure times.
+
+Implementation note for v0.1.0: the current transport.rest integration prefers `when` and otherwise uses `plannedWhen` from the same API response. This already provides a basic static-time fallback **if the departures endpoint itself responds**. It does **not** currently include an independent GTFS or static-timetable feed: if the API fails outright, the app cannot yet retrieve timetable data. That independent fallback, including GTFS ZIP ingestion/conversion to static JSON suitable for GitHub Pages, is the next milestone.
+
+Target architecture per city: query realtime where possible → merge with a published schedule (GTFS, GTFS-RT, NeTEx, or provider-specific feeds as available) by stop, line, direction, and service date → return a clearly labeled provenance and timestamp. Static schedules must be refreshed for service/calendar changes; simply caching a single day's predictions is not a timetable.
+
 ## Networks and current limitations
 
 | Network | Implementation | Notes |
