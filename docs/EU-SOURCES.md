@@ -30,3 +30,12 @@ No country gains verified public support simply because it appears in this sourc
 ## Luxembourg staging progress (2026-10-23)
 
 The importer discovers the most recent GTFS ZIP via the public [data.public.lu dataset](https://data.public.lu/en/datasets/horaires-et-arrets-des-transport-publics-gtfs/) API. It generates \`search.json\`, \`services.json\` and per-stop JSON with CC BY 4.0 attribution. A manual-only validation workflow checks integrity and uploads index artifacts. Luxembourg is **not enabled** in the PWA until live dataset validation and browser integration are complete.
+
+## Belgium official data gateway — readiness (2026-10-23)
+
+The [Belgian Mobility Open Data Portal](https://data.belgianmobility.io/en/data.html) lists GTFS schedules for STIB-MIVB (Brussels), NMBS-SNCB (railways), De Lijn (Flanders) and LETEC (Wallonia). Its [knowledge base](https://data.belgianmobility.io/en/knowledge-base.html) documents separate feed download APIs. [SNCB's official FAQ](https://www.belgiantrain.be/en/support/faq/faq-developers/faq-developers-data) acknowledges GTFS and realtime datasets. Some current endpoint listings use `Ocp-Apim-Subscription-Key`: test publicly authorized access and per-feed terms before implementing a scheduled importer. Do **not** store keys in source or assume every listed API is anonymous. Candidate stays disabled until GTFS ingestion and end-to-end stop/departure verification.
+
+- [x] Add Belgian city names to the weekly GeoNames offline catalog pipeline (same-origin `data/towns/be.json`), preserving literal city and region names.
+- [ ] Validate gateway authentication, rates, operator-specific terms, ZIP format and attribution; acquire explicit access if necessary.
+- [ ] Integrate one static GTFS operator with bounded stop shards, then validate Brussels Central/Gare Centrale and regional interchange trips.
+- [ ] Add Belgian stop adapter and language-safe country selection only after schedule data are published and tested.
