@@ -469,3 +469,12 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] Filter NL stop results by normalized query relevance to avoid displaying nearby unrelated stations; fast Node fixture updated.
 - [x] Enable `netherlands` with `status:experimental`, use Transitous on demand, retain the small GeoNames town index and credits. No national GTFS deployment.
 - [ ] Validate the current post-launch commit's fast CI status and manual smoke the live deployed Pages site; individual operator coverage/realtime are still partial and third-party dependent.
+
+
+## Post-Netherlands consolidation (2026-10-23)
+
+- [x] Sync About tab coverage copy in English, Spanish and German to the seven enabled countries and clarify Transitous upstream dependency versus Belgian/Luxembourg scheduled GTFS.
+- [x] Add `tests/country-coverage-about.test.mjs` guarding Netherlands API-first enablement, attribution links and translated coverage descriptions.
+- [ ] Confirm latest fast CI checks on the most recent `main` commit (the GitHub commit-status API returned no individual status objects; this alone is not evidence of success or failure).
+- [ ] Perform a real browser smoke against the **deployed GitHub Pages origin**; upstream HTTP/CORS success from GitHub Actions and mocked Chromium UI tests are useful but not a substitute.
+- [ ] Continue reliability improvements and country-specific stop/line direction edge cases only after gathering reproducible failures; do not expand static GTFS hosting by default.
