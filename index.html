@@ -76,6 +76,21 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #FFC629
  .stop-card .countdown{font-size:1.55rem}
  .stop-card .card-footer{padding:10px 13px}
 }
+
+.station-card{border:1px solid var(--border);border-radius:21px;overflow:hidden;background:var(--panel);box-shadow:0 6px 22px #092A5213}
+.station-head{padding:20px 25px 17px;background:linear-gradient(110deg,#092A52,#143E6C);color:#fff}
+.station-head .stop-city{color:#FFDE78;text-transform:none;letter-spacing:.03em}
+.station-head .stop-name{color:#fff;font-size:clamp(1.15rem,2.6vw,1.55rem);margin:7px 0 0}
+.station-lines{display:grid}
+.station-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 18px;align-items:center;padding:17px 23px;border-top:1px solid var(--border)}
+.station-line:first-child{border-top:0}
+.station-line .route{gap:10px}
+.station-line .line-badge{background:var(--accent);color:#092A52;font-size:1.12rem}
+.station-line .arrival{padding:0;min-width:110px}
+.station-line .countdown{font-size:1.8rem}
+.station-line .line-footer{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.station-line .status{font-size:.81rem;line-height:1.6;color:var(--muted)}
+@media(max-width:600px){.station-head{padding:17px 15px}.station-line{padding:14px 13px;gap:8px}.station-line .arrival{min-width:86px}.station-line .countdown{font-size:1.5rem}}
 </style>
 </head>
 <body>
@@ -427,8 +442,32 @@ $("#transport").addEventListener("change",renderLineOptions);
 $("#line").addEventListener("change",renderDirectionOptions);
 $("#direction").addEventListener("change",()=>{$("#save").disabled=!$("#direction").value});
 $("#save").addEventListener("click",()=>{const type=$("#transport").value,line=$("#line").value,direction=$("#direction").value;if(!state.stop||!type||!line||!direction)return;const actualDirection=direction==="__unspecified__"?"":direction;const exists=saved.some(s=>s.city===state.city&&s.stopId===String(state.stop.id)&&s.type===type&&s.line===line&&(s.direction??null)===actualDirection);if(exists){$("#form-error").textContent=t("already");return}saved.push({id:crypto.randomUUID(),city:state.city,stopId:String(state.stop.id),stopName:state.stop.name,type,line,direction:actualDirection,providers:state.stop.providers||[]});persist();resetForm();tab("list")});
-function renderCards(){const host=$("#cards");host.replaceChildren();if(!saved.length){const empty=document.createElement("div");empty.className="empty";empty.innerHTML='<div class="illustration" aria-hidden="true">🚏</div><h3>'+escapeHTML(t("emptyTitle"))+'</h3><p>'+escapeHTML(t("emptyText"))+'</p>';const btn=document.createElement("button");btn.className="btn";btn.textContent=t("addFirst");btn.addEventListener("click",()=>tab("add"));empty.append(btn);host.append(empty);return}
-saved.forEach(s=>{const data=departureState[s.id],dep=data?.departure,time=dep?new Date(dep._time):null,isValid=time&&!isNaN(time.valueOf());const minutes=isValid?Math.max(0,Math.ceil((time-Date.now())/60000)):null;const delay=dep?.delay!=null?Math.round(dep.delay/60):null;const live=Boolean(dep?._realtime===true||(dep?.when!=null&&(dep?.delay!=null||(dep?.plannedWhen!=null&&dep.when!==dep.plannedWhen))));const card=document.createElement("article");card.className="stop-card";const message=data?.error?t("error"):data?.loading?t("loading"):t("unknown");card.innerHTML='<div><div class="stop-city">'+escapeHTML(NETWORKS[s.city]?.label||countryLabel(s.city))+'</div><div class="stop-name">'+escapeHTML(s.stopName)+'</div><div class="route"><span class="line-badge">'+escapeHTML(s.line)+'</span><span class="type-badge">'+iconFor(s.type)+" "+escapeHTML(productLabels[s.type]||s.type)+'</span></div></div><div class="arrival"><div class="countdown">'+(minutes===null?"—":minutes===0?escapeHTML(t("due")):minutes+' <small>'+escapeHTML(t("min"))+'</small>')+'</div><div class="arrival-details">'+(isValid?time.toLocaleTimeString(prefs.language,{hour:"2-digit",minute:"2-digit"}):escapeHTML(message))+'</div>'+(isValid?'<div class="arrival-details '+(delay>0?"late":"")+'">'+(delay===null?"":delay>0?"(+"+delay+" "+escapeHTML(t("min"))+" "+escapeHTML(t("delay"))+")":delay<0?"("+delay+" "+escapeHTML(t("min"))+")":"("+escapeHTML(t("onTime"))+")")+'</div>':"")+'</div><div class="card-footer"><span class="status">'+(data?.error?"⚠ "+escapeHTML(t("error")):dep?(live?"● "+escapeHTML(t("live")):"◷ "+escapeHTML(t("scheduled")))+(dep._source?" · "+escapeHTML(({emt:"EMT Málaga",transitous:"Transitous",vbb:"VBB",db:"DB"})[dep._source]||dep._source):""):escapeHTML(message))+(dep?.direction?" · "+escapeHTML(t("direction"))+" "+escapeHTML(dep.direction):"")+'</span></div>';const foot=card.querySelector(".card-footer");const remove=document.createElement("button");remove.type="button";remove.className="btn ghost small";remove.textContent="✕ "+t("remove");remove.addEventListener("click",()=>{saved=saved.filter(x=>x.id!==s.id);delete departureState[s.id];persist();renderCards()});foot.append(remove);host.append(card)})}
+function groupFavoriteStops(stops){const groups=new Map();for(const stop of stops){const key=String(stop.city)+":"+String(stop.stopId);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(stop)}return [...groups.values()]}
+function renderCards(){
+ const host=$("#cards");host.replaceChildren();
+ if(!saved.length){const empty=document.createElement("div");empty.className="empty";empty.innerHTML='<div class="illustration" aria-hidden="true">🚏</div><h3>'+escapeHTML(t("emptyTitle"))+'</h3><p>'+escapeHTML(t("emptyText"))+'</p>';const btn=document.createElement("button");btn.className="btn";btn.textContent=t("addFirst");btn.addEventListener("click",()=>tab("add"));empty.append(btn);host.append(empty);return}
+ for(const group of groupFavoriteStops(saved)){
+  const station=group[0],card=document.createElement("article");card.className="station-card";card.dataset.stopId=String(station.stopId);
+  const header=document.createElement("header");header.className="station-head";header.innerHTML='<div class="stop-city">'+escapeHTML(NETWORKS[station.city]?.label||countryLabel(station.city))+'</div><h3 class="stop-name">'+escapeHTML(station.stopName)+'</h3>';
+  card.append(header);const list=document.createElement("div");list.className="station-lines";
+  for(const s of group){
+   const data=departureState[s.id],dep=data?.departure,time=dep?new Date(dep._time):null,isValid=time&&!isNaN(time.valueOf());
+   const minutes=isValid?Math.max(0,Math.ceil((time-Date.now())/60000)):null,delay=dep?.delay!=null?Math.round(dep.delay/60):null;
+   const live=Boolean(dep?._realtime===true||(dep?.when!=null&&(dep?.delay!=null||(dep?.plannedWhen!=null&&dep.when!==dep.plannedWhen))));
+   const message=data?.error?t("error"):data?.loading?t("loading"):t("unknown");
+   const row=document.createElement("div");row.className="station-line";row.dataset.favoriteId=String(s.id);
+   const count=minutes===null?"—":minutes===0?escapeHTML(t("due")):minutes+' <small>'+escapeHTML(t("min"))+'</small>';
+   const scheduled=isValid?time.toLocaleTimeString(prefs.language,{hour:"2-digit",minute:"2-digit"}):escapeHTML(message);
+   const delayText=delay===null?"":delay>0?"(+"+delay+" "+escapeHTML(t("min"))+" "+escapeHTML(t("delay"))+")":delay<0?"("+delay+" "+escapeHTML(t("min"))+")":"("+escapeHTML(t("onTime"))+")";
+   const source=dep?(({"emt":"EMT Málaga","transitous":"Transitous","vbb":"VBB","db":"DB"})[dep._source]||dep._source||""):"";
+   const status=data?.error?"⚠ "+escapeHTML(t("error")):dep?(live?"● "+escapeHTML(t("live")):"◷ "+escapeHTML(t("scheduled")))+(source?" · "+escapeHTML(source):""):escapeHTML(message);
+   row.innerHTML='<div class="route"><span class="line-badge">'+escapeHTML(s.line)+'</span><span class="type-badge">'+iconFor(s.type)+' '+escapeHTML(productLabels[s.type]||s.type)+'</span></div><div class="arrival"><div class="countdown">'+count+'</div><div class="arrival-details">'+scheduled+'</div>'+(delayText?'<div class="arrival-details '+(delay>0?"late":"")+'">'+delayText+'</div>':"")+'</div><div class="line-footer"><span class="status">'+status+(s.direction?' · '+escapeHTML(t("direction"))+' '+escapeHTML(s.direction):"")+'</span></div>';
+   const remove=document.createElement("button");remove.type="button";remove.className="btn ghost small";remove.textContent="✕ "+t("remove");remove.addEventListener("click",()=>{saved=saved.filter(x=>x.id!==s.id);delete departureState[s.id];persist();renderCards()});
+   row.querySelector(".line-footer").append(remove);list.append(row);
+  }
+  card.append(list);host.append(card);
+ }
+}
 async function refreshAll(){if(refreshBusy||!saved.length){renderCards();return}refreshBusy=true;$("#refresh").disabled=true;const stops=[...saved];stops.forEach(s=>{departureState[s.id]={...departureState[s.id],loading:!departureState[s.id]?.departure,error:false}});renderCards();const unique=[...new Map(stops.map(s=>[s.city+":"+s.stopId,s])).values()];const results=await Promise.allSettled(unique.map(s=>departures(s.city,s.stopId,s.providers||[])));const batches=new Map(unique.map((s,i)=>[s.city+":"+s.stopId,results[i]]));stops.forEach(s=>{const result=batches.get(s.city+":"+s.stopId);if(result.status==="fulfilled"){const now=Date.now()-30000;const match=result.value.filter(d=>d._line===s.line&&d._product===s.type&&(s.direction==null||directionOf(d)===s.direction)&&new Date(d._time).getTime()>=now).sort((a,b)=>new Date(a._time)-new Date(b._time))[0];departureState[s.id]={departure:match||null,error:false,loading:false}}else{departureState[s.id]={departure:null,error:true,loading:false}}});refreshBusy=false;$("#refresh").disabled=false;renderCards()}
 $("#refresh").addEventListener("click",refreshAll);
 let lastVisibilityRefresh=0;document.addEventListener("visibilitychange",()=>{if(!document.hidden&&state.tab==="list"&&Date.now()-lastVisibilityRefresh>MIN_REFRESH_MS){lastVisibilityRefresh=Date.now();refreshAll()}});
