@@ -338,3 +338,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Reproduce application handlers directly from the current GitHub `index.html` using an isolated JavaScript runtime without cloning. Verify mocked transport → line → direction → saved favorite serialization and separate direction/duplicate handling. The missing test harness `iconFor` and `productLabels` were fixed in `tests/favorites-flow.test.mjs` (commit `f8103f82`).
 - [x] Reproduce Belgian stop discovery directly from current application source: two same-operator STIB platforms remain distinct, and one may merge with colocated SNCB and TEC references. Fix a dangling `async` left by the fixture extraction boundary in `tests/belgium-search.test.mjs` (commit `1e7084b9`).
 - [ ] Execute complete Node.js/Python CI against latest commit and capture an actual successful GitHub Actions run. The isolated JavaScript checks validate functional paths but are not equivalent to `npm run ci` or a browser E2E test.
+
+## Belgian search negative-case hardening (2026-10-23)
+
+- [x] Strengthened `tests/belgium-search.test.mjs` to require actual matching Brussels stops before asserting on their names (avoids vacuously passing an empty result), and added a Gent-selected-city negative scenario to reject Brussels-only interchange matches (commit `0c09ee10`).
+- [ ] Confirm updated Node suite in GitHub Actions and publish CI run reference; tests have not been certified by a new successful push run in this session.
+- [ ] Continue with real-browser E2E of country → town → stop → line → direction → save and reload, plus VRS and EMT regression paths.
