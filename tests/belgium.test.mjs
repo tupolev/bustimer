@@ -38,3 +38,12 @@ test("Belgian search and realtime labeling remain distinct",()=>{
  assert.match(app,/when:null,delay:null/);
  assert.match(app,/belgium:"BE"/);
 });
+
+test("Belgian multilingual alternative city names resolve to one literal city",()=>{
+ const x=JSON.parse(fs.readFileSync("data/towns/be.json","utf8"));
+ assert.equal(x.country,"BE");
+ const brussels=x.towns.find(row=>row[0]==="Brussels");
+ assert.ok(brussels);
+ assert.ok(brussels[5].includes("Bruxelles"));
+ assert.ok(brussels[5].includes("Brussel"));
+});
