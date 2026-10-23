@@ -1,8 +1,8 @@
-name: Validate Luxembourg official GTFS
+name: Publish Luxembourg official GTFS
 on:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -30,6 +30,24 @@ jobs:
           assert all((root/"stops"/(s["file"]+".json")).exists() for s in search["stops"])
           print(f'VALIDATED: {len(search["stops"])} Luxembourg stops; {len(services["calendar"])} calendars')
           PY
+      - name: Commit validated Luxembourg schedules
+        run: |
+          rm -rf data/luxembourg
+          mkdir -p data
+          cp -a "$RUNNER_TEMP/luxembourg" data/luxembourg
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/luxembourg
+          if ! git diff --cached --quiet; then
+            git commit --quiet -m "data: publish official Luxembourg GTFS schedules"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
       - name: Upload validation index for inspection
         uses: actions/upload-artifact@v4
         with:
