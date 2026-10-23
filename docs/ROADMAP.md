@@ -331,3 +331,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 
 - [x] Repair `tests/belgium-search.test.mjs` function extraction to include the `async` modifier in `async function searchCountryStops(...)` (commit `deda8dd3`). The previous string slice began at `function` and produced invalid JavaScript containing `await` outside an async function.
 - [ ] Obtain a successful CI run after both test-harness corrections (`Option` constructor and async extraction). Previous log showed 42/46 passing, with two specifically attributable to Option; do not claim the other two are proven fixed without the complete error output.
+
+
+## Connector-sourced isolated JavaScript validation (2026-10-23)
+
+- [x] Reproduce application handlers directly from the current GitHub `index.html` using an isolated JavaScript runtime without cloning. Verify mocked transport → line → direction → saved favorite serialization and separate direction/duplicate handling. The missing test harness `iconFor` and `productLabels` were fixed in `tests/favorites-flow.test.mjs` (commit `f8103f82`).
+- [x] Reproduce Belgian stop discovery directly from current application source: two same-operator STIB platforms remain distinct, and one may merge with colocated SNCB and TEC references. Fix a dangling `async` left by the fixture extraction boundary in `tests/belgium-search.test.mjs` (commit `1e7084b9`).
+- [ ] Execute complete Node.js/Python CI against latest commit and capture an actual successful GitHub Actions run. The isolated JavaScript checks validate functional paths but are not equivalent to `npm run ci` or a browser E2E test.
