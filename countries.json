@@ -212,8 +212,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "geocode": "Österreich",
+      "bounds": [
+        46.3,
+        49.1,
+        9.5,
+        17.2
+      ]
     },
     {
       "id": "switzerland",
@@ -224,8 +233,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "geocode": "Schweiz",
+      "bounds": [
+        45.8,
+        47.9,
+        5.9,
+        10.6
+      ]
     },
     {
       "id": "poland",
@@ -248,8 +266,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "geocode": "Česko",
+      "bounds": [
+        48.4,
+        51.1,
+        12,
+        18.9
+      ]
     },
     {
       "id": "denmark",
@@ -284,8 +311,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "geocode": "Italia",
+      "bounds": [
+        35.4,
+        47.2,
+        6.5,
+        18.6
+      ]
     },
     {
       "id": "sweden",
