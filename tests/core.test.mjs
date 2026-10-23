@@ -7,7 +7,7 @@ const script=html.match(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/i)?.[1];
 assert.ok(script,"inline app script found");
 function extract(begin,end){const s=script.indexOf(begin),e=script.indexOf(end,s+begin.length);assert.ok(s>=0&&e>s,"functions found: "+begin);return script.slice(s,e)}
 const library="const DATA_PROVIDERS={emt:()=>{},vbb:()=>{},db:()=>{},vrs:()=>{},lux:()=>{},transitous:()=>{}};\n"+extract("function defaultProvider(","async function departures(city,id,more=[]){")
- +extract("function motisStops(","let debounceSeq=0;");
+ +extract("function motisStops(","let debounceSeq=0,");
 const context=vm.createContext({console,Date,Math,Number,String,Array,Object,JSON,Intl,URLSearchParams});
 vm.runInContext(library,context);
 const call=(name,...args)=>vm.runInContext(name,context)(...args);
