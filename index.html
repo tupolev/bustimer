@@ -460,7 +460,8 @@ const ALARM_LABELS={
  sv:["Avgångslarm","Ta bort efter första larmet","Aktivera larm","Ta bort larm","Håll BusTimer öppet för att få larm.","Tillåt aviseringar."]
 };
 function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
-function checkDepartureAlarms(){
+const alarmInFlight=new Set();
+async function checkDepartureAlarms(){
  if(!("Notification" in window)||Notification.permission!=="granted")return;
  const now=Date.now();
  for(const s of saved){
@@ -469,14 +470,24 @@ function checkDepartureAlarms(){
   const time=Date.parse(dep._time||"");
   if(!Number.isFinite(time)||time<now||time-now>a.minutes*60000)continue;
   const key=[s.id,dep.plannedWhen||dep._time,s.direction||dep.direction||""].join("|");
-  if((a.fired||[]).includes(key))continue;
-  a.fired=[...(a.fired||[]).slice(-30),key];
-  if(a.once)delete s.departureAlarm;
-  persist();
+  if((a.fired||[]).includes(key)||alarmInFlight.has(key))continue;
+  alarmInFlight.add(key);
   const direction=s.direction||dep.direction||s.stopName;
   const remaining=Math.max(0,Math.ceil((time-now)/60000));
-  try{new Notification("BusTimer · "+s.line,{body:direction+" · "+remaining+" min",icon:"./icon.svg",tag:"bustimer-"+s.id+"-"+remaining})}catch(e){console.warn(e)}
-  renderCards();
+  const payload={body:direction+" · "+remaining+" min",icon:"./icon.svg",tag:"bustimer-"+encodeURIComponent(key)};
+  try{
+   if("serviceWorker" in navigator){
+    const registration=await navigator.serviceWorker.ready;
+    await registration.showNotification("BusTimer · "+s.line,payload);
+   }else new Notification("BusTimer · "+s.line,payload);
+   // Do not delete a one-shot alert or record a firing when the browser rejects it.
+   if(s.departureAlarm===a){
+    a.fired=[...(a.fired||[]).slice(-30),key];
+    if(a.once)delete s.departureAlarm;
+    persist();renderCards();
+   }
+  }catch(e){console.warn("Departure notification failed",e)}
+  finally{alarmInFlight.delete(key)}
  }
 }
 async function armDepartureAlarm(s,minutes,once){
