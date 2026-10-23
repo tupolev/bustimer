@@ -1,6 +1,10 @@
 name: Browser E2E (manual)
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/browser-e2e.yml"
 permissions:
   contents: read
 jobs:
