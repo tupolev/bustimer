@@ -60,4 +60,13 @@ test('Belgium: country → city → stop → line → direction → favorite sur
   await page.reload();
   await expect(page.locator('.stop-card')).toHaveCount(1);
   await expect(page.locator('.stop-card')).toContainText('GARE CENTRALE');
+  // Interface strings localize; sourced station and direction remain literal.
+  await page.locator('#nav-settings').click();
+  await page.locator('#language').selectOption('es');
+  await page.locator('#nav-list').click();
+  await expect(page.locator('.stop-card')).toContainText('GARE CENTRALE');
+  await expect(page.locator('.stop-card .status')).toContainText('Gare du Nord');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+  await expect(page.locator('.stop-card')).toContainText('GARE CENTRALE');
 });
