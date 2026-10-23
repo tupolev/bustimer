@@ -298,3 +298,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Align README's headline version and description of country-first city search, direction-aware saved lines and available test coverage; synchronize `package.json` to v0.12.0.
 - [ ] Confirm GitHub Actions CI is green after these changes. Source updates alone do not count as test execution.
 - [ ] Run real browser smoke checks for Brussels Central, Gent and Liège, including all language modes, route/direction selection, saved favorite refresh and actual static schedule dates. This environment's GitHub repository connector does not provide a browser session; no browser test is claimed.
+
+
+## Belgian mocked-provider fallback regression (2026-10-23)
+
+- [x] Add integration fixtures proving that Belgian rail scheduled departures remain available when STIB fails; assert no invented realtime/delay, and ensure TEC and De Lijn IDs remain source-specific during a total outage (`tests/providers.integration.test.mjs`, commit `0b2339b0`).
+- [x] Inspect older Belgian CI run [39952812129](https://github.com/tupolev/bustimer/actions/runs/39952812129): its checks job completed successfully (JavaScript and Python checks).
+- [ ] Verify CI for latest commits. The linked GitHub action for retrieving runs by commit filters to PR-triggered executions and returns no runs for the push on `main`; previous success must not be attributed to new commits.
+- [ ] Interactive GitHub Pages smoke tests for Brussels, Gent, Liège and stored favorites remain outstanding.
