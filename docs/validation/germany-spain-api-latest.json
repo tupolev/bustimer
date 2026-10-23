@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-23T14:52:26.339306+00:00",
-  "run_id": "39973313676",
+  "checked_at": "2026-10-23T14:54:58.421165+00:00",
+  "run_id": "39973671961",
   "scope": "diagnostic samples; not proof of completeness",
   "cases": {
     "DE Köln": {
@@ -9,61 +9,91 @@
       "candidates": [
         {
           "id": "de-DELFI_de:05315:11111:1:11",
-          "name": "Köln Neumarkt"
+          "name": "Köln Neumarkt",
+          "lat": 50.935770000000005,
+          "lon": 6.947732
         },
         {
           "id": "de-DELFI_de:05315:11110:1:11",
-          "name": "Köln Heumarkt"
+          "name": "Köln Heumarkt",
+          "lat": 50.93569,
+          "lon": 6.959913
         },
         {
           "id": "de-DELFI_de:09373:17019:0:1",
-          "name": "Neumarkt Egerländer Str."
+          "name": "Neumarkt Egerländer Str.",
+          "lat": 49.280106,
+          "lon": 11.475268
         },
         {
           "id": "de-DELFI_de:16075:2864471::286447100",
-          "name": "Schleiz, Neumarkt"
+          "name": "Schleiz, Neumarkt",
+          "lat": 50.577110000000005,
+          "lon": 11.808917999999998
         },
         {
           "id": "de-DELFI_de:14521:20570:0:BS",
-          "name": "Zschopau, Neumarkt"
+          "name": "Zschopau, Neumarkt",
+          "lat": 50.7471,
+          "lon": 13.070164
         },
         {
           "id": "de-DELFI_de:14522:60463:0:BW",
-          "name": "Hainichen, Neumarkt"
+          "name": "Hainichen, Neumarkt",
+          "lat": 50.972458,
+          "lon": 13.12515
+        }
+      ],
+      "nearby_candidates": [
+        {
+          "id": "de-DELFI_de:05315:11111:1:11",
+          "name": "Köln Neumarkt",
+          "lat": 50.935770000000005,
+          "lon": 6.947732
+        },
+        {
+          "id": "de-DELFI_de:05315:11110:1:11",
+          "name": "Köln Heumarkt",
+          "lat": 50.93569,
+          "lon": 6.959913
         }
       ],
       "sampled_departures": [
         {
           "stop": {
-            "id": "de-DELFI_de:05315:11111:1:11",
-            "name": "Köln Neumarkt"
-          },
-          "departures": 13,
-          "cors": "*",
-          "lines": [
-            "18",
-            "3",
-            "1",
-            "101",
-            "136",
-            "16",
-            "9"
-          ]
-        },
-        {
-          "stop": {
             "id": "de-DELFI_de:05315:11110:1:11",
-            "name": "Köln Heumarkt"
+            "name": "Köln Heumarkt",
+            "lat": 50.93569,
+            "lon": 6.959913
           },
           "departures": 11,
           "cors": "*",
           "lines": [
-            "133",
-            "5",
-            "?",
             "106",
+            "?",
             "101",
-            "1"
+            "1",
+            "978",
+            "132",
+            "260"
+          ]
+        },
+        {
+          "stop": {
+            "id": "de-DELFI_de:05315:11111:1:11",
+            "name": "Köln Neumarkt",
+            "lat": 50.935770000000005,
+            "lon": 6.947732
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "101",
+            "136",
+            "16",
+            "9",
+            "18",
+            "4"
           ]
         }
       ],
@@ -76,63 +106,70 @@
       "candidates": [
         {
           "id": "be-sncb_8015485",
-          "name": "Bonn Hauptbahnhof"
+          "name": "Bonn Hauptbahnhof",
+          "lat": 50.731970000000004,
+          "lon": 7.097204
         },
         {
           "id": "at-Railway-Current-Reference-Data-2026_de:09162:100:11:11",
-          "name": "Hauptbahnhof (U, Tram)"
+          "name": "Hauptbahnhof (U, Tram)",
+          "lat": 48.13988,
+          "lon": 11.557491
         },
         {
           "id": "at-Railway-Current-Reference-Data-2026_de:11000:900003200:1:51",
-          "name": "S+U Berlin Hauptbahnhof"
+          "name": "S+U Berlin Hauptbahnhof",
+          "lat": 52.52498,
+          "lon": 13.369114000000001
         },
         {
           "id": "de-DELFI_de:03241:31",
-          "name": "Hannover Hauptbahnhof/ZOB"
+          "name": "Hannover Hauptbahnhof/ZOB",
+          "lat": 52.376762,
+          "lon": 9.741020999999996
         },
         {
           "id": "be-sncb_8015345",
-          "name": "Aachen, Hauptbahnhof (Bus)"
+          "name": "Aachen, Hauptbahnhof (Bus)",
+          "lat": 50.76776,
+          "lon": 6.0913900000000005
         },
         {
           "id": "eu-flixbus_dcbbeac7-9603-11e6-9066-549f350fcb0c",
-          "name": "Lübeck ZOB/Hauptbahnhof"
+          "name": "Lübeck ZOB/Hauptbahnhof",
+          "lat": 53.86618,
+          "lon": 10.669183
+        }
+      ],
+      "nearby_candidates": [
+        {
+          "id": "be-sncb_8015485",
+          "name": "Bonn Hauptbahnhof",
+          "lat": 50.731970000000004,
+          "lon": 7.097204
         }
       ],
       "sampled_departures": [
         {
           "stop": {
-            "id": "de-DELFI_de:03241:31",
-            "name": "Hannover Hauptbahnhof/ZOB"
+            "id": "be-sncb_8015485",
+            "name": "Bonn Hauptbahnhof",
+            "lat": 50.731970000000004,
+            "lon": 7.097204
           },
-          "departures": 15,
+          "departures": 13,
           "cors": "*",
           "lines": [
-            "8",
-            "22",
-            "9",
-            "121",
-            "E",
-            "128",
-            "RE60",
-            "1"
-          ]
-        },
-        {
-          "stop": {
-            "id": "de-DELFI_de:08212:90_G",
-            "name": "KA Hauptbahnhof (Vorplatz)"
-          },
-          "departures": 11,
-          "cors": "*",
-          "lines": [
-            "6",
-            "S1",
-            "3",
+            "55",
+            "S23",
             "62",
-            "FlixBus 027",
-            "S3",
-            "44"
+            "601",
+            "603",
+            "604",
+            "606",
+            "602",
+            "605",
+            "609"
           ]
         }
       ],
@@ -145,56 +182,94 @@
       "candidates": [
         {
           "id": "de-DELFI_de:05111:18036",
-          "name": "D-Heinrich-Heine-Allee U"
+          "name": "D-Heinrich-Heine-Allee U",
+          "lat": 51.226400000000005,
+          "lon": 6.776828000000001
         },
         {
           "id": "de-DELFI_de:05913:535:1:01",
-          "name": "DO-Heinrich-Czerkus-Allee"
+          "name": "DO-Heinrich-Czerkus-Allee",
+          "lat": 51.536625,
+          "lon": 7.562853
         },
         {
           "id": "de-DELFI_de:06611:200236::A",
-          "name": "Kassel Heinrich-Schütz-Allee"
+          "name": "Kassel Heinrich-Schütz-Allee",
+          "lat": 51.288940000000004,
+          "lon": 9.451644000000002
         },
         {
           "id": "de-VBN_080022007401",
-          "name": "Thale Heinrich-Heine-Straße"
+          "name": "Thale Heinrich-Heine-Straße",
+          "lat": 51.747734,
+          "lon": 11.050444000000002
         },
         {
           "id": "de-DELFI_000000458101",
-          "name": "Sandersdorf, Heinrich-Heine-Str."
+          "name": "Sandersdorf, Heinrich-Heine-Str.",
+          "lat": 51.62276500000001,
+          "lon": 12.279541
         },
         {
           "id": "de-DELFI_de:01058:16760::1",
-          "name": "Büdelsdorf Heinrich-Heine-Schule"
+          "name": "Büdelsdorf Heinrich-Heine-Schule",
+          "lat": 54.3182,
+          "lon": 9.666045
+        }
+      ],
+      "nearby_candidates": [
+        {
+          "id": "de-DELFI_de:05111:18036",
+          "name": "D-Heinrich-Heine-Allee U",
+          "lat": 51.226400000000005,
+          "lon": 6.776828000000001
+        },
+        {
+          "id": "de-DELFI_de:05111:18036",
+          "name": "D-Heinrich-Heine-Allee U",
+          "lat": 51.226400000000005,
+          "lon": 6.776828000000001
         }
       ],
       "sampled_departures": [
         {
           "stop": {
             "id": "de-DELFI_de:05111:18036",
-            "name": "D-Heinrich-Heine-Allee U"
-          },
-          "departures": 11,
-          "cors": "*",
-          "lines": [
-            "U75",
-            "U80",
-            "U70",
-            "U79",
-            "U78",
-            "U73",
-            "U77"
-          ]
-        },
-        {
-          "stop": {
-            "id": "de-DELFI_de:05913:535:1:01",
-            "name": "DO-Heinrich-Czerkus-Allee"
+            "name": "D-Heinrich-Heine-Allee U",
+            "lat": 51.226400000000005,
+            "lon": 6.776828000000001
           },
           "departures": 10,
           "cors": "*",
           "lines": [
-            "436"
+            "U73",
+            "U77",
+            "U78",
+            "U71",
+            "U79",
+            "U76",
+            "U83",
+            "U75"
+          ]
+        },
+        {
+          "stop": {
+            "id": "de-DELFI_de:05111:18036",
+            "name": "D-Heinrich-Heine-Allee U",
+            "lat": 51.226400000000005,
+            "lon": 6.776828000000001
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "U73",
+            "U77",
+            "U78",
+            "U71",
+            "U79",
+            "U76",
+            "U83",
+            "U75"
           ]
         }
       ],
@@ -207,58 +282,68 @@
       "candidates": [
         {
           "id": "es-Empresa-Malagueña-de-Transportes-(EMT)_482",
-          "name": "Alameda Principal - Sur"
+          "name": "Alameda Principal - Sur",
+          "lat": 36.71764399999999,
+          "lon": -4.422862
         },
         {
           "id": "es-ALSA-autobuses_0002032400000001",
-          "name": "Alameda Marquesina"
+          "name": "Alameda Marquesina",
+          "lat": 37.20724,
+          "lon": -4.655987299999999
         },
         {
           "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_19365",
-          "name": "AV.PRINCIPAL-SALAMANCA"
+          "name": "AV.PRINCIPAL-SALAMANCA",
+          "lat": 40.64624,
+          "lon": -3.4065182
         },
         {
           "id": "es-ALSA-autobuses_0031936600000001",
-          "name": "Ribatejada - Principal/Salaman"
+          "name": "Ribatejada - Principal/Salaman",
+          "lat": 40.646282,
+          "lon": -3.4064357
         },
         {
           "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_19353",
-          "name": "PRINCIPAL-PALOMA"
+          "name": "PRINCIPAL-PALOMA",
+          "lat": 40.634537,
+          "lon": -3.4037511
         },
         {
           "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_21202",
-          "name": "AV.PRÍNCIPES ESPAÑA-CALVARIO"
+          "name": "AV.PRÍNCIPES ESPAÑA-CALVARIO",
+          "lat": 40.232067,
+          "lon": -3.4335978000000003
+        }
+      ],
+      "nearby_candidates": [
+        {
+          "id": "es-Empresa-Malagueña-de-Transportes-(EMT)_482",
+          "name": "Alameda Principal - Sur",
+          "lat": 36.71764399999999,
+          "lon": -4.422862
         }
       ],
       "sampled_departures": [
         {
           "stop": {
             "id": "es-Empresa-Malagueña-de-Transportes-(EMT)_482",
-            "name": "Alameda Principal - Sur"
+            "name": "Alameda Principal - Sur",
+            "lat": 36.71764399999999,
+            "lon": -4.422862
           },
-          "departures": 10,
+          "departures": 11,
           "cors": "*",
           "lines": [
-            "25",
-            "32",
-            "34",
+            "14",
             "7",
-            "8",
-            "11",
-            "20",
+            "A",
             "3",
-            "A"
-          ]
-        },
-        {
-          "stop": {
-            "id": "es-ALSA-autobuses_0002032400000001",
-            "name": "Alameda Marquesina"
-          },
-          "departures": 10,
-          "cors": "*",
-          "lines": [
-            "ALSA - Alamed-Mal"
+            "4",
+            "1",
+            "8",
+            "21"
           ]
         }
       ],
@@ -271,50 +356,84 @@
       "candidates": [
         {
           "id": "es-RENFE-Larga-Distancia-y-AVE_18000",
-          "name": "Madrid-Atocha Cercanías"
+          "name": "Madrid-Atocha Cercanías",
+          "lat": 40.40662,
+          "lon": -3.689439
         },
         {
           "id": "es-Ouigo_007160000",
-          "name": "MADRID-PUERTA DE ATOCHA"
+          "name": "MADRID-PUERTA DE ATOCHA",
+          "lat": 40.406386999999995,
+          "lon": -3.690833
         },
         {
           "id": "es-RENFE-Larga-Distancia-y-AVE_60000",
-          "name": "Madrid-Puerta de Atocha-Almudena Grandes"
+          "name": "Madrid-Puerta de Atocha-Almudena Grandes",
+          "lat": 40.406439999999996,
+          "lon": -3.690886
         },
         {
           "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_13012",
-          "name": "ATENAS-MADRID"
+          "name": "ATENAS-MADRID",
+          "lat": 40.40781,
+          "lon": -3.372069099999999
         },
         {
           "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_10309",
-          "name": "PATONES-AV.MADRID"
+          "name": "PATONES-AV.MADRID",
+          "lat": 40.854747999999994,
+          "lon": -3.4850388
         },
         {
           "id": "es-ALSA-autobuses_0031990400000001",
-          "name": "Av.Madrid-Av.España"
+          "name": "Av.Madrid-Av.España",
+          "lat": 40.61916,
+          "lon": -3.7221503
+        }
+      ],
+      "nearby_candidates": [
+        {
+          "id": "es-RENFE-Larga-Distancia-y-AVE_18000",
+          "name": "Madrid-Atocha Cercanías",
+          "lat": 40.40662,
+          "lon": -3.689439
+        },
+        {
+          "id": "es-Ouigo_007160000",
+          "name": "MADRID-PUERTA DE ATOCHA",
+          "lat": 40.406386999999995,
+          "lon": -3.690833
+        },
+        {
+          "id": "es-RENFE-Larga-Distancia-y-AVE_60000",
+          "name": "Madrid-Puerta de Atocha-Almudena Grandes",
+          "lat": 40.406439999999996,
+          "lon": -3.690886
         }
       ],
       "sampled_departures": [
         {
           "stop": {
-            "id": "es-RENFE-Larga-Distancia-y-AVE_18000",
-            "name": "Madrid-Atocha Cercanías"
+            "id": "es-RENFE-Larga-Distancia-y-AVE_60000",
+            "name": "Madrid-Puerta de Atocha-Almudena Grandes",
+            "lat": 40.406439999999996,
+            "lon": -3.690886
           },
           "departures": 10,
           "cors": "*",
           "lines": [
-            "C2",
-            "C4b",
-            "C5",
-            "REG.EXP.",
-            "C3",
-            "C10"
+            "AVE",
+            "AVLO",
+            "AVANT",
+            "ALVIA"
           ]
         },
         {
           "stop": {
             "id": "es-Ouigo_007160000",
-            "name": "MADRID-PUERTA DE ATOCHA"
+            "name": "MADRID-PUERTA DE ATOCHA",
+            "lat": 40.406386999999995,
+            "lon": -3.690833
           },
           "departures": 10,
           "cors": "*",
@@ -332,34 +451,86 @@
       "candidates": [
         {
           "id": "es-Ouigo_007171801",
-          "name": "Barcelona-Sants"
+          "name": "Barcelona-Sants",
+          "lat": 41.37944399999999,
+          "lon": 2.140555
         },
         {
           "id": "eu-blablacar-bus_BCS",
-          "name": "Barcelona - Sants Train station"
+          "name": "Barcelona - Sants Train station",
+          "lat": 41.379715000000004,
+          "lon": 2.138935
         },
         {
           "id": "fr-horaires-ave-espagne-france_71801",
-          "name": "Estación de tren Barcelona-Sants"
+          "name": "Estación de tren Barcelona-Sants",
+          "lat": 41.37986399999999,
+          "lon": 2.141017
         },
         {
           "id": "es-Autobús-interurbano-de-Cataluña_PF08019019",
-          "name": "Estació d'Autobusos Barcelona Sants"
+          "name": "Estació d'Autobusos Barcelona Sants",
+          "lat": 41.379574,
+          "lon": 2.1383147000000005
         },
         {
           "id": "es-Cercanías-Renfe_79104",
-          "name": "Sant Celoni"
+          "name": "Sant Celoni",
+          "lat": 41.685790000000004,
+          "lon": 2.490728
         },
         {
           "id": "es-Autobuses-Sarbus_9090",
-          "name": "Sant Celoni"
+          "name": "Sant Celoni",
+          "lat": 41.46978,
+          "lon": 2.0753643999999998
+        }
+      ],
+      "nearby_candidates": [
+        {
+          "id": "es-Ouigo_007171801",
+          "name": "Barcelona-Sants",
+          "lat": 41.37944399999999,
+          "lon": 2.140555
+        },
+        {
+          "id": "eu-blablacar-bus_BCS",
+          "name": "Barcelona - Sants Train station",
+          "lat": 41.379715000000004,
+          "lon": 2.138935
+        },
+        {
+          "id": "fr-horaires-ave-espagne-france_71801",
+          "name": "Estación de tren Barcelona-Sants",
+          "lat": 41.37986399999999,
+          "lon": 2.141017
+        },
+        {
+          "id": "es-Autobús-interurbano-de-Cataluña_PF08019019",
+          "name": "Estació d'Autobusos Barcelona Sants",
+          "lat": 41.379574,
+          "lon": 2.1383147000000005
+        },
+        {
+          "id": "es-Autobuses-Sarbus_9090",
+          "name": "Sant Celoni",
+          "lat": 41.46978,
+          "lon": 2.0753643999999998
+        },
+        {
+          "id": "es-Cercanías-Renfe_79004",
+          "name": "Barcelona Sant Andreu",
+          "lat": 41.436127,
+          "lon": 2.1931987000000004
         }
       ],
       "sampled_departures": [
         {
           "stop": {
             "id": "es-Ouigo_007171801",
-            "name": "Barcelona-Sants"
+            "name": "Barcelona-Sants",
+            "lat": 41.37944399999999,
+            "lon": 2.140555
           },
           "departures": 10,
           "cors": "*",
@@ -367,6 +538,7 @@
             "R1",
             "R4",
             "AVE",
+            "R2",
             "AVANT",
             "R2S"
           ]
@@ -374,7 +546,9 @@
         {
           "stop": {
             "id": "es-Autobús-interurbano-de-Cataluña_PF08019019",
-            "name": "Estació d'Autobusos Barcelona Sants"
+            "name": "Estació d'Autobusos Barcelona Sants",
+            "lat": 41.379574,
+            "lon": 2.1383147000000005
           },
           "departures": 10,
           "cors": "*",
