@@ -26,3 +26,7 @@ Reviewed: 2026-10-23. Germany and Spain remain primary markets; France and Portu
 3. **Netherlands:** stream-import openOV GTFS/NDOV data with bounded memory and sharded output; handle national size early.
 
 No country gains verified public support simply because it appears in this source matrix. Transitous remains an optional data provider, not proof of a country's national coverage.
+
+## Luxembourg staging progress (2026-10-23)
+
+The importer discovers the most recent GTFS ZIP via the public [data.public.lu dataset](https://data.public.lu/en/datasets/horaires-et-arrets-des-transport-publics-gtfs/) API. It generates \`search.json\`, \`services.json\` and per-stop JSON with CC BY 4.0 attribution. A manual-only validation workflow checks integrity and uploads index artifacts. Luxembourg is **not enabled** in the PWA until live dataset validation and browser integration are complete.
