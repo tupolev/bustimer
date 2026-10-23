@@ -1,0 +1,7 @@
+settings.php
+/vendor/
+/private/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.log
