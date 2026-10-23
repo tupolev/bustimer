@@ -17,6 +17,9 @@ jobs:
           node-version: '22'
       - name: Syntax checks and JavaScript tests
         run: npm run ci
+      - name: Validate PHP backend syntax
+        run: |
+          for f in server/*.php; do php -l "$f"; done
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
