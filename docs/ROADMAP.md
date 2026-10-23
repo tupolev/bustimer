@@ -114,3 +114,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Include Python importer tests in standard `ci.yml` using Python 3.12 and `unittest`.
 - [ ] Confirm updated CI run with Python tests succeeds. The earlier successful v0.9.2 JavaScript suite does not cover this new importer test.
 - [ ] Run `vrs-gtfs.yml` manually through GitHub Actions UI and validate the real official feed before automating updates. This connector can view Actions runs/logs but cannot dispatch a new workflow directly.
+
+## First official VRS import attempt — 2026-10-23
+
+- [x] Official VRS download and GTFS compilation succeeded in [run 39937922369](https://github.com/tupolev/bustimer/actions/runs/39937922369); generated index validation also passed.
+- [x] Diagnose failed publishing: `git push` rejected because `main` advanced after checkout, not because of GTFS data. Workflow now quietly commits and rebases/retries up to five times without force-push.
+- [ ] Re-run the **manual** VRS import using updated workflow at the current `main`. Old run did **not** publish data; do not mark VRS available until this succeeds.
+- [ ] Evaluate how many static stop files are generated, repository growth and deployment latency; consider compressed/sharded data if large.
