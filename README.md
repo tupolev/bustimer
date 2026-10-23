@@ -4,7 +4,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.9.0**
+**Version 0.9.1**
 
 **Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
 
@@ -161,3 +161,9 @@ Activation does not mean all operators work. In this iteration live web API requ
 ## Direction-aware favorites (v0.9.0)
 
 The Add Stop form now requires selecting the direction displayed in the departure feed after choosing a line. Each saved favorite includes its direction, allowing the same route at the same stop to be monitored separately in opposite directions. Existing favorites remain compatible and retain their previous all-directions behavior until recreated. When upstream sources do not supply a direction, an explicit unspecified option is offered; some providers may use slightly different direction labels, so matching follows their displayed text and needs browser validation.
+
+## NRW regional discovery (v0.9.1)
+
+German country search now adds DB-backed stop discovery **only when the user supplies an explicit Köln/Düsseldorf/Bonn/Ruhr-area name**. Matched results are geographically limited to a broad NRW bounding box and retain their DB-specific IDs, never reusing Transitous IDs. This can surface DB-known local stops missing from national Transitous; it does **not** constitute full VRS/VRR coverage. Existing VBB and saved favorites remain supported. Queries without locality hints avoid speculative regional DB calls. Source failures are isolated. Note that DB's unofficial wrapper has rate limits and incomplete local bus/tram coverage.
+
+For full NRW fallback, the official [VRS GTFS static data](https://www.vrs.de/fuer-unternehmen/open-data-service) is a promising next step (DL-DE Zero 2.0; realtime access may require agreement). VRR OpenService needs separate contractual/CORS/schema validation before enabling. Both remain roadmap tasks.
