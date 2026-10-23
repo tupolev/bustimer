@@ -373,3 +373,18 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] On complete provider failure during a monitored-stop refresh, discard the old departure object and present the existing error state rather than continuing to display the previously cached clock time/countdown as if current (`index.html`, commit `0ac4ea1e`).
 - [x] Add dependency-free Node fixture tests for failure and successful empty timetable refresh (`tests/stale-departures.test.mjs`, commit `9f9348d7`). These run in the existing fast CI job, not Playwright.
 - [ ] Confirm the new tests pass in CI; test offline browser behavior and partial provider outages before marking P0-06 wholly complete.
+
+
+## Sequential milestones 1–4 toward Netherlands (2026-10-23)
+
+User-approved order: (1) reliability, (2) six-country validation, (3) GTFS optimization/freshness, (4) Netherlands launch. Do not skip acceptance gates or represent staging as live coverage.
+
+- **M1 / v0.12.1 — partially implemented, NOT complete.** JavaScript/Python fast checks remain automatic; browser E2E is manual-only. Stale departures clear on provider failure. Latest full CI success and remaining offline/realtime behavior still require evidence.
+- **M2 / v0.13.0 — NOT complete.** Belgium provider/search/favorites fixtures exist, but real-browser and operator stop timetable validation remain open. Germany/Spain/Luxembourg/France/Portugal production smoke tests also outstanding.
+- **M3 / v0.14.0 — NOT complete.** Existing VRS search/services split published; broader shard optimization, publisher storage costs, retention and freshness indicators remain to be validated. Netherlands stream processing stages by stop and uses disk-backed SQLite, rather than loading national stop_times in application memory.
+- **M4 / v0.15.0 — candidate staging, NOT launched.** Added NL to offline GeoNames town generation and internal ISO/bounds/town configuration but left `countries.json` disabled. Verified national download listing at https://gtfs.ovapi.nl/nl/gtfs-nl.zip (large ~237 MB compressed as of Oct 2026). `scripts/inspect_netherlands.py` checks archive counts, service calendars and bounds; `scripts/build_netherlands.py` streams stop_times via SQLite and produces per-stop scheduled JSON and search/services indexes; `tests/test_netherlands_import.py` adds a synthetic >24-hour/calendars fixture. Manual `netherlands-gtfs.yml` downloads, validates, compiles and uploads report/index artifacts only. **No Netherlands dataset has been confirmed built, uploaded as production data, or integrated into the public stop/departure adapters.**
+- **NL launch gates:** obtain successful importer CI + workflow execution; assess national output size, build time and feed license; publish safe shards and country towns; add correct path/timezone/provider in app; test Amsterdam, Rotterdam, Utrecht and Den Haag with schedules, cancellations/errors, favorites, multiple modes and DST; only then enable in country catalog.
+
+### Operational caution
+
+The first national compiler is an initial staging implementation, not a performance-verified solution at national scale. It must be profiled on actual data and revised if SQLite lookup throughput, storage size, repository growth, calendar exceptions or asset request payloads do not meet the quality bar. The browser workflow remains manual to avoid slowing every push.
