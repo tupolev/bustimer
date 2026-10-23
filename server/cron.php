@@ -51,7 +51,7 @@ foreach($records as $alarm){
   if(!$key||$alarm['last_notified']===$key)continue;
   $remaining=max(0,(int)ceil(($bestTime-$now)/60));
   $message=json_encode(['title'=>'BusTimer · '.$alarm['line'],'body'=>($alarm['direction']?:$alarm['line']).' · '.$remaining.' min','url'=>rtrim($cfg['origin'],'/').'/'],JSON_UNESCAPED_UNICODE);
-  $sub=Subscription::create(json_decode($alarm['subscription'],true));
+  $sub=\Minishlink\WebPush\Subscription::create(json_decode($alarm['subscription'],true));
   $report=$push->sendOneNotification($sub,$message);
   if(!$report->isSuccess()){++$errors;error_log('BusTimer push delivery failed: '.$report->getReason());continue;}
   if((int)$alarm['once_only']===1){$q=db()->prepare('DELETE FROM alarms WHERE device_id=? AND favorite_id=?');$q->execute([$alarm['device_id'],$alarm['favorite_id']]);}
