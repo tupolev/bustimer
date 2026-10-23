@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.4.1** · No build step · No backend · MIT licensed
+**Version 0.5.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -119,3 +119,7 @@ This project continues to use no API key and retains the public GitHub Pages arc
 The Málaga choice was removed from the Add Stop network dropdown. **España** now combines Transitous results with EMT Málaga scheduled-stop results automatically. EMT candidates carry an `emt:` prefix internally and a visible `EMT timetable` label. Selecting one uses the already published GTFS data, not Transitous, and displays scheduled predictions only. Previously saved `city: malaga` items continue to work through their legacy provider, so favorites are preserved. The daily EMT import workflow is retained.
 
 This does not imply full Spanish operator coverage; national GTFS ingestion is still pending. Search results from different providers are not yet deduplicated by geographic coordinates. If a stop appears twice, the EMT-labeled entry explicitly uses the official schedule.
+
+## Automatic data-provider selection (v0.5.0)
+
+Internal adapters for Transitous, EMT Málaga, VBB and DB now select sources without asking users to choose providers. Spain stop search merges matching names within 75 metres when coordinates are available, retaining upstream IDs. New favorites remember all known provider IDs, older favorites remain compatible. Each supported provider is queried independently; a failing source does not suppress successful sources. Departure candidates are deduplicated by line, mode, direction and close planned times, with realtime preferred. Stop matching is heuristic, and direction-specific favorites and complete national GTFS coverage remain future work.
