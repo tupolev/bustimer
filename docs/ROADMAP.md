@@ -405,3 +405,13 @@ The first national compiler is an initial staging implementation, not a performa
 - [ ] Size production assets and select a bounded publishing/hosting approach for >53k stop shards, rather than committing blindly to `main`.
 - [ ] Validate future departures, service exceptions and timezone on representative Amsterdam/Rotterdam/Utrecht/Den Haag stops before release; offline city search also requires a published NL town index.
 - [ ] Implement and verify Netherlands browser search/departure adapters and only then enable the country in `countries.json`.
+
+
+## Netherlands app integration behind launch gate (2026-10-23)
+
+- [x] Integrate a disabled `nl` static GTFS provider into the existing country search/favorites/departures architecture, with source-ID normalization and calendar-date aware scheduled times. `countries.json` remains `enabled:false`; this code is not a public Netherlands launch.
+- [x] Add fast Node regression guards in `tests/netherlands-adapter.test.mjs` for IDs, schedule service-date logic, and disabled country status. Production inline JavaScript parsed successfully in isolated JavaScript validation.
+- [x] Expand the Netherlands validation workflow with a JSON-file-count/byte-size footprint report committed only after successful inspection and compilation. Do **not** commit >53k schedule files to `main` without choosing the hosting/deployment approach.
+- [ ] Confirm footprint report from latest run; ensure `data/towns/nl.json` is actually published by the GeoNames workflow.
+- [ ] Publish staged per-stop shards in supported static hosting, verify timetable queries across Amsterdam/Rotterdam/Utrecht/Den Haag, correct service semantics, and run the manual Playwright smoke test.
+- [ ] Verify external feed license and operational storage budget; enable `netherlands` only when assets are deployed and smoke tests pass.
