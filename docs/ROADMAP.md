@@ -313,3 +313,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Add `tests/belgium-search.test.mjs` exercising real `searchCountryStops` and `joinProviderStops` implementation using four mocked regional indexes. Covers co-located STIB platforms and rail/TEC references, selected-city proximity exclusion and literal stop names (commits `675297a6`, `8796c39e`).
 - [ ] Verify the new Node tests pass in Actions. This repository connector cannot enumerate the latest main-branch push workflow; avoid marking CI green without a specific run.
 - [ ] Extend the automated harness to a browser end-to-end flow (town select, stop, mode, line, direction, favorite save/reload); no real-browser verification claimed yet.
+
+
+## Belgian favorites workflow test harness (2026-10-23)
+
+- [x] Add `tests/favorites-flow.test.mjs`, a Node-only DOM-control harness that executes the application's real transport, line, direction and save handlers with a mocked Belgian interchange. Tests direction-specific saved favorites, duplicate prevention, retained operator references and round-trip serialized localStorage data (commit `8df4077c`).
+- [ ] Confirm this test passes in GitHub Actions. It is a mocked handler integration test, **not** a browser E2E: no assertions cover town autocomplete, click-based stop selection, full page reload or live GTFS/network requests.
+- [ ] Follow up with Playwright browser E2E in CI once a browser test runner is available; include Belgium, Germany and Spain and preserve existing favorites.
