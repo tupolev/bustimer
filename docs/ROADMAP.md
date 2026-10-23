@@ -157,3 +157,12 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Verified published GitHub repository files: `search.json` = 2,604,805 bytes / 20,494 stops; `services.json` = 2,770,503 bytes / 4,507 calendars and 4,345 exception sets; obsolete `index.json` removed.
 - [x] JavaScript/Python test CI successful, [run #39939584167](https://github.com/tupolev/bustimer/actions/runs/39939584167).
 - [ ] Validate representative VRS departures and browser behavior on the live Pages site; optimize search beyond 2.6 MB, potentially via shard indexes.
+
+## Neighboring countries: researched candidate sources (2026-10-23)
+
+- [x] Document source evaluation in [docs/EU-SOURCES.md](EU-SOURCES.md) for Luxembourg's CC BY 4.0 national GTFS, Belgium's four-operator GTFS catalog, and Netherlands' open NDOV/openOV GTFS/GTFS-RT.
+- [x] Add candidate source URLs and suggested geographic bounds to `countries.json` without exposing unverified countries in the UI.
+- [x] Extend CI country metadata validation: unique IDs, mandatory source metadata, and reject `enabled:true` when `status:"candidate"`.
+- [ ] Build a reusable GTFS importer for Luxembourg based on VRS's split stop/calendar pipeline; respect source attribution and confirm the latest dated ZIP via official dataset API.
+- [ ] Independently validate representative Luxembourg stops and timetables, then consider experimental activation.
+- [ ] Continue with Belgian operator-by-operator ingestion; design bounded, sharded data processing before loading the larger Dutch national GTFS.
