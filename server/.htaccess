@@ -1,0 +1,6 @@
+Options -Indexes
+<FilesMatch "^(settings\.php|settings\.example\.php|bootstrap\.php|cron\.php|composer\.(json|lock))$">
+ Require all denied
+</FilesMatch>
+RewriteEngine On
+RewriteRule ^(private|vendor)/ - [F,L]
