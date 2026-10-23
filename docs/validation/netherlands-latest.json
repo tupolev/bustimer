@@ -1,0 +1,27 @@
+{
+  "browser_enabled": false,
+  "commit": "4adc52f981f42d23e15cb092facc324d8a9b0be5",
+  "compiled": {
+    "calendars": 0,
+    "exceptions": 3473,
+    "stops": 53493
+  },
+  "inspection": {
+    "calendar_date_rows": 63561,
+    "future_calendar_date_rows": 61768,
+    "route_modes": {
+      "0": 52,
+      "1": 12,
+      "2": 179,
+      "3": 2799,
+      "4": 23
+    },
+    "status": "inspected-only",
+    "stops_in_bounds": 71886,
+    "stops_outside": 1416,
+    "timetable_published": false,
+    "uncompressed_bytes": 1306120103
+  },
+  "run_id": "39966942756",
+  "validated_at": "2026-10-23T14:12:27.338354+00:00"
+}
