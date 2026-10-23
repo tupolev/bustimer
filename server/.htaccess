@@ -1,6 +1,10 @@
 Options -Indexes
-<FilesMatch "^(settings\.php|settings\.example\.php|bootstrap\.php|cron\.php|composer\.(json|lock))$">
+<FilesMatch "\.(?:php|sqlite(?:-wal|-shm)?|log|json|lock)$">
  Require all denied
 </FilesMatch>
+<Files "api.php">
+ Require all granted
+</Files>
 RewriteEngine On
-RewriteRule ^(private|vendor)/ - [F,L]
+RewriteRule ^(private|vendor)(/|$) - [F,L,NC]
+RewriteRule (^|/)\. - [F,L]
