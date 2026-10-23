@@ -508,3 +508,11 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] Enabled all four as **experimental**; now 11 countries enabled. README and localized About copy updated. Realtime/complete operator coverage must not be assumed.
 - [ ] Run country-specific real-browser end-to-end search → departure → favorite scenarios and review corner cases (e.g. Swiss stop sources and Czech diacritics) before marking any as beta.
 - [ ] Confirm final CI and Pages deploy following the last expansion commits.
+
+## Poland, Denmark, Sweden experimental expansion (2026-10-23)
+
+- [x] Extend generic Transitous stop discovery, region labels and offline GeoNames city lookup for Poland (PL), Denmark (DK), Sweden (SE).
+- [x] Generate and publish `data/towns/pl.json`, `dk.json`, `se.json`; no national timetable mirrors.
+- [x] [Live geolocated API smoke run 39975149002](https://github.com/tupolev/bustimer/actions/runs/39975149002) returned local upcoming departures in Warszawa, København and Stockholm; several secondary stop candidates had zero departures, which is not treated as nationwide failure.
+- [x] Enable the three as experimental; 14 countries enabled. Update translated About copy, README and CI country-count assertion.
+- [ ] Perform manual Chromium country-city-stop-line-direction-favorite-reload test specifically for all three and validate final deployment. No broad national or realtime guarantees.
