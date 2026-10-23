@@ -19,7 +19,7 @@ class FakeSelect {
  addEventListener(type,fn){this.handlers[type]=fn;}
  choose(value){assert.ok(this.options.some(x=>x.value===value),"option exists: "+value);this.value=value;this.handlers.change?.();}
 }
-const Option=(label,value)=>({text:label,value});
+function Option(label,value){this.text=label;this.value=value;}
 function fixture(){
  const elements=Object.fromEntries(["transport","line","direction","save","form-error"].map(k=>[k,new FakeSelect()]));
  const storage=new Map(),saved=[];
