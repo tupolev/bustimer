@@ -21,6 +21,7 @@ function harness(respond){
   extractMotis: data=>data.items,
   extractDepartures: data=>data.items,
   malagaDepartures: async id=>respond("emt:"+id),
+  belgiumDepartures: async (provider,id)=>respond("belgium:"+provider+":"+id),
   url: (city,path)=>"https://regional.test/"+city+path,
   encodeURIComponent
  });
@@ -54,4 +55,23 @@ test("integration: VBB and DB legacy IDs never leak into Transitous requests",as
  assert.equal(h.calls.length,2);
  assert.ok(h.calls[0].includes("/berlin/stops/900000100001/departures"));
  assert.ok(h.calls[1].includes("/cologne/stops/8000207/departures"));
+});
+
+test("integration: Belgian rail timetable survives STIB provider outage",async()=>{
+ const h=harness(uri=>{
+  if(uri==="belgium:belgiumStib:1000")throw Error("STIB unavailable");
+  if(uri==="belgium:belgiumRail:BE:42")return [item("2026-10-23T12:00:00Z",{_realtime:false,when:null,delay:null})];
+  throw Error("unexpected provider "+uri);
+ });
+ const result=await h.departures("belgium","belgiumStib:1000",[{provider:"belgiumRail",id:"BE:42"}]);
+ assert.equal(result.length,1);
+ assert.equal(result[0]._source,"belgiumRail");
+ assert.equal(result[0]._realtime,false);
+ assert.equal(result[0].delay,null);
+});
+test("integration: Belgian operator IDs remain isolated when all sources fail",async()=>{
+ const seen=[];
+ const h=harness(uri=>{seen.push(uri);throw Error("offline")});
+ await assert.rejects(h.departures("belgium","belgiumTec:TEC:123",[{provider:"belgiumDelijn",id:"DL:456"}]),/All sources failed/);
+ assert.deepEqual(seen,["belgium:belgiumTec:TEC:123","belgium:belgiumDelijn:DL:456"]);
 });
