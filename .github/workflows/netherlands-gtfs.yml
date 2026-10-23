@@ -1,0 +1,25 @@
+name: Inspect Netherlands national GTFS (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch national GTFS (bounded)
+        run: |
+          curl --fail --location --retry 2 --max-time 900 --output "$RUNNER_TEMP/nl.zip" https://gtfs.ovapi.nl/nl/gtfs-nl.zip
+          test "$(stat -c %s "$RUNNER_TEMP/nl.zip")" -lt 400000000
+      - name: Inspect archive without publishing schedules
+        run: python3 scripts/inspect_netherlands.py "$RUNNER_TEMP/nl.zip" --report "$RUNNER_TEMP/nl-report.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netherlands-gtfs-inspection
+          path: ${{ runner.temp }}/nl-report.json
+          retention-days: 14
