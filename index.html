@@ -460,6 +460,8 @@ const ALARM_LABELS={
  sv:["Avgångslarm","Ta bort efter första larmet","Aktivera larm","Ta bort larm","Håll BusTimer öppet för att få larm.","Tillåt aviseringar."]
 };
 function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
+const REMOTE_ALARM_LABELS={"en":["Web Push · Background alerts enabled","Could not cancel server alert. Please retry."],"es":["Web Push · Avisos en segundo plano activados","No se ha podido cancelar la alarma del servidor. Inténtalo de nuevo."],"de":["Web Push · Hintergrundalarme aktiviert","Serveralarm konnte nicht gelöscht werden. Bitte erneut versuchen."],"fr":["Web Push · Alertes en arrière-plan activées","Impossible de supprimer l’alerte du serveur. Réessayez."],"pt":["Web Push · Alertas em segundo plano ativados","Não foi possível cancelar o alerta no servidor. Tente novamente."],"nl":["Web Push · Meldingen op de achtergrond aan","Servermelding kon niet worden verwijderd. Probeer opnieuw."],"it":["Web Push · Avvisi in background attivi","Impossibile annullare l’avviso sul server. Riprova."],"cs":["Web Push · Upozornění na pozadí zapnuta","Upozornění na serveru nelze zrušit. Zkuste to znovu."],"pl":["Web Push · Powiadomienia w tle włączone","Nie można usunąć alarmu z serwera. Spróbuj ponownie."],"da":["Web Push · Baggrundsalarmer aktiveret","Serveralarmen kunne ikke annulleres. Prøv igen."],"sv":["Web Push · Bakgrundslarm aktiverade","Det gick inte att avbryta serverlarmet. Försök igen."]};
+function remoteAlarmLabel(i){return (REMOTE_ALARM_LABELS[prefs.language]||REMOTE_ALARM_LABELS.en)[i]}
 const PUSH_API="https://bustimer.kodesoft.net/server/api.php";
 const PUSH_IDENTITY_KEY="bustimer:push-identity";
 let remotePush=null;
@@ -557,12 +559,12 @@ function addDepartureAlarm(row,s){
  label.append(checkbox,document.createTextNode(" "+alarmLabel(1)));
  const btn=document.createElement("button");btn.type="button";btn.className="btn ghost small";btn.textContent=alarmLabel(s.departureAlarm?3:2);
  btn.addEventListener("click",async()=>{
-  if(s.departureAlarm){if(s.departureAlarm.remote)try{await remoteAlarm(s,true)}catch(e){console.warn("Failed to delete remote alarm",e);alert("Could not cancel server alarm. Please retry.");return}delete s.departureAlarm;persist();renderCards();}
+  if(s.departureAlarm){if(s.departureAlarm.remote)try{await remoteAlarm(s,true)}catch(e){console.warn("Failed to delete remote alarm",e);alert(remoteAlarmLabel(1));return}delete s.departureAlarm;persist();renderCards();}
   else await armDepartureAlarm(s,Number(minutes.value),checkbox.checked);
  });
  minutes.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.minutes=Number(minutes.value);s.departureAlarm.fired=[];persist();if(s.departureAlarm.remote)remoteAlarm(s).catch(console.warn)}});
  checkbox.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.once=checkbox.checked;persist();if(s.departureAlarm.remote)remoteAlarm(s).catch(console.warn)}});
- const note=document.createElement("small");note.textContent=s.departureAlarm?.remote?"Web Push · Background notifications enabled":alarmLabel(4);
+ const note=document.createElement("small");note.textContent=s.departureAlarm?.remote?remoteAlarmLabel(0):alarmLabel(4);
  div.append(title,minutes,label,btn,note);row.append(div);
 }
 
@@ -585,7 +587,7 @@ function renderCards(){
    const source=dep?(({"emt":"EMT Málaga","transitous":"Transitous","vbb":"VBB","db":"DB"})[dep._source]||dep._source||""):"";
    const status=data?.error?"⚠ "+escapeHTML(t("error")):dep?(live?"● "+escapeHTML(t("live")):"◷ "+escapeHTML(t("scheduled")))+(source?" · "+escapeHTML(source):""):escapeHTML(message);
    row.innerHTML='<div class="route"><span class="line-badge">'+escapeHTML(s.line)+'</span><span class="type-badge">'+iconFor(s.type)+' '+escapeHTML(productLabels[s.type]||s.type)+'</span></div><div class="arrival"><div class="countdown">'+count+'</div><div class="arrival-details">'+scheduled+'</div>'+(delayText?'<div class="arrival-details '+(delay>0?"late":"")+'">'+delayText+'</div>':"")+'</div><div class="line-footer"><span class="status">'+status+(s.direction?' · '+escapeHTML(t("direction"))+' '+escapeHTML(s.direction):"")+'</span></div>';
-   const remove=document.createElement("button");remove.type="button";remove.className="btn ghost small";remove.textContent="✕ "+t("remove");remove.addEventListener("click",async()=>{if(s.departureAlarm?.remote)try{await remoteAlarm(s,true)}catch(e){console.warn(e);alert("Could not remove server alert; please retry.");return}saved=saved.filter(x=>x.id!==s.id);delete departureState[s.id];persist();renderCards()});
+   const remove=document.createElement("button");remove.type="button";remove.className="btn ghost small";remove.textContent="✕ "+t("remove");remove.addEventListener("click",async()=>{if(s.departureAlarm?.remote)try{await remoteAlarm(s,true)}catch(e){console.warn(e);alert(remoteAlarmLabel(1));return}saved=saved.filter(x=>x.id!==s.id);delete departureState[s.id];persist();renderCards()});
    row.querySelector(".line-footer").append(remove);addDepartureAlarm(row,s);list.append(row);
   }
   card.append(list);host.append(card);
