@@ -37,12 +37,12 @@ test('Netherlands: direct Transitous stop to favorite across reload', async ({ p
   await page.locator('#line').selectOption('22');
   await page.locator('#direction').selectOption('Science Park');
   await page.locator('#save').click();
-  await expect(page.locator('.stop-card')).toHaveCount(1);
+  await expect(page.locator('.station-card')).toHaveCount(1);
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('bustimer:stops')));
   expect(saved[0]).toMatchObject({
     city: 'netherlands', stopId: 'nl:fixture:utrecht',
     type: 'tram', line: '22', direction: 'Science Park'
   });
   await page.reload();
-  await expect(page.locator('.stop-card')).toContainText('Utrecht Centraal');
+  await expect(page.locator('.station-card')).toContainText('Utrecht Centraal');
 });
