@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test('Netherlands: direct Transitous stop to favorite across reload', async ({ page }) => {
-  await page.route('**/api.transitous.org/api/v1/geocode?**', async route => {
+  await page.route('https://api.transitous.org/api/v1/geocode?**', async route => {
     await route.fulfill({ json: { matches: [{
       type: 'STOP',
       place: { stopId: 'nl:fixture:utrecht', name: 'Utrecht Centraal', lat: 52.09, lon: 5.12 }
     }] } });
   });
-  await page.route('**/api.transitous.org/api/v6/stoptimes?**', async route => {
+  await page.route('https://api.transitous.org/api/v6/stoptimes?**', async route => {
     const iso = new Date(Date.now() + 30 * 60000).toISOString();
     await route.fulfill({ json: { stopTimes: [{
       place: { scheduledDeparture: iso, departure: iso },
