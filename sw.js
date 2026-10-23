@@ -1,4 +1,4 @@
-const CACHE="bustimer-shell-v34";const SHELL=["./icon.svg","./manifest.webmanifest","./countries.json"];
+const CACHE="bustimer-shell-v35";const SHELL=["./icon.svg","./manifest.webmanifest","./countries.json"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim()});
 self.addEventListener("fetch",event=>{
@@ -13,4 +13,12 @@ self.addEventListener("fetch",event=>{
   if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(request,copy)));}
   return response;
  }).catch(()=>caches.match(request)));
+});
+self.addEventListener("push",event=>{
+ let data={};try{data=event.data?.json()||{}}catch{}
+ event.waitUntil(self.registration.showNotification(data.title||"BusTimer",{body:data.body||"Departure reminder",icon:"./icon.svg",tag:"bustimer-push"}));
+});
+self.addEventListener("notificationclick",event=>{
+ event.notification.close();
+ event.waitUntil(clients.openWindow(self.registration.scope));
 });
