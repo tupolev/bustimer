@@ -68,6 +68,9 @@ def build(feed,out,min_stops=1000):
                 if len(batch)>=10000:db.executemany("INSERT INTO times VALUES(?,?,?,?,?,?)",batch);batch=[]
             if batch:db.executemany("INSERT INTO times VALUES(?,?,?,?,?,?)",batch)
             db.commit()
+            # Without this index, each per-stop export scans the entire national timetable.
+            db.execute("CREATE INDEX times_by_stop ON times(stop)")
+            db.commit()
         out=Path(out);out.mkdir(parents=True,exist_ok=True)
         today=date.today().strftime("%Y%m%d")
         if not any(v["from"]<=today<=v["to"] for v in calendar.values()) and not any(any(x>=today for x in e) for e in exceptions.values()):
