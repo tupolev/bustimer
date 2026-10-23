@@ -251,13 +251,13 @@
       "name": "Polska",
       "flag": "🇵🇱",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate. Pending actual nearby-stop/departure smoke, offline cities file, and browser check.",
+      "notes": "API-first Transitous experimental. Live local geocoding and departures validated in capital-city sample (run 39975149002); coverage and realtime not guaranteed.",
       "bounds": [
         49,
         55.1,
@@ -293,13 +293,13 @@
       "name": "Danmark",
       "flag": "🇩🇰",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate. Pending actual nearby-stop/departure smoke, offline cities file, and browser check.",
+      "notes": "API-first Transitous experimental. Live local geocoding and departures validated in capital-city sample (run 39975149002); coverage and realtime not guaranteed.",
       "bounds": [
         54.4,
         57.8,
@@ -347,13 +347,13 @@
       "name": "Sverige",
       "flag": "🇸🇪",
       "tier": "later",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate. Pending actual nearby-stop/departure smoke, offline cities file, and browser check.",
+      "notes": "API-first Transitous experimental. Live local geocoding and departures validated in capital-city sample (run 39975149002); coverage and realtime not guaranteed.",
       "bounds": [
         55.3,
         69.1,
