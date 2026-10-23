@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.8** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.9** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -214,3 +214,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Clear stale suggestions on country or city changes, avoid delayed responses overwriting newer results; support Enter and Escape.
 - [x] Filter national stop results by a selected city's 20 km radius or matching city name, and regional results by city name/proximity.
 - [ ] Test in a real browser for Bonn, Köln, Málaga and Luxembourg; Photon public demo has rate limits and no uptime guarantee, so plan an owned/alternative city catalog for high-scale usage.
+
+## Photon HTTP 400 fix (v0.9.9)
+
+- [x] Remove direct `lang=prefs.language` parameter from public Photon calls (UI language may not be supported on that instance), retain translated interface.
+- [x] Add ISO country code and country bounding box to geocoding request, reducing irrelevant results.
+- [ ] Browser-verify real autocomplete behavior in ES/DE UI and Bonn/Málaga searches; consider a fallback city search source if the Photon demo is unavailable.
