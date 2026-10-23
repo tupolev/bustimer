@@ -133,11 +133,22 @@
       "name": "België / Belgique",
       "flag": "🇧🇪",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
-      "regional": [],
-      "sources": [],
-      "notes": "Official feed identified. Pending importer, dataset integrity tests, transitous interoperability, and browser validation.",
+      "status": "experimental",
+      "enabled": true,
+      "regional": [
+        "belgiumRail",
+        "belgiumStib",
+        "belgiumTec",
+        "belgiumDelijn"
+      ],
+      "sources": [
+        "transitous",
+        "belgiumRail",
+        "belgiumStib",
+        "belgiumTec",
+        "belgiumDelijn"
+      ],
+      "notes": "Experimental Belgian coverage: scheduled GTFS from SNCB-NMBS, STIB-MIVB, LETEC and De Lijn. Transitous optional; realtime not promised. CC BY 4.0 operator attribution in data metadata.",
       "geocode": "Belgium",
       "bounds": [
         49.48,
