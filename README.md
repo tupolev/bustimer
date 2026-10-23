@@ -22,13 +22,19 @@ Many of BusTimer's cross-border stop searches and departure times—including th
 
 The Transitous API is a best-effort, community resource for lightweight, open-source, non-commercial applications. BusTimer uses the browser's Referer and publishes its contact at [GitHub Issues](https://github.com/tupolev/bustimer/issues); a browser cannot set a custom User-Agent. API coverage and realtime availability depend on source feeds. For substantial use, coordinate with Transitous maintainers before increasing request volumes.
 
-## Release v0.13.0 — Seven-country consolidation
+## Release v0.13.0 — API-first European expansion
 
-BusTimer supports seven enabled countries: Germany, Spain, France, Portugal, Belgium, Luxembourg and the Netherlands. Availability is **not guaranteed for every transit operator**; the Netherlands remains experimental. Germany, Spain, France, Portugal and the Netherlands primarily use Transitous HTTPS APIs; Belgium and Luxembourg use scheduled GTFS-derived stop assets. Málaga retains its official EMT timetable fallback.
+BusTimer supports eleven enabled countries: Germany, Spain, France, Portugal, Belgium, Luxembourg, the Netherlands, Austria, Switzerland, Italy and Czechia. Availability is **not guaranteed for every transit operator**; the Netherlands remains experimental. Germany, Spain, France, Portugal, the Netherlands, Austria, Switzerland, Italy and Czechia primarily use Transitous HTTPS APIs; Belgium and Luxembourg use scheduled GTFS-derived stop assets. Málaga retains its official EMT timetable fallback.
 
 **Release evidence:** [automated checks](https://github.com/tupolev/bustimer/actions/runs/39972036832), [published Pages deployment](https://github.com/tupolev/bustimer/actions/runs/39972157853), [real-browser Pages → Transitous smoke](https://github.com/tupolev/bustimer/actions/runs/39972036506), [four-city Netherlands stops and departures](https://github.com/tupolev/bustimer/actions/runs/39970478094). These confirm the sampled integration, not exhaustive service coverage.
 
 **Next priorities:** evaluate Rheinbahn/VRR and Köln-Bonn local-provider gaps without overriding reliable Transitous results; assess Spain regional stop and departure gaps, notably Málaga and official timetable fallback; prefer live HTTPS APIs when browser-compatible and properly licensed, and use static GTFS only where it is necessary.
+
+## New experimental countries (October 2026)
+
+Austria, Switzerland, Italy and Czechia have been enabled through the existing Transitous HTTPS API adapter, **without downloading national GTFS files**. Their GeoNames city indices are published as small static search assets.
+
+Evidence: [four-country live API audit](https://github.com/tupolev/bustimer/actions/runs/39974550688) verified geolocated stop search and forthcoming departures for Wien Hauptbahnhof, Zürich HB, Milano Centrale and Praha hlavní nádraží. This is **sample-based experimental coverage**, not confirmation of every urban or regional operator. A full live browser flow with these specific countries has not yet been completed; realtime is operator-dependent.
 
 ## Netherlands availability (October 2026)
 
