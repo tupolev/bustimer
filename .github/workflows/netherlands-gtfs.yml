@@ -1,10 +1,6 @@
-name: Validate Netherlands national GTFS
+name: Audit Netherlands GTFS (optional, manual)
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/netherlands-gtfs.yml"
 permissions:
   contents: write
 jobs:
