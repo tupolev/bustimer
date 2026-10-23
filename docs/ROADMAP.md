@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.10.2** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.11.0** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -249,3 +249,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Prefer Photon `osm_value` to classify actual city/town/village entities, ignoring unrelated POIs; slow typeahead request cadence to 850 ms to reduce stress on public demo.
 - [x] Extend regression tests for optional-parameter fallback and region filtering.
 - [ ] Browser-network smoke test and consider a backed service or static city catalog if demo API is rate-limited/unavailable.
+
+## Offline-first towns — v0.11.0
+
+- [x] Built automatic weekly GeoNames cities500 importer (`scripts/build_towns.py`), with Sunday 03:23 UTC refresh and push-triggered first generation.
+- [x] Verified published JSON indexes for Germany (11,927), Spain (7,425), France (15,364), Portugal (1,079), Luxembourg (235); source CC BY 4.0.
+- [x] Town autocomplete loads same-origin per-country JSON, performs accented case-folding and prefix/population ranking locally; Photon is optional only when dataset is inaccessible.
+- [x] Added regression tests for offline-first behavior and no cross-country leakage; existing favorites remain untouched.
+- [ ] Browser smoke test actual GitHub Pages deployment and refine incomplete rural localities (cities500 excludes some settlements under 500 residents).
