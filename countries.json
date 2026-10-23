@@ -163,15 +163,15 @@
       "name": "Luxembourg",
       "flag": "🇱🇺",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [
         "lux"
       ],
       "sources": [
         "lux"
       ],
-      "notes": "Official GTFS adapter implemented but gated: pending published dataset and browser checks.",
+      "notes": "Official national GTFS schedule only; 2767 stops verified by importer; no realtime claims. Saved departures and browser experience need further field testing.",
       "geocode": "Luxembourg",
       "bounds": [
         49.43,
