@@ -33,3 +33,11 @@ test("new brand is consistent between SVG icon, manifest and HTML",()=>{
  assert.match(html,/class="logo-icon" src="\.\/icon.svg"/);
  assert.match(html,/--accent:#FFC629/);
 });
+
+test("station-board cards preserve line and direction without fabricated multi-line departures",()=>{
+ assert.match(html,/\.stop-card>div:first-child\{padding:24px 26px 17px;background:linear-gradient/);
+ assert.match(html,/\.stop-card \.line-badge/);
+ assert.match(html,/saved\.forEach\(s=>/);
+ assert.match(html,/escapeHTML\(s\.line\)/);
+ assert.match(html,/escapeHTML\(dep\.direction\)/);
+});
