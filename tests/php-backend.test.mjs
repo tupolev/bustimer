@@ -15,7 +15,7 @@ test("PHP backend is deployable separately with private settings and no committe
 });
 test("PWA registers background push, cancels remote alarms, and falls back to local mode",()=>{
  const html=read("index.html"),sw=read("sw.js");
- assert.match(html,/bustimer.kodesoft.net\/server\/api.php/);
+ assert.match(html,/new URL\("server\/api.php",document.baseURI\)\.href/);
  assert.match(html,/registration.pushManager.subscribe/);
  assert.match(html,/s.departureAlarm.remote=await remoteAlarm\(s\)/);
  assert.match(html,/if\(!a\|\|a.remote/);
