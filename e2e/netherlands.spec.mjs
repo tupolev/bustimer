@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test('Netherlands: direct Transitous stop to favorite across reload', async ({ page }) => {
+  // Enable only in the isolated test fixture; production remains gated after HTTP 403.
+  await page.route('**/countries.json', async route => {
+    const response = await route.fetch();
+    const config = await response.json();
+    const nl = config.countries.find(c => c.id === 'netherlands');
+    nl.enabled = true; nl.status = 'experimental';
+    await route.fulfill({ json: config });
+  });
   await page.route('https://api.transitous.org/api/v1/geocode?**', async route => {
     await route.fulfill({ json: { matches: [{
       type: 'STOP',
