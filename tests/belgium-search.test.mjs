@@ -47,6 +47,13 @@ test("Belgian search preserves two STIB platforms while merging colocated operat
 test("Belgian search bounds stops to selected city and preserves literal names",async()=>{
  const search=harness({name:"Bruxelles",lat:50.845,lon:4.36});
  const stops=await search("belgium","GARE CENTRALE","Bruxelles");
+ assert.equal(stops.length,2,"the local interchange must be returned");
  assert.ok(stops.every(s=>s.name==="GARE CENTRALE"));
  assert.ok(stops.every(s=>s.lat<50.86),"remote identically named TEC stop excluded");
+});
+
+test("Belgian stop query outside chosen city returns no local stop matches",async()=>{
+ const search=harness({name:"Gent",lat:51.0536,lon:3.7253});
+ const stops=await search("belgium","GARE CENTRALE","Gent");
+ assert.equal(stops.length,0,"Brussels platforms must not leak into Gent");
 });
