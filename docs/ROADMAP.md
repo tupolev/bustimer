@@ -119,5 +119,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 
 - [x] Official VRS download and GTFS compilation succeeded in [run 39937922369](https://github.com/tupolev/bustimer/actions/runs/39937922369); generated index validation also passed.
 - [x] Diagnose failed publishing: `git push` rejected because `main` advanced after checkout, not because of GTFS data. Workflow now quietly commits and rebases/retries up to five times without force-push.
-- [ ] Re-run the **manual** VRS import using updated workflow at the current `main`. Old run did **not** publish data; do not mark VRS available until this succeeds.
-- [ ] Evaluate how many static stop files are generated, repository growth and deployment latency; consider compressed/sharded data if large.
+- [x] Manual VRS import succeeded in [run 39938475320](https://github.com/tupolev/bustimer/actions/runs/39938475320): **20,494** stop JSON files compiled, index validated, commit and push completed.
+- [ ] Optimize large VRS dataset storage and deployment. Initial import generated **20,494** stop files; verify GitHub Pages performance, repository growth and scheduling cost. Consider sharding/compression or publishing release artifacts before increasing refresh frequency.
+
+## VRS periodic refresh (2026-10-23)
+
+- [x] Official GTFS first import and GitHub publication verified (run 39938475320, 20,494 stops).
+- [x] Set a conservative **weekly Monday 04:37 UTC** VRS refresh via GitHub Actions (manual dispatch remains available); add concurrency serialization and a basic upper-bound guard on stop count. Source freshness remains to be tested on the published app.
+- [ ] Verify the first scheduled run, app stop search for Bonn/Köln and departure dates/directions. Increase to daily only after dataset storage/deployment is optimized.
