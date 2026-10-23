@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.3** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.4** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -135,3 +135,12 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Added VRS namespace regression test for original IDs and cross-provider references.
 - [ ] Verify the public browser experience, GTFS clock conversion around DST and real-world departures. Dataset presence alone does not verify display correctness.
 - [ ] Optimize search payload: the combined `data/vrs/index.json` is approximately **5.4 MB** of JSON; split search-only stop list from calendar data, ideally shard or compress before increasing update cadence.
+
+## VRS split data and European expansion (v0.9.4)
+
+- [x] Split VRS GTFS into `search.json` (stops) and `services.json` (calendars and exceptions); retain per-stop files. App downloads calendars only when requesting departures.
+- [x] Keep compatibility fallback to old `index.json` until next successful import; import replaces directory and removes obsolete index.
+- [x] Update Python importer test and GTFS workflow validation to require split files.
+- [ ] Run VRS workflow to publish split dataset, then verify real stop search and departure responses in Bonn and Köln.
+- [ ] Add DST tests for repeated/missing civil times; check schedule conversions and update logic if needed.
+- [ ] Assess Netherlands (NDOV), Belgium (STIB/De Lijn/TEC/SNCB), Luxembourg (Mobiliteit), Austria (VAO), Switzerland (opentransportdata), Poland, Czechia, Denmark. Validate licenses and browser access before enabling, while prioritizing Germany and Spain.
