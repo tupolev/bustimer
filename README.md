@@ -213,3 +213,7 @@ The Luxembourg GTFS publisher runs automatically **every Tuesday at 05:43 UTC** 
 ## City-first stop search (v0.9.7)
 
 The **Add stop** form now asks for country, **city/town**, and then stop name before transport, line and direction. Entering a new city clears only the new-stop search, not saved favorite stops. Country-wide Transitous searches are qualified by the city; local adapter results are narrowed by available municipality names. City suggestions and coordinate-based filtering are planned next.
+
+## City suggestions (v0.9.8)
+
+Typing into **City / town** now displays selectable city suggestions via Photon (OpenStreetMap), with country bounds, delayed requests, stale-response protection and Enter/Escape support. Choosing a suggestion enables stop search, which restricts stop results geographically. Photon’s public instance is best-effort, so a production-scale city index or hosted endpoint remains an improvement target.
