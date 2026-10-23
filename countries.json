@@ -106,8 +106,10 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Official feed identified. Pending importer, dataset integrity tests, transitous interoperability, and browser validation.",
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first through Transitous HTTPS geocoding and stop times; no bulk GTFS assets required. Disabled pending browser smoke tests for Dutch cities and CORS/coverage verification.",
       "geocode": "Nederland",
       "bounds": [
         50.73,
