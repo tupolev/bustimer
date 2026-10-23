@@ -192,4 +192,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Successful official publication [run 39945847058](https://github.com/tupolev/bustimer/actions/runs/39945847058). Verified `data/luxembourg/search.json` with **2,767** stops (295,489 bytes), `services.json` with **217** calendars and **202** exception sets (38,906 bytes), and Hamilius stop file with 5,108 scheduled service records.
 - [x] Enable Luxembourg in country catalog as **experimental**; extend hard-coded catalog allowlist; fix provider namespace stripping in merged stop references so Luxembourg/VRS IDs route correctly.
 - [ ] Browser smoke test GitHub Pages and several saved departures in Luxembourg City; verify search, refresh, DST, direction filtering, and operator GTFS semantics. Experimental does not imply field-validation complete.
-- [ ] Evaluate scheduling a weekly Luxembourg feed refresh after real browser validation.
+- [x] Schedule conservative weekly Luxembourg refresh every Tuesday at 05:43 UTC (manual dispatch retained), serialize overlapping runs, add stop-count/source/attribution validation; trigger automatically on workflow-file updates. First scheduled execution and live browser smoke test remain pending.
+
+## Luxembourg self-running workflow (2026-10-23)
+
+- [x] Add GitHub Actions weekly Tuesday 05:43 UTC schedule, workflow-file push trigger and concurrency guard to official Luxembourg GTFS publisher. This avoids needing a manual Run workflow for ordinary refreshes and workflow updates.
+- [x] Validate source HTTPS, CC BY 4.0 attribution and bounded stop count before publishing.
+- [ ] Confirm first workflow-file push-triggered automatic publication and ongoing weekly execution. Check Pages deployment and browser stops independently.
