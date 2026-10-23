@@ -229,3 +229,7 @@ Photon geocoding requests no longer send the app UI's language blindly (which ca
 **v0.10.1:** Switching the UI language does not bypass the mandatory city selection; the stop search stays disabled until an actual city suggestion is chosen.
 
 **v0.10.2 Photon resilience:** city autocomplete sends documented geocoder parameters and automatically retries a minimal query on HTTP 400. Client-side country bounding remains mandatory. The demo endpoint has no uptime SLA and may throttle traffic; production should eventually use a dedicated city source.
+
+## Offline-first city search (v0.11.0)
+
+City suggestions no longer require Photon during normal use. Country-specific compact town indexes generated from [GeoNames cities500](https://www.geonames.org/) are served by this site's GitHub Pages under `data/towns/<country>.json`. Search is local, country-filtered, accent-insensitive and ranked by prefix and population. GeoNames data are licensed **CC BY 4.0, © GeoNames contributors**; please retain attribution. The weekly Sunday CI import refreshes the data automatically. Photon remains an optional fallback only when a static index cannot load. Small rural places missing from cities500 are a known coverage limitation.
