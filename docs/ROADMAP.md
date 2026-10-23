@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.11.0** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.11.1** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -257,3 +257,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Town autocomplete loads same-origin per-country JSON, performs accented case-folding and prefix/population ranking locally; Photon is optional only when dataset is inaccessible.
 - [x] Added regression tests for offline-first behavior and no cross-country leakage; existing favorites remain untouched.
 - [ ] Browser smoke test actual GitHub Pages deployment and refine incomplete rural localities (cities500 excludes some settlements under 500 residents).
+
+## Luxembourg stop search correction (v0.11.1)
+
+- [x] Return an empty stop result set as a normal 'no matches' UI state, not a misleading connection error.
+- [x] Keep all matching Luxembourg and VRS local stop candidates until the selected city filter is applied, then cap to 20.
+- [x] Normalize lux:/vrs:/emt: references when combining regional and Transitous results.
+- [ ] Verify actual browser search for Luxembourg → Luxembourg → Hamilius / Gare and other towns; inspect app network behavior if an HTTP error persists.
