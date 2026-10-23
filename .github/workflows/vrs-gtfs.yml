@@ -1,8 +1,6 @@
 name: Refresh VRS scheduled timetables
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '47 3 * * *'
 permissions:
   contents: write
 jobs:
