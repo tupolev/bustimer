@@ -59,3 +59,13 @@ test("favorite grouping joins same source stop, not similarly named stops or oth
  const grouped=group(favorites);
  assert.deepEqual(grouped.map(g=>g.map(x=>x.id)),[["line1","line2"],["platform"],["other-country"]]);
 });
+
+test("departure alerts use each favorite, persist once-only settings and avoid duplicates",()=>{
+ assert.match(html,/const ALARM_MINUTES=\[2,5,10,15,20,30,45,60\]/);
+ assert.match(html,/s\.departureAlarm=\{minutes,once,fired:\[\]\}/);
+ assert.match(html,/if\(a.once\)delete s\.departureAlarm/);
+ assert.match(html,/if\(\(a\.fired\|\|\[\]\)\.includes\(key\)\)continue/);
+ assert.match(html,/Notification\.requestPermission\(\)/);
+ assert.match(html,/checkDepartureAlarms\(\)/);
+ assert.match(html,/addDepartureAlarm\(row,s\)/);
+});
