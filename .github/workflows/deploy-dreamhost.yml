@@ -36,17 +36,15 @@ jobs:
           test ! -e stage/server/settings.php
           test ! -d stage/server/private
           test -f stage/server/vendor/autoload.php
-      - name: Configure pinned SSH host and deploy key
+      - name: Install SSH password helper
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+      - name: Configure verified SSH host
         env:
-          DEPLOY_SSH_KEY: ${{ secrets.DREAMHOST_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DREAMHOST_KNOWN_HOSTS }}
         run: |
           set -euo pipefail
-          test -n "$DEPLOY_SSH_KEY"
           test -n "$DEPLOY_KNOWN_HOSTS"
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
       - name: Verify remote PHP runtime and destination
@@ -55,19 +53,20 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
           DEPLOY_USER: ${{ secrets.DREAMHOST_SSH_USER }}
           DEPLOY_PATH: ${{ secrets.DREAMHOST_WEB_ROOT }}
+          SSHPASS: ${{ secrets.DREAMHOST_SSH_PASSWORD }}
         run: |
           set -euo pipefail
-          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
+          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH" && test -n "$SSHPASS"
           [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
           [[ "$DEPLOY_PATH" == "/home/$DEPLOY_USER/bustimer.kodesoft.net/" ]]
-          remote_php=$(ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" 'php -r "echo PHP_VERSION_ID;"')
+          remote_php=$(sshpass -e ssh -o StrictHostKeyChecking=yes -o BatchMode=no -o PreferredAuthentications=password,keyboard-interactive "$DEPLOY_USER@$DEPLOY_HOST" 'php -r "echo PHP_VERSION_ID;"')
           [[ "$remote_php" =~ ^[0-9]+$ ]] && (( remote_php >= 80200 )) || { echo "DreamHost CLI PHP 8.2+ required (got $remote_php)"; exit 1; }
           for extension in pdo_sqlite curl openssl mbstring; do
-            ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            sshpass -e ssh -o StrictHostKeyChecking=yes -o BatchMode=no -o PreferredAuthentications=password,keyboard-interactive "$DEPLOY_USER@$DEPLOY_HOST" \
               "php -r \"exit(extension_loaded('$extension') ? 0 : 1);\"" || { echo "DreamHost PHP missing $extension"; exit 1; }
           done
-          ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+          sshpass -e ssh -o StrictHostKeyChecking=yes -o BatchMode=no -o PreferredAuthentications=password,keyboard-interactive "$DEPLOY_USER@$DEPLOY_HOST" \
             "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
       - name: Upload release without touching server settings or database
         shell: bash
@@ -75,9 +74,10 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
           DEPLOY_USER: ${{ secrets.DREAMHOST_SSH_USER }}
           DEPLOY_PATH: ${{ secrets.DREAMHOST_WEB_ROOT }}
+          SSHPASS: ${{ secrets.DREAMHOST_SSH_PASSWORD }}
         run: |
           set -euo pipefail
-          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
+          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH" && test -n "$SSHPASS"
           [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
           [[ "$DEPLOY_PATH" == "/home/$DEPLOY_USER/bustimer.kodesoft.net/" ]]
@@ -85,7 +85,7 @@ jobs:
             --exclude='server/settings.php' \
             --exclude='server/private/' \
             --exclude='*.sqlite' --exclude='*.sqlite-shm' --exclude='*.sqlite-wal' \
-            -e 'ssh -o StrictHostKeyChecking=yes' \
+            -e 'sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password,keyboard-interactive' \
             stage/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
       - name: Verify deployed PWA and API presence
         shell: bash
