@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.3.0** · No build step · No backend · MIT licensed
+**Version 0.4.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -103,3 +103,13 @@ The importer and live browser workflow require validation on the published site.
 ### Spain roadmap
 
 Once Málaga's schedule flow is validated, extend the data-provider abstraction to feeds from the official Spanish National Access Point (NAP), with regional static GTFS, calendars, licensing and available GTFS-RT. Do not commit NAP private access tokens to the public repository.
+
+## Spain-wide beta (v0.4.0)
+
+BusTimer now provides an **España / nationwide (beta)** stop-search option via the existing [Transitous MOTIS API](https://transitous.org/api/). The same stop/line selection, countdown, and live-vs-scheduled display flow applies. Queries include España to narrow geocoding. **This is coverage through currently indexed feeds, not a guarantee of every Spanish operator or of a published static timetable for every stop.** The separately imported official EMT Málaga timetable remains available.
+
+### Toward national static coverage
+
+The official Spanish [National Access Point (NAP)](https://nap.transportes.gob.es/ConjuntoDato/List) catalogs hundreds of GTFS and realtime feeds from Spanish operators. Those feeds must be checked individually for access, calendars, licensing, update mechanisms, and overlap before generating a deduplicated national stop index. A full Spain GTFS ingestion pipeline is **not** part of this beta. Avoid claiming nationwide-complete coverage until that pipeline has been implemented and tested.
+
+This project continues to use no API key and retains the public GitHub Pages architecture.
