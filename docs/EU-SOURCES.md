@@ -39,3 +39,7 @@ The [Belgian Mobility Open Data Portal](https://data.belgianmobility.io/en/data.
 - [ ] Validate gateway authentication, rates, operator-specific terms, ZIP format and attribution; acquire explicit access if necessary.
 - [ ] Integrate one static GTFS operator with bounded stop shards, then validate Brussels Central/Gare Centrale and regional interchange trips.
 - [ ] Add Belgian stop adapter and language-safe country selection only after schedule data are published and tested.
+
+## Belgium published scheduled GTFS (2026-10-23)
+
+Four CC BY 4.0 operator files now have separate, validated, weekly pipelines and published browser-sized per-stop shards: SNCB/NMBS (rail, 2,213 stops), STIB/MIVB (metro/tram/bus, 2,415), LETEC (Wallonia, 30,908) and De Lijn (Flanders, 25,468). Official data is mirrored at [FlatTurtle](https://gtfs.flatturtle.cloud/) for STIB, TEC, and De Lijn and via the iRail SNCB GTFS feed. Each index includes attribution/source URL and update timestamp. Belgium is enabled as *experimental scheduled* coverage. The live API still requires separate access and is not integrated; no realtime promises. GitHub Pages deploy and fixture CI have succeeded. Browser-interaction smoke tests remain outstanding.
