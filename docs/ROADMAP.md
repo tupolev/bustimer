@@ -320,3 +320,8 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Add `tests/favorites-flow.test.mjs`, a Node-only DOM-control harness that executes the application's real transport, line, direction and save handlers with a mocked Belgian interchange. Tests direction-specific saved favorites, duplicate prevention, retained operator references and round-trip serialized localStorage data (commit `8df4077c`).
 - [ ] Confirm this test passes in GitHub Actions. It is a mocked handler integration test, **not** a browser E2E: no assertions cover town autocomplete, click-based stop selection, full page reload or live GTFS/network requests.
 - [ ] Follow up with Playwright browser E2E in CI once a browser test runner is available; include Belgium, Germany and Spain and preserve existing favorites.
+
+## CI fix: favorites harness constructor (2026-10-23)
+
+- [x] Correct the test-only `Option` mock in `tests/favorites-flow.test.mjs`: production code invokes `new Option(...)`, but the test declared an arrow function, which is not constructible. Changed to a regular constructor (commit `2250c5f2`). No production UI code changed.
+- [ ] Verify this correction in the next GitHub Actions run; the supplied failure log showed 46 tests, 42 passes and 4 failures, of which two were explicitly the `Option is not a constructor` failures. Investigate the other two failures from the complete CI log before claiming green.
