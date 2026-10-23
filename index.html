@@ -460,13 +460,45 @@ const ALARM_LABELS={
  sv:["Avgångslarm","Ta bort efter första larmet","Aktivera larm","Ta bort larm","Håll BusTimer öppet för att få larm.","Tillåt aviseringar."]
 };
 function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
+const PUSH_API="https://bustimer.kodesoft.net/server/api.php";
+const PUSH_IDENTITY_KEY="bustimer:push-identity";
+let remotePush=null;
+function vapidBytes(key){const value=atob(key.replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(value,c=>c.charCodeAt(0))}
+async function pushIdentity(){
+ if(remotePush)return remotePush;
+ let identity=null;try{identity=JSON.parse(localStorage.getItem(PUSH_IDENTITY_KEY)||"null")}catch{}
+ if(identity?.deviceId&&identity?.token)return remotePush=identity;
+ if(!("serviceWorker" in navigator)||!("PushManager" in window))throw Error("Web Push unsupported");
+ const c=await fetch(PUSH_API+"?action=config",{cache:"no-store",signal:AbortSignal.timeout(5000)});
+ if(!c.ok)throw Error("Push backend unavailable");
+ const config=await c.json();if(!config.enabled||!config.publicKey||config.publicKey.startsWith("REPLACE"))throw Error("Push backend unconfigured");
+ const registration=await navigator.serviceWorker.ready;
+ let subscription=await registration.pushManager.getSubscription();
+ if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapidBytes(config.publicKey)});
+ const response=await fetch(PUSH_API+"?action=subscribe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subscription:subscription.toJSON()})});
+ if(!response.ok)throw Error("Push registration failed");
+ identity=await response.json();localStorage.setItem(PUSH_IDENTITY_KEY,JSON.stringify(identity));
+ return remotePush=identity;
+}
+async function remoteAlarm(s,remove=false){
+ const identity=remove?(remotePush||JSON.parse(localStorage.getItem(PUSH_IDENTITY_KEY)||"null")):await pushIdentity();
+ if(!identity)return false;
+ const headers={"X-BusTimer-Device":identity.deviceId,"X-BusTimer-Token":identity.token};
+ const query=PUSH_API+"?action=alarm";
+ const response=await fetch(remove?query+"&favoriteId="+encodeURIComponent(s.id):query,{
+  method:remove?"DELETE":"PUT",headers:remove?headers:{...headers,"Content-Type":"application/json"},
+  body:remove?undefined:JSON.stringify({favoriteId:String(s.id),city:s.city,stopId:String(s.stopId),line:String(s.line),mode:String(s.type),direction:String(s.direction||""),minutes:s.departureAlarm.minutes,once:!!s.departureAlarm.once})
+ });
+ if(!response.ok)throw Error("Remote alarm HTTP "+response.status);
+ return true;
+}
 const alarmInFlight=new Set();
 async function checkDepartureAlarms(){
  if(!("Notification" in window)||Notification.permission!=="granted")return;
  const now=Date.now();
  for(const s of saved){
   const a=s.departureAlarm,dep=departureState[s.id]?.departure;
-  if(!a||!dep||!ALARM_MINUTES.includes(a.minutes))continue;
+  if(!a||a.remote||!dep||!ALARM_MINUTES.includes(a.minutes))continue;
   const time=Date.parse(dep._time||"");
   if(!Number.isFinite(time)||time<now||time-now>a.minutes*60000)continue;
   const key=[s.id,dep.plannedWhen||dep._time,s.direction||dep.direction||""].join("|");
@@ -495,7 +527,7 @@ async function armDepartureAlarm(s,minutes,once){
  let permission=Notification.permission;
  if(permission==="default")permission=await Notification.requestPermission();
  if(permission!=="granted"){alert(alarmLabel(5));return}
- s.departureAlarm={minutes,once,fired:[]};persist();renderCards();checkDepartureAlarms();
+ s.departureAlarm={minutes,once,fired:[]};try{s.departureAlarm.remote=await remoteAlarm(s)}catch(e){console.warn("Using local alarm fallback",e);s.departureAlarm.remote=false}persist();renderCards();checkDepartureAlarms();
 }
 function addDepartureAlarm(row,s){
  const div=document.createElement("div");div.className="departure-alarm";
@@ -508,12 +540,12 @@ function addDepartureAlarm(row,s){
  label.append(checkbox,document.createTextNode(" "+alarmLabel(1)));
  const btn=document.createElement("button");btn.type="button";btn.className="btn ghost small";btn.textContent=alarmLabel(s.departureAlarm?3:2);
  btn.addEventListener("click",async()=>{
-  if(s.departureAlarm){delete s.departureAlarm;persist();renderCards();}
+  if(s.departureAlarm){if(s.departureAlarm.remote)try{await remoteAlarm(s,true)}catch(e){console.warn("Failed to delete remote alarm",e);alert("Could not cancel server alarm. Please retry.");return}delete s.departureAlarm;persist();renderCards();}
   else await armDepartureAlarm(s,Number(minutes.value),checkbox.checked);
  });
- minutes.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.minutes=Number(minutes.value);s.departureAlarm.fired=[];persist()}});
- checkbox.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.once=checkbox.checked;persist()}});
- const note=document.createElement("small");note.textContent=alarmLabel(4);
+ minutes.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.minutes=Number(minutes.value);s.departureAlarm.fired=[];persist();if(s.departureAlarm.remote)remoteAlarm(s).catch(console.warn)}});
+ checkbox.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.once=checkbox.checked;persist();if(s.departureAlarm.remote)remoteAlarm(s).catch(console.warn)}});
+ const note=document.createElement("small");note.textContent=s.departureAlarm?.remote?"Web Push · Background notifications enabled":alarmLabel(4);
  div.append(title,minutes,label,btn,note);row.append(div);
 }
 
