@@ -12,6 +12,16 @@ A lightweight, responsive, installable PWA to monitor the next departures of sav
 
 **Project tracking:** [Implementation roadmap and checklist](docs/ROADMAP.md) — priorities, verified vs. unverified status, country expansion, blockers and session handoff instructions. · No build step · No backend · MIT licensed
 
+## Acknowledgements and data attribution
+
+**BusTimer is an independent, open-source project. It is not affiliated with or endorsed by Transitous or any transport operator.**
+
+Many of BusTimer's cross-border stop searches and departure times—including the experimental Netherlands integration—are made possible by **[Transitous](https://transitous.org/)**, a community-run, volunteer-maintained public transport service built on the open-source MOTIS engine and openly published transport feeds. Thank you to the Transitous contributors, the maintainers of upstream datasets, and the public transport agencies that publish their data.
+
+**Required source and licensing credits:** [Transitous data sources and attribution](https://transitous.org/sources/) · [Transitous API usage policy](https://transitous.org/api/) · [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright). Transitous aggregates independent providers; each originating feed retains its own licence and any attribution requirements. Local sources also include [VBB transport.rest](https://v6.vbb.transport.rest/), [DB transport.rest](https://v6.db.transport.rest/), and [EMT Málaga open GTFS](https://datos.gob.es/es/catalogo/l01290672-lineas-y-horarios-bus-google-transit).
+
+The Transitous API is a best-effort, community resource for lightweight, open-source, non-commercial applications. BusTimer uses the browser's Referer and publishes its contact at [GitHub Issues](https://github.com/tupolev/bustimer/issues); a browser cannot set a custom User-Agent. API coverage and realtime availability depend on source feeds. For substantial use, coordinate with Transitous maintainers before increasing request volumes.
+
 ## Features
 
 - Four tabs: monitored stops, add stop, settings, help/about.
