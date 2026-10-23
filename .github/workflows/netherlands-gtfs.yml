@@ -38,6 +38,20 @@ jobs:
               assert (d/"stops"/(stop["file"]+".json")).is_file()
           print(report)
           PY
+      - name: Measure publishable dataset footprint
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=Path(os.environ["RUNNER_TEMP"])/"nl-stage"
+          files=list(d.rglob("*.json"))
+          bytes_total=sum(f.stat().st_size for f in files)
+          report={"json_files":len(files),"json_bytes":bytes_total,"largest_file_bytes":max(f.stat().st_size for f in files)}
+          (Path(os.environ["RUNNER_TEMP"])/"nl-footprint.json").write_text(json.dumps(report,indent=2)+"\\n")
+          print(report)
+          assert report["json_files"]>=1000
+          assert report["largest_file_bytes"]<100_000_000
+          PY
       - name: Publish validation evidence (no timetable dataset)
         run: |
           python3 - <<'PY'
@@ -47,12 +61,14 @@ jobs:
           root = Path(os.environ["RUNNER_TEMP"])
           inspect = json.loads((root / "nl-report.json").read_text())
           compiled = json.loads((root / "nl-stage/validation.json").read_text())
+          footprint = json.loads((root / "nl-footprint.json").read_text())
           report = {
             "validated_at": datetime.now(timezone.utc).isoformat(),
             "run_id": os.environ["GITHUB_RUN_ID"],
             "commit": os.environ["GITHUB_SHA"],
             "inspection": inspect,
             "compiled": compiled,
+            "footprint": footprint,
             "browser_enabled": False,
           }
           path = Path("docs/validation/netherlands-latest.json")
@@ -76,6 +92,7 @@ jobs:
         with:
           name: netherlands-gtfs-inspection
           path: |
+            ${{ runner.temp }}/nl-footprint.json
             ${{ runner.temp }}/nl-report.json
             ${{ runner.temp }}/nl-stage/validation.json
             ${{ runner.temp }}/nl-stage/search.json
