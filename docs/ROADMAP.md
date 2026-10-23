@@ -415,3 +415,16 @@ The first national compiler is an initial staging implementation, not a performa
 - [ ] Confirm footprint report from latest run; ensure `data/towns/nl.json` is actually published by the GeoNames workflow.
 - [ ] Publish staged per-stop shards in supported static hosting, verify timetable queries across Amsterdam/Rotterdam/Utrecht/Den Haag, correct service semantics, and run the manual Playwright smoke test.
 - [ ] Verify external feed license and operational storage budget; enable `netherlands` only when assets are deployed and smoke tests pass.
+
+## Netherlands API-first rollout (2026-10-23)
+
+Architecture changed on user request: do not mirror ~53,493 stop timetables for the Netherlands. BusTimer queries the existing HTTPS Transitous geocode and stop-times endpoints on demand and keeps only a small GeoNames town index. The national GTFS importer/inspector remains an optional offline audit tool; `netherlands-gtfs.yml` is manual only. The previous staged shard infrastructure is **not required** to serve Dutch riders.
+
+- [x] Remove Dutch static search/services/stops fetch logic and `nl` provider mapping; use Transitous IDs verbatim, preserving saved stops.
+- [x] Confirm `data/towns/nl.json` is published, wire the country into selection/search, and mark the country `experimental` / `enabled:true` in `countries.json`.
+- [x] Add fast Node API-first regression checks; inspect Transitous documented API usage/attribution and known Netherlands stop-times examples. Keep visible attribution and ensure browser usage remains lightweight.
+- [ ] Verify Netherlands full browser workflow and CORS with live requests for Amsterdam, Rotterdam, Utrecht and Den Haag, including saved stops and source coverage. Do not claim exhaustive operator coverage or realtime.
+- [ ] Check that automated `checks` passes for the latest commit, then run manual Chromium release smoke when convenient.
+- [ ] Evaluate requests per minute and caching; if the API cannot support expected deployment usage, seek permission or use a narrowly scoped provider fallback rather than introducing national bulk downloads.
+
+**Status:** NL exposed as experimental API-first support, not a verified national realtime guarantee. Existing M1–M3 backlog remains tracked separately.
