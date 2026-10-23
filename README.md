@@ -4,7 +4,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.9.5**
+**Version 0.9.6**
 
 **Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
 
@@ -201,3 +201,7 @@ GTFS importer now produces `data/vrs/search.json` for stop lookup and `data/vrs/
 ## Luxembourg app adapter (v0.9.5)
 
 The PWA now contains a Luxembourg static GTFS provider adapter for search, service dates and scheduled-only departures, backed by `data/luxembourg/`. The country remains **disabled** in the selector pending dataset publication and live verification. GTFS scheduled departures never imply realtime accuracy.
+
+## 🇱🇺 Luxembourg experimental (v0.9.6)
+
+Official Luxembourg national GTFS is published, and country selection is enabled as **experimental**. The feed provides **scheduled** times, not real-time delays. 2,767 stops and 217 calendars were validated, including the Hamilius bus stop timetable. The original country selector allowlist and cross-provider stop ID mapping are updated for Luxembourg. Browser smoke tests and production refresh remain follow-up work.
