@@ -446,3 +446,10 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] Corrected network probe User-Agent and reran Actions [39970122882](https://github.com/tupolev/bustimer/actions/runs/39970122882). Live geocoding **passed** for Amsterdam, Rotterdam, Utrecht and Den Haag, with Access-Control-Allow-Origin: *. Evidence: `docs/validation/netherlands-api-latest.json`.
 - [ ] Validate actual stop-times responses and that the geocoder's top results can identify correct Dutch provider IDs; some search candidates are international source IDs.
 - [ ] Browser CORS and end-to-end favorites remain unverified. Netherlands is still gated until live departure queries and browser smoke succeed.
+
+
+## Netherlands live departure smoke (2026-10-23)
+
+- [x] Expand `scripts/smoke_netherlands_api.py` beyond geocoding: request real `/api/v6/stoptimes` for up to four stop candidates per representative city, prefer `nl-` provider IDs, record available line identifiers and CORS response headers. The workflow remains lightweight and does not run Chromium per commit (commit `14533427`).
+- [ ] Check `docs/validation/netherlands-api-latest.json` from the **new** workflow run; prior successful run `39970122882` tested geocoding only and does not prove departure coverage.
+- [ ] Confirm browser smoke and favorites; avoid enabling Netherlands until the live departure evidence supports usability.
