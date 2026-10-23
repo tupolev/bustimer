@@ -1,6 +1,11 @@
 name: Refresh VRS scheduled timetables
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '37 4 * * 1'
+concurrency:
+  group: vrs-gtfs-refresh
+  cancel-in-progress: false
 permissions:
   contents: write
 jobs:
@@ -22,6 +27,8 @@ jobs:
           x=json.loads(Path("data/vrs/index.json").read_text())
           assert len(x["stops"])>100
           assert x["timezone"]=="Europe/Berlin"
+          assert len(x["stops"]) <= 50000
+          assert all(s.get("file") for s in x["stops"])
           print(len(x["stops"]),"VRS stops")
           PY
       - name: Commit refreshed data
