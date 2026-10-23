@@ -1,6 +1,15 @@
 name: Publish Luxembourg official GTFS
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '43 5 * * 2'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/luxembourg-gtfs.yml'
+concurrency:
+  group: luxembourg-gtfs-refresh
+  cancel-in-progress: false
 permissions:
   contents: write
 jobs:
@@ -24,9 +33,11 @@ jobs:
           root=Path(os.environ["RUNNER_TEMP"])/"luxembourg"
           search=json.loads((root/"search.json").read_text())
           services=json.loads((root/"services.json").read_text())
-          assert len(search["stops"])>=100
+          assert 100<=len(search["stops"])<=10000
           assert search["timezone"]=="Europe/Luxembourg"
           assert services["calendar"] or services["exceptions"]
+          assert search["source"].startswith("https://")
+          assert "CC BY 4.0" in search["license"]
           assert all((root/"stops"/(s["file"]+".json")).exists() for s in search["stops"])
           print(f'VALIDATED: {len(search["stops"])} Luxembourg stops; {len(services["calendar"])} calendars')
           PY
