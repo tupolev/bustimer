@@ -388,3 +388,12 @@ User-approved order: (1) reliability, (2) six-country validation, (3) GTFS optim
 ### Operational caution
 
 The first national compiler is an initial staging implementation, not a performance-verified solution at national scale. It must be profiled on actual data and revised if SQLite lookup throughput, storage size, repository growth, calendar exceptions or asset request payloads do not meet the quality bar. The browser workflow remains manual to avoid slowing every push.
+
+
+## Netherlands real-feed validation initiated (2026-10-23)
+
+- [x] Fix an important national-scale performance issue in `scripts/build_netherlands.py`: index the SQLite timetable by stop before exporting per-stop shards. Without this, each stop would scan the entire departures table (commit `817ccaa2`).
+- [x] Configure `.github/workflows/netherlands-gtfs.yml` for a **one-time automatic run on workflow-file changes**, as well as manual dispatch. On successful complete feed compilation, publish a small audit report at `docs/validation/netherlands-latest.json` with GitHub Actions run ID and counts, while keeping raw timetable data staged and Netherlands disabled (commit `4adc52f9`).
+- [ ] Check actual resulting run/job outcome and report. No successful feed-run evidence is available yet; do not assert the national import has passed.
+- [ ] If compilation succeeds, inspect index size, export footprint, feed-specific conditions and service semantics, then design a storage strategy that avoids committing unbounded stop files to `main`.
+- [ ] M1/M2/M3 acceptance gates and the real browser/operator tests still apply before Netherlands can be enabled.
