@@ -13,9 +13,9 @@ Last reviewed: 2026-10-23 · Current application version: **0.9.2** (tests rollo
 
 ## P0 — Reliability and validation (do before expanding further)
 
-- [ ] **P0-01 — Automated JavaScript checks.** **Implemented, CI verification pending:** `scripts/check-js.mjs` checks inline JavaScript, service worker and enabled-country JSON. `.github/workflows/ci.yml` runs on pushes and PRs. **Done when:** a GitHub Actions run succeeds and a deliberately malformed test fixture is rejected.
-- [ ] **P0-01b — Unit-test battery in CI.** **Initial 7 cases implemented, CI verification pending:** `tests/core.test.mjs` uses Node's built-in test runner; covers provider mapping, provider IDs, realtime deduplication, stop merging, geographic filtering and malformed JS detection. **Done when:** the GitHub Actions run passes and additional fixtures cover service calendars, midnight/DST, cancelled departures and stale data.
-- [ ] **P0-01c — Integration tests in CI.** **Initial mocked provider integration scenarios implemented, CI result pending:** `tests/providers.integration.test.mjs` verifies EMT fallback when Transitous fails, realtime priority, total outage and isolation of VBB/DB legacy IDs. Still needed: localStorage migration, full add/save/refresh UI workflow and a successful GitHub Actions run. **Done when:** all integration fixtures pass in CI and an E2E flow is verified.
+- [ ] **P0-01 — Automated JavaScript checks.** **Implemented; GitHub Actions success confirmed (2026-10-23):** `scripts/check-js.mjs` checks inline JavaScript, service worker and enabled-country JSON. `.github/workflows/ci.yml` runs on pushes and PRs. **Done when:** a GitHub Actions run succeeds and a deliberately malformed test fixture is rejected.
+- [ ] **P0-01b — Unit-test battery in CI.** **Initial 7 cases implemented; workflow success confirmed:** `tests/core.test.mjs` uses Node's built-in test runner; covers provider mapping, provider IDs, realtime deduplication, stop merging, geographic filtering and malformed JS detection. **Done when:** the GitHub Actions run passes and additional fixtures cover service calendars, midnight/DST, cancelled departures and stale data.
+- [ ] **P0-01c — Integration tests in CI.** **Initial mocked provider integration scenarios implemented; GitHub Actions success confirmed:** `tests/providers.integration.test.mjs` verifies EMT fallback when Transitous fails, realtime priority, total outage and isolation of VBB/DB legacy IDs. Still needed: localStorage migration, full add/save/refresh UI workflow and a successful GitHub Actions run. **Done when:** all integration fixtures pass in CI and an E2E flow is verified.
 - [ ] **P0-01d — CI quality gate for pull requests.** **Workflow implemented, verification pending:** require `checks` in branch protection after a successful CI run; preserve a way to roll back a broken release.
 - [ ] **P0-02 — Browser smoke tests on GitHub Pages.** Test each tab, language, theme, favorite save/remove, PWA update, offline shell and restored localStorage. **Done when:** reproducible Playwright or equivalent tests run in CI and are documented.
 - [ ] **P0-03 — Validate Transitous API integration.** Confirm request paths, schemas, CORS, stop search, timetable, delay, cancellation and error behavior. **Done when:** fixtures and at least one tested stop per enabled country pass.
@@ -106,3 +106,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [ ] Only after successful tests, enable a conservative scheduled refresh and record source freshness in UI.
 
 - [x] Correct VRS GTFS download URL to the **current official link** (`google_transit_goR.zip`), store explicit `file` mapping for non-filesystem-safe stop IDs and detect filename collisions; this importer change is not yet validated against a complete live feed.
+
+## Importer validation progress (2026-10-23)
+
+- [x] Fix VRS CSV reader: the prior parser returned a lazy reader after its ZIP member had closed, preventing real imports. Now rows stream while their source is open.
+- [x] Add offline synthetic GTFS importer tests in `tests/test_vrs_import.py`, including 101 stops with source IDs requiring filename mapping, GTFS departure times after 24:00, exceptions, and broken archive detection.
+- [x] Include Python importer tests in standard `ci.yml` using Python 3.12 and `unittest`.
+- [ ] Confirm updated CI run with Python tests succeeds. The earlier successful v0.9.2 JavaScript suite does not cover this new importer test.
+- [ ] Run `vrs-gtfs.yml` manually through GitHub Actions UI and validate the real official feed before automating updates. This connector can view Actions runs/logs but cannot dispatch a new workflow directly.
