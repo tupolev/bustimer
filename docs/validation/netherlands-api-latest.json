@@ -1,23 +1,123 @@
 {
-  "checked_at": "2026-10-23T14:26:17.035238+00:00",
-  "run_id": "39969565345",
-  "passed": false,
+  "checked_at": "2026-10-23T14:30:13.651404+00:00",
+  "run_id": "39970122882",
+  "passed": true,
   "cities": {
     "Amsterdam": {
-      "passed": false,
-      "error": "HTTP Error 403: Forbidden"
+      "query": "Amsterdam Centraal",
+      "matches": [
+        {
+          "id": "de-DELFI_000008400058",
+          "name": "Amsterdam Centraal"
+        },
+        {
+          "id": "eu-flixbus_dcbc54e2-9603-11e6-9066-549f350fcb0c",
+          "name": "Amsterdam, Centraal Station"
+        },
+        {
+          "id": "nl-OpenOV_stoparea:18184",
+          "name": "Amsterdam Lelylaan"
+        },
+        {
+          "id": "nl-OpenOV_NL:S:30009520",
+          "name": "Amsterdam, Strandvliet"
+        },
+        {
+          "id": "nl-OpenOV_NL:S:30004320",
+          "name": "Amsterdam, Heemstedestraat"
+        }
+      ],
+      "match_count": 10,
+      "cors": "*",
+      "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "passed": true
     },
     "Rotterdam": {
-      "passed": false,
-      "error": "HTTP Error 403: Forbidden"
+      "query": "Rotterdam Centraal",
+      "matches": [
+        {
+          "id": "fr-eurostar-gtfs-plan-de-transport-et-temps-reel_rotterdam_centraal_station_area",
+          "name": "Rotterdam Centraal"
+        },
+        {
+          "id": "be-sncb_8400530",
+          "name": "Rotterdam Centraal (NL)"
+        },
+        {
+          "id": "nl-OpenOV_NL:S:31008000",
+          "name": "Rotterdam, Rotterdam Centraal"
+        },
+        {
+          "id": "nl-OpenOV_NL:S:31003947",
+          "name": "Rotterdam, Rotterdam Centraal (uitstaphalte)"
+        },
+        {
+          "id": "nl-OpenOV_4016148",
+          "name": "Rotterdam, Rotterdam Centraal Blijdorpzijde"
+        }
+      ],
+      "match_count": 10,
+      "cors": "*",
+      "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "passed": true
     },
     "Utrecht": {
-      "passed": false,
-      "error": "HTTP Error 403: Forbidden"
+      "query": "Utrecht Centraal",
+      "matches": [
+        {
+          "id": "de-DELFI_000008400621",
+          "name": "Utrecht Centraal"
+        },
+        {
+          "id": "nl-OpenOV_3924001",
+          "name": "Utrecht, Centraal Museum"
+        },
+        {
+          "id": "eu-flixbus_dcbc53ef-9603-11e6-9066-549f350fcb0c",
+          "name": "Utrecht Central Station"
+        },
+        {
+          "id": "nl-OpenOV_3256672",
+          "name": "Utrecht, Neude"
+        },
+        {
+          "id": "nl-OpenOV_3924312",
+          "name": "Utrecht, Het Zand"
+        }
+      ],
+      "match_count": 10,
+      "cors": "*",
+      "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "passed": true
     },
     "Den Haag": {
-      "passed": false,
-      "error": "HTTP Error 403: Forbidden"
+      "query": "Den Haag Centraal",
+      "matches": [
+        {
+          "id": "nl-OpenOV_stoparea:18217",
+          "name": "Den Haag Centraal"
+        },
+        {
+          "id": "nl-OpenOV_4031148",
+          "name": "Den Haag, Centrum"
+        },
+        {
+          "id": "nl-OpenOV_4031474",
+          "name": "Den Haag, Lanen"
+        },
+        {
+          "id": "nl-OpenOV_3185288",
+          "name": "Den Haag, Guirlande"
+        },
+        {
+          "id": "nl-OpenOV_3185240",
+          "name": "Den Haag, Lozerlaan"
+        }
+      ],
+      "match_count": 10,
+      "cors": "*",
+      "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "passed": true
     }
   },
   "note": "Geocode and CORS only; departures/browser E2E not verified"
