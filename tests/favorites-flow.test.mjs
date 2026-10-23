@@ -30,6 +30,7 @@ function fixture(){
  ]};
  const context=vm.createContext({
   console,Option,Set,String,Array,Object,
+  iconFor:()=> "🚋",productLabels:{tram:"Tram",bus:"Bus"},
   state,saved,
   crypto:{randomUUID:()=>String(saved.length+1)},
   $:q=>elements[q.slice(1)],
