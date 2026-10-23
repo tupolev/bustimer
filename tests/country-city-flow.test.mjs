@@ -42,3 +42,12 @@ test("town list is loaded from same-origin static JSON",()=>{
  assert.match(script,/getJSON\("\.\/data\/towns\/"\+code\+"\.json"\)/);
  assert.match(script,/data\.country!==code\.toUpperCase\(\)/);
 });
+
+test("empty stop matches are not misreported as connection failures",()=>{
+ assert.match(script,/if\(!list\.length\)return \[\]/);
+ assert.doesNotMatch(script,/throw Error\("No providers returned stops"\)/);
+});
+test("Luxembourg and VRS search do not truncate results before city filtering",()=>{
+ assert.match(script,/\.includes\(q\)\)\.map\(s=>\(\{id:"lux:"\+s\.id/);
+ assert.match(script,/\.includes\(q\)\)\.map\(s=>\(\{id:"vrs:"\+s\.id/);
+});
