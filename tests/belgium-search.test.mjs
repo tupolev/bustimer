@@ -12,7 +12,7 @@ function slice(start,end){
  return script.slice(a,b);
 }
 const snippets=[
- slice("function stopDistance(","function regionalStops("),
+ slice("function stopDistance(","async function regionalStops("),
  slice("async function searchCountryStops(","async function searchGermanyStops(")
 ].join("\n");
 const central={lat:50.8451,lon:4.3596};
