@@ -9,12 +9,12 @@ assert.ok(script);
 const catalog=JSON.parse(fs.readFileSync("countries.json","utf8"));
 const country=catalog.countries.find(c=>c.id==="netherlands");
 
-test("Netherlands API-first code stays gated after upstream 403",()=>{
+test("Netherlands experimental API-first launch uses no GTFS mirror",()=>{
  assert.ok(country);
  assert.deepEqual(country.sources,["transitous"]);
  assert.deepEqual(country.regional,[]);
- assert.equal(country.enabled,false);
- assert.equal(country.status,"candidate");
+ assert.equal(country.enabled,true);
+ assert.equal(country.status,"experimental");
  assert.doesNotMatch(script,/data\/netherlands\/(?:search|services|stops)/);
  assert.doesNotMatch(script,/async function netherlandsDepartures/);
 });
