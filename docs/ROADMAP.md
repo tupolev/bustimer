@@ -460,3 +460,12 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] GitHub Actions [run 39970478094](https://github.com/tupolev/bustimer/actions/runs/39970478094) passed with real Transitous `/api/v1/geocode` and `/api/v6/stoptimes` calls across Amsterdam, Rotterdam, Utrecht and Den Haag. All 16 queried local `nl-OpenOV` stop candidates returned departures; observed line strings included 18/51/54, D/44/38, 2/8/27/73 and Sprinter/Intercity respectively. All 16 stop-times responses reported CORS `*`.
 - [ ] Verify an actual browser flow from the deployed PWA; the CI probe is a server request with User-Agent, not browser-origin proof. Check the requested central stops and sorting explicitly: geocode results may include nearby but nonmatching stops.
 - [ ] Run manual Playwright flow and assess the result before exposing Netherlands. The country catalog remains gated.
+
+
+## Netherlands experimental launch acceptance (2026-10-23)
+
+- [x] [Chromium Playwright run 39970861237](https://github.com/tupolev/bustimer/actions/runs/39970861237) reported `success` and persisted `docs/validation/browser-e2e-latest.json`. Includes a mocked NL stop → line → direction → favorite → reload browser flow; does not assert real API responses from browser.
+- [x] Prior live API [run 39970478094](https://github.com/tupolev/bustimer/actions/runs/39970478094) confirmed four-city stop search, departures and permissive CORS headers. Selected Dutch stop IDs may come from multiple upstream feed aggregations.
+- [x] Filter NL stop results by normalized query relevance to avoid displaying nearby unrelated stations; fast Node fixture updated.
+- [x] Enable `netherlands` with `status:experimental`, use Transitous on demand, retain the small GeoNames town index and credits. No national GTFS deployment.
+- [ ] Validate the current post-launch commit's fast CI status and manual smoke the live deployed Pages site; individual operator coverage/realtime are still partial and third-party dependent.
