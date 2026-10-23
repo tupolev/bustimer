@@ -8,7 +8,6 @@ import argparse
 import csv
 import io
 import json
-import os
 from pathlib import Path
 import re
 import shutil
@@ -18,7 +17,7 @@ import zipfile
 from collections import defaultdict
 from datetime import datetime, timezone
 
-DEFAULT_URL = "https://download.vrs.de/gtfs/Google_Transit_mit_GlobalIDs.zip"
+DEFAULT_URL = "https://download.vrs.de/gtfs/google_transit_goR.zip"
 DAYS = ("monday","tuesday","wednesday","thursday","friday","saturday","sunday")
 
 def rows(z, name):
@@ -59,6 +58,7 @@ def build(zip_path, out):
             kind=route.get("route_type","3")
             by_stop[s["stop_id"]].append([hh*60+mm,service,name,s.get("stop_headsign") or headsign,kind])
         index=[]
+        filenames=set()
         for s in rows(z,"stops.txt"):
             sid=s["stop_id"]
             if sid not in by_stop:continue
@@ -71,9 +71,14 @@ def build(zip_path, out):
                 # Never silently overwrite colliding sanitized filenames.
                 import hashlib
                 safe=hashlib.sha256(sid.encode()).hexdigest()[:24]
+            if safe in filenames: raise ValueError("Stop filename collision: "+safe)
+            filenames.add(safe)
+            index[-1]["file"]=safe
             write(out/"stops"/(safe+".json"),sorted(set(tuple(x) for x in by_stop[sid])))
         if len(index)<100:
             raise ValueError("Suspiciously small VRS import: "+str(len(index)))
+        if not any((row["from"]<=datetime.now(timezone.utc).strftime("%Y%m%d")<=row["to"]) for row in calendar.values()) and not any(datetime.now(timezone.utc).strftime("%Y%m%d") in ex for ex in exceptions.values()):
+            raise ValueError("GTFS has no calendar service for current date")
         write(out/"index.json",{"updated":datetime.now(timezone.utc).isoformat(),"timezone":"Europe/Berlin","source":DEFAULT_URL,"license":"Datenlizenz Deutschland Zero 2.0 — VRS","stops":index,"calendar":calendar,"exceptions":exceptions})
         print("Built",len(index),"VRS stops")
 
