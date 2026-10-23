@@ -33,6 +33,49 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #FFC629
 :root[data-theme=dark] .btn.ghost{color:var(--text)}
 :root[data-theme=dark] a{color:#FFDE78}
 @media(max-width:600px){.logo-icon{width:46px;height:46px}}
+
+/* Station-board inspired layout, retains one-card-per-monitored-line behavior. */
+.hero{padding-top:24px;padding-bottom:94px}
+.hero .header{max-width:1000px;margin:0 auto}
+.hero-copy{max-width:1000px;margin:32px auto 0}
+.hero-copy h1{font-weight:850}
+.shell{max-width:1060px;margin-top:-53px}
+.app{border-radius:23px}
+.nav{background:var(--panel);padding:12px;gap:8px}
+.nav button{padding:17px 8px;border:1px solid transparent;font-weight:750}
+.nav button[aria-selected=true]{border-color:#DDAA1D}
+.section-head h2{color:var(--text);font-weight:850}
+.cards{gap:18px}
+.stop-card{position:relative;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px;border-radius:20px;padding:0;overflow:hidden}
+.stop-card>div:first-child{padding:24px 26px 17px;background:linear-gradient(115deg,#092A52,#123D6B);color:#fff;align-self:stretch}
+.stop-card .stop-city{color:#FFDE78;text-transform:none;letter-spacing:.02em;font-size:.79rem}
+.stop-card .stop-name{color:white;font-size:clamp(1.2rem,2.5vw,1.55rem);margin:7px 0 15px;line-height:1.25}
+.stop-card .route{gap:10px}
+.stop-card .line-badge{font-size:1.3rem;border-radius:10px;min-width:52px;text-align:center;padding:8px 12px}
+.stop-card .type-badge{color:#DFE9F7;font-size:.82rem}
+.stop-card .arrival{padding:20px 24px 15px 0;min-width:130px}
+.stop-card .countdown{color:var(--text);font-size:2.25rem}
+.stop-card .card-footer{background:var(--panel);padding:13px 24px;border-top:1px solid var(--border)}
+.stop-card .status{line-height:1.6}
+.form{max-width:780px}
+.field{margin-bottom:20px}
+.field input,.field select{min-height:49px}
+#save{padding:15px 22px;min-height:50px}
+.info{border-radius:17px}
+:root[data-theme=dark] .stop-card>div:first-child{background:linear-gradient(115deg,#092A52,#174571)}
+:root[data-theme=dark] .stop-card .countdown{color:var(--text)}
+@media(max-width:600px){
+ .hero{padding-bottom:82px}.hero-copy{margin-top:26px}
+ .shell{margin-top:-45px}
+ .nav{padding:8px;gap:4px}
+ .nav button{font-size:.72rem;padding:13px 3px}
+ .stop-card{grid-template-columns:minmax(0,1fr) auto;gap:0}
+ .stop-card>div:first-child{padding:16px 13px}
+ .stop-card .stop-name{font-size:1.05rem}
+ .stop-card .arrival{min-width:99px;padding:12px 12px 12px 2px}
+ .stop-card .countdown{font-size:1.55rem}
+ .stop-card .card-footer{padding:10px 13px}
+}
 </style>
 </head>
 <body>
