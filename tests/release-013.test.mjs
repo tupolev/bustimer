@@ -34,10 +34,14 @@ test("new brand is consistent between SVG icon, manifest and HTML",()=>{
  assert.match(html,/--accent:#FFC629/);
 });
 
-test("station-board cards preserve line and direction without fabricated multi-line departures",()=>{
- assert.match(html,/\.stop-card>div:first-child\{padding:24px 26px 17px;background:linear-gradient/);
- assert.match(html,/\.stop-card \.line-badge/);
- assert.match(html,/saved\.forEach\(s=>/);
- assert.match(html,/escapeHTML\(s\.line\)/);
- assert.match(html,/escapeHTML\(dep\.direction\)/);
+test("station cards group only identical source stop IDs, preserving independent line rows",()=>{
+ assert.match(html,/function groupFavoriteStops\(stops\)/);
+ assert.match(html,/String\(stop.city\)\+":"\+String\(stop.stopId\)/);
+ assert.match(html,/for\(const group of groupFavoriteStops\(saved\)\)/);
+ assert.match(html,/for\(const s of group\)/);
+ assert.match(html,/row.dataset.favoriteId=String\(s.id\)/);
+ assert.match(html,/escapeHTML\(s.line\)/);
+ assert.match(html,/s.direction/);
+ assert.match(html,/saved=saved.filter\(x=>x.id!==s.id\)/);
+ assert.match(html,/\.station-card\{/);
 });
