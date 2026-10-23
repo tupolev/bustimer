@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.7.0** · No build step · No backend · MIT licensed
+**Version 0.8.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -141,3 +141,13 @@ One `COUNTRY_CATALOG` routes Germany and Spain through a national Transitous sea
 **Activation checklist:** verify a public and legally reusable timetable feed with dates and exceptions; a working stop search and stop departures endpoint (plus browser CORS); real stop-ID consistency; transport-mode and route mapping; attribution/licensing; sample searches in multiple cities and directions; rate limits; and fallback/error behavior. Then add verified bounds/geo-hint, register the corresponding provider and expand the allow-list, followed by regression testing. Merely flipping `enabled` to true in JSON is deliberately insufficient.
 
 The European Commission's [National Access Points](https://transport.ec.europa.eu/transport-themes/smart-mobility/road/its-directive-and-action-plan/national-access-points_en) are useful discovery catalogs, **not** a unified API granting automatic coverage. Transitous remains best-effort and open-source/non-commercial usage applies: https://transitous.org/api/.
+
+## France and Portugal experimental integration (v0.8.0)
+
+**France 🇫🇷 and Portugal 🇵🇹** are now enabled as **experimental** choices using Transitous stop search and departure lookup, with the same country catalog and core UI as Germany and Spain. No new API keys are needed. The geographical filters include French metropolitan territory and mainland Portugal plus the Azores and Madeira; they are approximate, not precise national boundaries. Country names are appended to stop searches. These countries do **not** yet have independent static GTFS fallback and coverage is not guaranteed.
+
+- France official National Access Point: https://transport.data.gouv.fr/ (GTFS / GTFS-RT and SIRI data sources, with source-specific licenses).
+- Portugal National Access Point: https://nap-portugal.imt-ip.pt/nap/multimodalsupply (operator feed discovery, not a uniform arrivals API).
+- Transitous usage policy: https://transitous.org/api/ ; attribution: https://transitous.org/sources/ .
+
+Activation does not mean all operators work. In this iteration live web API requests and end-to-end GitHub Pages rendering were not verifiable from the development environment; validate Paris Gare du Nord, Lyon Part-Dieu, Lisboa Oriente and Porto São Bento and mark unsupported networks clearly. The provider catalog distinguishes experimental coverage from the core countries.
