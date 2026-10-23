@@ -283,3 +283,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Confirm JavaScript and four real compiled dataset CI passed ([run 39952812129](https://github.com/tupolev/bustimer/actions/runs/39952812129)) and GitHub Pages deployed ([run 39952811855](https://github.com/tupolev/bustimer/actions/runs/39952811855)).
 - [ ] Manually exercise browser flows for Bruxelles/Brussel → Gare Centrale, Gent → tram/bus, and Liège → TEC; live/browser smoke tests not supplied by current CI.
 - [ ] Expand realtime providers as authentication and licensing permit; never label static times live.
+
+## Belgian interchange search refinement (2026-10-23)
+
+- [x] Keep two platforms from the same operator as distinct selectable stops even when their names and coordinates nearly match; only merge across providers.
+- [x] Prioritize prefix matching, then geographic proximity to the selected city so the limited result list favors local stops.
+- [x] Add regression fixture for same-operator STIB Gare Centrale platforms.
+- [ ] Confirm language and platform selection in live browser for Brussels Central, Gent and Liège.
