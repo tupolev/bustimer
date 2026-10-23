@@ -36,14 +36,15 @@ class VRSImporterTests(unittest.TestCase):
                     z.writestr(name,f.getvalue())
             target=root/"output"
             module.build(zfile,target)
-            idx=json.loads((target/"index.json").read_text())
+            idx=json.loads((target/"search.json").read_text())
+            services=json.loads((target/"services.json").read_text())
             self.assertEqual(len(idx["stops"]),101)
             self.assertEqual(idx["timezone"],"Europe/Berlin")
             item=idx["stops"][0]
             self.assertEqual(item["id"],"vrs:stop:0")
             self.assertEqual(len(item["file"]),24)
             self.assertEqual(json.loads((target/"stops"/(item["file"]+".json")).read_text())[0][0],1512)
-            self.assertTrue(idx["exceptions"]["work"][today])
+            self.assertTrue(services["exceptions"]["work"][today])
     def test_invalid_archive_does_not_replace_data(self):
         with tempfile.TemporaryDirectory() as td:
             zfile=Path(td)/"broken.zip"
