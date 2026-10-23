@@ -41,7 +41,7 @@ test("Dutch stop discovery invokes national HTTPS API and preserves selected-cit
    assert.match(url,/^https:\/\/api\.transitous\.org\/api\/v1\/geocode\?/);
    return {stub:true};
   },
-  motisStops:()=>[{id:"dutch:1",name:"Centraal",latitude:52.09,longitude:5.12,type:"stop"}],
+  motisStops:()=>[{id:"dutch:1",name:"Utrecht Centraal",latitude:52.09,longitude:5.12,type:"stop"},{id:"dutch:2",name:"Utrecht Museum",latitude:52.09,longitude:5.12,type:"stop"}],
   inBounds:()=>true,
   chosenTown:{name:"Utrecht",lat:52.09,lon:5.12},
   stopDistance:()=>0,
@@ -51,7 +51,7 @@ test("Dutch stop discovery invokes national HTTPS API and preserves selected-cit
  });
  vm.runInContext(script.slice(start,end),context);
  const results=await context.searchCountryStops("netherlands","Centraal","Utrecht");
- assert.equal(results.length,1);
+ assert.equal(results.length,1,"unrelated places near the selected town must be excluded");
  assert.equal(results[0].provider,"transitous");
  assert.equal(results[0].id,"dutch:1");
 });
