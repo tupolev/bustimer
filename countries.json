@@ -57,11 +57,20 @@
       "name": "France",
       "flag": "🇫🇷",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "Experimental Transitous coverage; official GTFS/GTFS-RT data available through transport.data.gouv.fr, not independently integrated",
+      "geocode": "France",
+      "bounds": [
+        41.2,
+        51.3,
+        -5.3,
+        9.8
+      ]
     },
     {
       "id": "portugal",
@@ -69,11 +78,20 @@
       "name": "Portugal",
       "flag": "🇵🇹",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "Experimental Transitous coverage; NAP Portugal lists operator feeds but no dedicated fallback integrated",
+      "geocode": "Portugal",
+      "bounds": [
+        32.4,
+        42.2,
+        -31.5,
+        -6.1
+      ]
     },
     {
       "id": "netherlands",
