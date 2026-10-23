@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "BusTimer — Live Departures",
+  "short_name": "BusTimer",
+  "description": "Monitor your next bus or train from your favorite stops.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101c36",
+  "theme_color": "#101c36",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
