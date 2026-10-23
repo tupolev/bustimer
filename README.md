@@ -1,13 +1,5 @@
 # BusTimer 🚌 🚇
 
-## Hosting and optional anonymous Web Push
-
-BusTimer is a single installable PWA with an optional PHP 8.2+ backend for background departure reminders. Frontend assets and the PHP API are deployed together under **the same origin**; the public client uses the relative endpoint `./server/api.php`. Deployment is performed by the [manual production workflow](.github/workflows/deploy-dreamhost.yml), and private Web Push initialization by the [separate manual workflow](.github/workflows/initialize-push.yml). See [backend setup and operations](server/README.md) for hosting-specific instructions.
-
-**Deployment state (October 2026):** The production deployment workflow completed successfully, with checks for the frontend and uploaded PHP files. The API returned HTTP 500 at the last verified deployment because private VAPID/SQLite configuration had not yet been initialized. Completing the one-time server initialization and configuring the scheduled PHP cron remain necessary before remote alarms can work. The CI result alone is not proof that Push delivery works.
-
-**Privacy:** No user accounts, user email addresses, names, profiles, tracking, or analytics are required. The server stores only random device identifiers, hashed device authorization tokens, technical Push subscriptions, and the minimum alarm parameters for delivery. Subscriptions may constitute personal data even without names; they must be protected and removed when no longer needed. Browser-local favorites and application preferences remain on the device. Local alarms require the PWA to be active; remote Web Push delivery is experimental and its exact timing is not guaranteed.
-
 [![Build](https://github.com/tupolev/bustimer/actions/workflows/ci.yml/badge.svg)](https://github.com/tupolev/bustimer/actions/workflows/ci.yml)
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
@@ -103,6 +95,15 @@ The dropdown of lines is populated from the available upcoming departures at a c
 If an API is unavailable, the app shows an error instead of simulated predictions. Time fields come from the upstream provider. Delay appears only if provided; **scheduled is not equivalent to realtime**.
 
 Stop search and departure data require internet. App-shell resources may be accessible offline after installation. Browsers may suspend background tabs; this app does not claim background monitoring or push notifications.
+
+## Hosting and optional anonymous Web Push
+
+BusTimer is a single installable PWA with an optional PHP 8.2+ backend for background departure reminders. Frontend assets and the PHP API are deployed together under **the same origin**; the public client uses the relative endpoint `./server/api.php`. Deployment is performed by the [manual production workflow](.github/workflows/deploy-dreamhost.yml), and private Web Push initialization by the [separate manual workflow](.github/workflows/initialize-push.yml). See [backend setup and operations](server/README.md) for hosting-specific instructions.
+
+**Deployment state (October 2026):** The production deployment workflow completed successfully, with checks for the frontend and uploaded PHP files. VAPID and private SQLite have been provisioned, and the minute cron installation workflow completed successfully. Real-device background delivery, cancellation, and recurring-alert deduplication still require end-to-end verification. The CI result alone is not proof that Push delivery works.
+
+**Privacy:** No user accounts, user email addresses, names, profiles, tracking, or analytics are required. The server stores only random device identifiers, hashed device authorization tokens, technical Push subscriptions, and the minimum alarm parameters for delivery. Subscriptions may constitute personal data even without names; they must be protected and removed when no longer needed. Browser-local favorites and application preferences remain on the device. Local alarms require the PWA to be active; remote Web Push delivery is experimental and its exact timing is not guaranteed.
+
 
 ## Development
 
