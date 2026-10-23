@@ -205,3 +205,7 @@ The PWA now contains a Luxembourg static GTFS provider adapter for search, servi
 ## 🇱🇺 Luxembourg experimental (v0.9.6)
 
 Official Luxembourg national GTFS is published, and country selection is enabled as **experimental**. The feed provides **scheduled** times, not real-time delays. 2,767 stops and 217 calendars were validated, including the Hamilius bus stop timetable. The original country selector allowlist and cross-provider stop ID mapping are updated for Luxembourg. Browser smoke tests and production refresh remain follow-up work.
+
+## Automatic Luxembourg refresh
+
+The Luxembourg GTFS publisher runs automatically **every Tuesday at 05:43 UTC** and also when its workflow YAML changes on `main`. Concurrent executions are serialized; manual dispatch is still supported. The first automatic trigger requires validation. Data are scheduled-only under CC BY 4.0 with attribution in the dataset metadata.
