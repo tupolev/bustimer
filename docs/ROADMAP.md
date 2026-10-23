@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.2** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.3** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -127,3 +127,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Official GTFS first import and GitHub publication verified (run 39938475320, 20,494 stops).
 - [x] Set a conservative **weekly Monday 04:37 UTC** VRS refresh via GitHub Actions (manual dispatch remains available); add concurrency serialization and a basic upper-bound guard on stop count. Source freshness remains to be tested on the published app.
 - [ ] Verify the first scheduled run, app stop search for Bonn/Köln and departure dates/directions. Increase to daily only after dataset storage/deployment is optimized.
+
+## VRS live data inspection (2026-10-23)
+
+- [x] Verified published VRS index via GitHub REST: **20,494 stops**, **4,507** service calendars, **4,345** exception sets; sample stops include Bonn Hbf and Köln Neumarkt/Heumarkt. Verified a Bonn Hbf stop timetable contains planned departures and trip headsigns.
+- [x] Adjusted German country stop discovery to prioritize regional provider results before national Transitous results, and rank stops whose names start with the query. Prevents official VRS matches being excluded by the first-20 limit.
+- [x] Added VRS namespace regression test for original IDs and cross-provider references.
+- [ ] Verify the public browser experience, GTFS clock conversion around DST and real-world departures. Dataset presence alone does not verify display correctness.
+- [ ] Optimize search payload: the combined `data/vrs/index.json` is approximately **5.4 MB** of JSON; split search-only stop list from calendar data, ideally shard or compress before increasing update cadence.
