@@ -87,12 +87,26 @@ jobs:
             --exclude='*.sqlite' --exclude='*.sqlite-shm' --exclude='*.sqlite-wal' \
             -e 'sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password,keyboard-interactive' \
             stage/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
-      - name: Verify deployed PWA and API presence
+      - name: Verify deployed PWA and report PHP configuration state
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/ | grep -qi 'bustimer'
-          curl --fail --silent --show-error --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/sw.js | grep -q 'bustimer-shell'
-          config=$(curl --fail --silent --show-error --retry 3 --retry-delay 3 'https://bustimer.kodesoft.net/server/api.php?action=config')
-          echo "$config" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("enabled") is True and isinstance(d.get("publicKey"),str) and len(d["publicKey"]) > 20'
-          echo 'PWA and configured PHP API are reachable.'
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 \
+            --output /tmp/bustimer-index.html 'https://bustimer.kodesoft.net/'
+          grep -qi 'bustimer' /tmp/bustimer-index.html
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 \
+            --output /tmp/bustimer-sw.js 'https://bustimer.kodesoft.net/sw.js'
+          grep -q 'bustimer-shell' /tmp/bustimer-sw.js
+          # PHP settings.php/VAPID are intentionally server-side, provisioned separately.
+          # Distinguish missing configuration (500) from an absent PHP endpoint (404).
+          api_status=$(curl --silent --show-error --output /tmp/bustimer-api.json \
+            --write-out '%{http_code}' 'https://bustimer.kodesoft.net/server/api.php?action=config')
+          if [[ "$api_status" == "200" ]]; then
+            python3 -c 'import json; d=json.load(open("/tmp/bustimer-api.json")); assert d.get("enabled") is True and isinstance(d.get("publicKey"),str) and len(d["publicKey"]) > 20'
+            echo 'PWA deployed. PHP Web Push API configured.'
+          elif [[ "$api_status" == "500" || "$api_status" == "503" ]]; then
+            echo "::warning::PWA deployed; PHP Web Push API is not yet configured or available (HTTP $api_status). Configure private settings.php and VAPID before enabling push alarms."
+          else
+            echo "::error::Unexpected API HTTP status: $api_status"
+            exit 1
+          fi
