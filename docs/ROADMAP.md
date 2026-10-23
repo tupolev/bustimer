@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.10.0** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.10.1** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -228,3 +228,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Translate UI labels and selector prompts in ES/EN/DE; correct country/city/stop/transport/line/direction step numbering.
 - [x] Add automated translation policy regression tests.
 - [ ] Verify literal naming for any new providers before enabling and browser-smoke-test language switches.
+
+## Locale switch and city selection regression (v0.10.1)
+
+- [x] Changing the interface language no longer unlocks stop searches unless the user has selected a valid city suggestion; preserves language rules and avoids unscoped queries.
+- [x] Regression check added to literal-label tests.
+- [ ] Follow up with real-browser integration checks for all three UI languages and saved stops.
