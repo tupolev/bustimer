@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.4** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.5** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -180,3 +180,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Successful [run 39944904441](https://github.com/tupolev/bustimer/actions/runs/39944904441): 2,767 Luxembourg stops, 217 calendars, valid stop JSON, staged artifacts available.
 - [ ] Publish Luxembourg split GTFS output into `data/luxembourg` with safe rebase/retry and bounded refresh cadence.
 - [ ] Implement and test country search, saved favorites, Europe/Luxembourg service-date conversion, product mapping and scheduled-only provenance. Then enable Luxembourg experimentally, not before.
+
+## Luxembourg app adapter and staged publication (v0.9.5)
+
+- [x] Implement optional Luxembourg static stop discovery, departures, service calendar, and source-namespaced IDs (`lux:`). Not enabled in country selector until published source and browser checks.
+- [x] Fix VRS absent-time guard for DST gap; retain schedule-only provenance for both feeds.
+- [ ] Publish Luxembourg GTFS and verify index/stop URLs under GitHub Pages; then enable only after test fixtures and browser smoke validation.
