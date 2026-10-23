@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/new-countries-api.yml"
+      - "scripts/audit_next_countries.py"
 permissions:
   contents: write
 jobs:
