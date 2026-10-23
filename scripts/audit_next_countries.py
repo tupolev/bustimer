@@ -12,6 +12,9 @@ LOCATIONS={
  "switzerland":("Zürich HB, Zürich, Schweiz",(47.378,8.541)),
  "italy":("Milano Centrale, Milano, Italia",(45.486,9.205)),
  "czechia":("Praha hlavní nádraží, Praha, Česko",(50.083,14.434)),
+ "poland":("Warszawa Centralna, Warszawa, Polska",(52.229,21.003)),
+ "denmark":("København H, København, Danmark",(55.672,12.565)),
+ "sweden":("Stockholm Centralstation, Stockholm, Sverige",(59.33,18.058)),
 }
 def get(path,params):
  u="https://api.transitous.org"+path+"?"+urlencode(params)
