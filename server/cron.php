@@ -2,7 +2,7 @@
 declare(strict_types=1);
 if(PHP_SAPI!=='cli') {http_response_code(404);exit;}
 require __DIR__.'/lib.php';
-$now=time();$sent=0;$errors=0;$feeds=[];
+$now=time();$sent=0;$errors=0;$matched=0;$feeds=[];
 function departuresFor(string $stop):array{
  global $cfg,$feeds;
  if(isset($feeds[$stop]))return $feeds[$stop];
@@ -12,6 +12,17 @@ function departuresFor(string $stop):array{
  if($raw===false||$code!==200)throw new RuntimeException('Upstream HTTP '.$code);
  $result=json_decode($raw,true);
  return $feeds[$stop]=is_array($result['stopTimes']??null)?$result['stopTimes']:[];
+}
+function normalizedMode(string $mode):string{
+ $m=strtoupper($mode);
+ if(in_array($m,['BUS','COACH','TROLLEYBUS'],true))return 'bus';
+ if($m==='TRAM')return 'tram';
+ if(in_array($m,['SUBWAY','METRO'],true))return 'subway';
+ if($m==='SUBURBAN')return 'suburban';
+ if($m==='FERRY')return 'ferry';
+ if(str_contains($m,'REGIONAL'))return 'regional';
+ if(str_contains($m,'HIGH')||str_contains($m,'LONG'))return 'nationalExpress';
+ return 'other';
 }
 function departureKey(array $item):string{
  $place=$item['place']??[];
@@ -24,11 +35,9 @@ foreach($records as $alarm){
   $best=null;$bestTime=PHP_INT_MAX;
   foreach(departuresFor($alarm['stop_id']) as $dep){
    if(!is_array($dep)||($dep['cancelled']??false)||($dep['tripCancelled']??false))continue;
-   if((string)($dep['routeShortName']??$dep['displayName']??'')!==$alarm['line'])continue;
-   $mode=strtolower((string)($dep['mode']??''));
-   $map=['bus'=>'bus','tram'=>'tram','subway'=>'subway','metro'=>'subway','suburban'=>'suburban','ferry'=>'ferry'];
-   $product=$map[$mode]??(str_contains($mode,'regional')?'regional':(str_contains($mode,'high')||str_contains($mode,'long')?'nationalExpress':'other'));
-   if($product!==$alarm['mode'])continue;
+   $line=(string)($dep['routeShortName']?:($dep['displayName']?:($dep['routeLongName']??'')));
+   if($line!==$alarm['line'])continue;
+   if(normalizedMode((string)($dep['mode']??''))!==$alarm['mode'])continue;
    $direction=(string)($dep['headsign']??'');
    if($alarm['direction']!==''&&$direction!==$alarm['direction'])continue;
    $place=$dep['place']??[];
@@ -37,6 +46,7 @@ foreach($records as $alarm){
    $best=$dep;$bestTime=$time;
   }
   if(!$best)continue;
+  ++$matched;
   $key=departureKey($best);
   if(!$key||$alarm['last_notified']===$key)continue;
   $remaining=max(0,(int)ceil(($bestTime-$now)/60));
@@ -49,4 +59,4 @@ foreach($records as $alarm){
   ++$sent;
  }catch(Throwable $e){++$errors;error_log('BusTimer alarm error: '.$e->getMessage());}
 }
-echo "BusTimer cron: sent=$sent errors=$errors alarms=".count($records)."\n";
+echo "BusTimer cron: sent=$sent errors=$errors matched=$matched alarms=".count($records)."\n";
