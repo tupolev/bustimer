@@ -1,6 +1,6 @@
 # BusTimer Push backend (PHP)
 
-Target: **https://bustimer.kodesoft.net/server/api.php**. The PWA stays on **https://tupolev.github.io/bustimer/**. This is an opt-in, experimental Web Push feature; it does **not** require user accounts.
+Target: **https://bustimer.kodesoft.net/server/api.php**. The PWA and API are served from the same production origin **https://bustimer.kodesoft.net/**. This is an opt-in, experimental Web Push feature; it does **not** require user accounts.
 
 ## Requirements
 - HTTPS, PHP **8.2+**, SQLite (PDO_SQLITE), cURL, JSON, mbstring and OpenSSL
@@ -13,11 +13,11 @@ Target: **https://bustimer.kodesoft.net/server/api.php**. The PWA stays on **htt
 1. Upload the entire `server/` directory under the host's document root so `https://bustimer.kodesoft.net/server/api.php?action=config` is reachable.
 2. From `server/`, run `composer install --no-dev --optimize-autoloader` (or run it locally and upload `vendor/`).
 3. Generate **one** VAPID key pair using `php generate-vapid.php` from the `server/` directory. Keep the private output secret and do not regenerate keys after users subscribe.
-4. Copy `settings.example.php` to `settings.php`, fill the VAPID keys, a genuine contact email in `vapid_subject`, and an **absolute SQLite file path outside the public document root**. Set the origin to exactly `https://tupolev.github.io`.
+4. Copy `settings.example.php` to `settings.php`, fill the VAPID keys, a genuine contact email in `vapid_subject`, and an **absolute SQLite file path outside the public document root**. Set the origin to exactly `https://bustimer.kodesoft.net`.
 5. Ensure the PHP user can write to the SQLite directory. Do **not** publicly expose the database, `settings.php`, `vendor/`, source files, error logs or Composer files. `.htaccess` protects Apache; **Nginx needs equivalent explicit deny rules**. The example path `/home/YOUR_ACCOUNT/private/` is a placeholder, not a production path.
 6. Add a control-panel cron job at **one-minute frequency** (adapt path to your hosting):
 
-   `* * * * * /usr/bin/php /home/YOUR_ACCOUNT/public_html/server/cron.php`
+   `* * * * * /usr/bin/php /home/dh_ikhr5d/bustimer.kodesoft.net/server/cron.php`
 
    Run the same command manually once to confirm it can initialize the database and contact Transitous. The cron is **CLI-only** and cannot be invoked as a public URL.
 7. Open the config URL in your browser. It should return `enabled:true` with the **public** VAPID key only. Never return private settings.
@@ -31,8 +31,8 @@ Target: **https://bustimer.kodesoft.net/server/api.php**. The PWA stays on **htt
 - Remote alarms are cancelled when the user removes the alarm or its favorite while online. If the PHP server is unreachable during cancellation, the PWA retains the alarm so it can be retried rather than silently leaving a remote alarm behind.
 
 ## Security / operations
-- Use a dedicated host subdomain with valid TLS. Do not store `settings.php`, live SQLite files, `vendor/` or credentials in GitHub. These files are ignored by Git.
-- CORS permits only the published GitHub Pages origin. CORS is **not** authentication: bearer tokens authenticate modification. Consider firewall/WAF rate limits for the public subscription endpoint and monitor outgoing traffic.
+- Use a dedicated host subdomain with valid TLS. Do not store `settings.php`, live SQLite files or credentials in GitHub. The deployment builds and uploads `vendor/` as a runtime dependency. These files are ignored by Git.
+- CORS permits only the configured production origin. CORS is **not** authentication: bearer tokens authenticate modification. Consider firewall/WAF rate limits for the public subscription endpoint and monitor outgoing traffic.
 - Back up the SQLite database in a private location. Deleting it drops all registrations and alarm state.
 - Push endpoints are personal device identifiers. Retain subscriptions only as needed; users should be able to delete their device subscription. Currently the API has `DELETE ?action=unsubscribe` for that purpose.
 - Check your hosting's outbound HTTP restrictions and PHP `disable_functions` configuration.
@@ -52,3 +52,22 @@ Device-authenticated requests carry `X-BusTimer-Device` and `X-BusTimer-Token` h
 This is an initial implementation. Test with real Android/iOS/desktop push subscriptions and cron on your specific host; real-time provider fields vary by country. Provide subscription cleanup/expiration, better abuse prevention and end-to-end failure instrumentation before advertising guaranteed background alarms.
 
 Note: the subscription endpoint permits only known Apple, Mozilla, Google FCM and Microsoft push-service hosts to limit outbound-request abuse. Expand that list carefully only if a supported browser uses another verified endpoint.
+
+## DreamHost production deployment
+
+The workflow [deploy-dreamhost.yml](../.github/workflows/deploy-dreamhost.yml) is **manual** (Actions → Deploy BusTimer to DreamHost → Run workflow), uses the environment `dreamhost-production`, and never deletes files at the destination. Prepare production before its first run:
+
+1. Generate a dedicated key locally: `ssh-keygen -t ed25519 -f ~/.ssh/bustimer_dreamhost -C bustimer-github-actions`. Do not set a passphrase for this unattended **dedicated** CI key; restrict its use and rotate it if exposed.
+2. Add the exact content of `~/.ssh/bustimer_dreamhost.pub` to `~/.ssh/authorized_keys` on DreamHost for `dh_ikhr5d` (using an already authorized SSH login or the DreamHost panel). Keep this user restricted to the deployment account. Test: `ssh -i ~/.ssh/bustimer_dreamhost dh_ikhr5d@bustimer.kodesoft.net 'php -v; php -m'`.
+3. Verify the server's SSH host key **out of band** (DreamHost control panel or documented host fingerprint). `ssh-keyscan -H bustimer.kodesoft.net` can collect the host key but does **not** authenticate it; compare the fingerprint before trusting it.
+4. In GitHub repository **Settings → Environments → dreamhost-production**, add Environment secrets:
+   - `DREAMHOST_SSH_KEY`: contents of `~/.ssh/bustimer_dreamhost`, including BEGIN/END lines (never commit or paste in chat)
+   - `DREAMHOST_KNOWN_HOSTS`: verified known_hosts line(s) for `bustimer.kodesoft.net`
+   - `DREAMHOST_SSH_HOST`: `bustimer.kodesoft.net`
+   - `DREAMHOST_SSH_USER`: `dh_ikhr5d`
+   - `DREAMHOST_WEB_ROOT`: `/home/dh_ikhr5d/bustimer.kodesoft.net/`
+5. Ensure that the domain serves that exact directory with HTTPS, that PHP CLI **and web PHP** are at least 8.2 with `pdo_sqlite`, `curl`, `openssl`, and `mbstring`, and Apache honors `.htaccess`. If SSH defaults to an old PHP but a modern binary exists, arrange an explicit binary in the workflow and cron rather than bypassing the check.
+6. Store `settings.php` only on DreamHost in `/home/dh_ikhr5d/bustimer.kodesoft.net/server/settings.php`. Create its database directory outside the document root, e.g. `/home/dh_ikhr5d/bustimer-private/` with owner-only permissions. Run VAPID generation privately. Preserve keys and SQLite across releases.
+7. After deployment check `/server/api.php?action=config` returns `enabled:true` and only the public key; ensure `/server/cron.php`, `/server/settings.php`, `/server/lib.php` and `/server/vendor/autoload.php` cannot be read over HTTP. Schedule the minute cron only after manual CLI validation. The workflow does not create the server-side cron, secrets, or VAPID keys.
+
+**Note:** If the server has an existing site, back it up before first deployment. Rsync does not use `--delete`; unmatched old files will remain. The workflow's HTTP smoke check confirms reachability, not functional Web Push delivery.
