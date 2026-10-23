@@ -8,6 +8,8 @@ A lightweight, responsive, installable PWA to monitor the next departures of sav
 
 **Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
 
+**European data sources:** [Netherlands, Belgium and Luxembourg evaluation](docs/EU-SOURCES.md) — providers, licenses, integration sequence and country activation requirements.
+
 **Project tracking:** [Implementation roadmap and checklist](docs/ROADMAP.md) — priorities, verified vs. unverified status, country expansion, blockers and session handoff instructions. · No build step · No backend · MIT licensed
 
 ## Features
