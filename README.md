@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.2.0** · No build step · No backend · MIT licensed
+**Version 0.2.1** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -91,3 +91,12 @@ Stops and preferences are stored in your browser. This project does not send the
 Transit predictions are supplied by third-party services and may be unavailable or inaccurate.
 
 © BusTimer contributors. MIT license.
+
+## API use, attribution and security (v0.2.1)
+
+- BusTimer is an open-source, non-commercial application with contact and support at https://github.com/tupolev/bustimer/issues.
+- Public data providers: https://transitous.org/api/, https://transitous.org/sources/, https://v6.vbb.transport.rest/, https://v6.db.transport.rest/. Data licenses vary by originating operator. OSM attribution: https://www.openstreetmap.org/copyright.
+- Browser requests cannot reliably set a custom User-Agent (a forbidden request header); Transitous accepts browser Referer when website contact details are present. Avoid policies that strip the HTTP Referer from API requests. If the browser suppresses the Referer, the provider may reject or limit requests.
+- Refresh only while visible and on the monitored-stops tab. Stop queries share results via short-lived client-side cache for 60 seconds; search queries use 550 ms debounce and 2-minute memoization. These mitigations are per-browser, not a global quota. A production-scale user base should contact upstream maintainers before generating substantial traffic.
+- Public JavaScript must never contain private API keys. **No keys or access tokens are currently committed.** Any future credentialed API needs a protected server-side proxy with secret management and rate limits, not GitHub Pages frontend code.
+- External API requests reveal the browser's IP and queried stops to providers; stop preferences remain in localStorage in this app.
