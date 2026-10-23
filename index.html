@@ -221,9 +221,9 @@ function motisStops(data){const list=Array.isArray(data)?data:(data?.matches||da
 
 // Spain is one public network; EMT Málaga is an internal fallback provider.
 
-function normalizeStopName(name){return String(name).toLocaleLowerCase("es").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/ · .*$/,"").replace(/[^a-z0-9]/g,"")}
+function normalizeStopName(name){return String(name).toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ · .*$/,"").replace(/[^a-z0-9]/g,"")}
 function stopDistance(a,b){const lat1=Number(a.lat),lat2=Number(b.lat),lon1=Number(a.lon),lon2=Number(b.lon);if(![lat1,lat2,lon1,lon2].every(Number.isFinite))return Infinity;const rad=Math.PI/180;return Math.hypot((lat1-lat2)*111195,(lon1-lon2)*111195*Math.cos((lat1+lat2)/2*rad))}
-function joinStopResults(stops){const out=[];for(const s of stops){const other=out.find(x=>normalizeStopName(x.name)===normalizeStopName(s.name)&&stopDistance(x,s)<75);const ref={provider:s.provider,id:String(s.id).replace(/^(?:emt|vrs|lux|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};if(other){other.providers.push(ref)}else{out.push({...s,providers:[ref]})}}return out}
+function joinStopResults(stops){const out=[];for(const s of stops){const other=out.find(x=>normalizeStopName(x.name)===normalizeStopName(s.name)&&stopDistance(x,s)<75);const ref={provider:s.provider,id:String(s.id).replace(/^(?:emt|vrs|lux|nl|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};if(other){other.providers.push(ref)}else{out.push({...s,providers:[ref]})}}return out}
 // Country configuration drives all searches; providers retain their own IDs.
 const COUNTRY_FALLBACK={
  germany:{geocode:"Deutschland",bounds:[47.2,55.1,5.8,15.2],regional:["vbb","db","vrs"]},
@@ -254,9 +254,9 @@ async function regionalStops(provider,query){if(BELGIUM_OPERATORS.includes(provi
    .filter(s=>inBounds(s,REGION_BOUNDS.db));
  }
  if(provider==="nl"){
-   const index=await netherlandsIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").trim();
+   const index=await netherlandsIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
    if(q.length<2)return [];
-   return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").includes(q)).map(s=>({id:"nl:"+s.id,name:s.name,type:"stop",lat:s.lat,lon:s.lon,provider:"nl"}));
+   return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q)).map(s=>({id:"nl:"+s.id,name:s.name,type:"stop",lat:s.lat,lon:s.lon,provider:"nl"}));
  }
  if(provider==="lux"){
    const index=await luxIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
