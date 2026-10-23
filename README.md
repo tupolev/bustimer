@@ -2,7 +2,7 @@
 
 ## Optional self-hosted PHP Web Push
 
-The [server directory](server/README.md) contains a PHP 8.2+ backend for background departure reminders at `https://bustimer.kodesoft.net/server/api.php`. It needs private VAPID settings, SQLite, Composer packages, HTTPS and cron every minute. The PWA remains hosted by GitHub Pages. Until the owner uploads and configures that backend, BusTimer falls back to alarms while the PWA is open. Background delivery is experimental and timing cannot be guaranteed.
+The [server directory](server/README.md) contains the optional PHP 8.2+ Web Push backend for `https://bustimer.kodesoft.net/server/api.php`. The target production PWA is `https://bustimer.kodesoft.net/`; the existing GitHub Pages site may remain accessible during migration. The [manual DreamHost deployment workflow](.github/workflows/deploy-dreamhost.yml) packages both frontend and backend, but production requires private VAPID settings, SQLite, HTTPS, compatible PHP and a one-minute cron. Do not infer that deployment is complete from a successful commit or CI run. When remote setup fails, BusTimer falls back to alarms while the PWA is open. Background delivery is experimental and not time-guaranteed.
 
 
 [![Build](https://github.com/tupolev/bustimer/actions/workflows/ci.yml/badge.svg)](https://github.com/tupolev/bustimer/actions/workflows/ci.yml)
@@ -15,7 +15,7 @@ A lightweight, responsive, installable PWA to monitor the next departures of sav
 
 **European data sources:** [Netherlands, Belgium and Luxembourg evaluation](docs/EU-SOURCES.md) — providers, licenses, integration sequence and country activation requirements.
 
-**Project tracking:** [Implementation roadmap and checklist](docs/ROADMAP.md) — priorities, verified vs. unverified status, country expansion, blockers and session handoff instructions. · No build step · No backend · MIT licensed
+**Project tracking:** [Implementation roadmap and checklist](docs/ROADMAP.md) — priorities, verified vs. unverified status, country expansion, blockers and session handoff instructions. · No frontend build step · Optional PHP push backend · MIT licensed
 
 ## Acknowledgements and data attribution
 
