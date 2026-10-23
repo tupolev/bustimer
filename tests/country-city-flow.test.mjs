@@ -32,9 +32,13 @@ test("localized UI fields exist in English Spanish and German",()=>{
  for(const language of ["en","es","de"]){const dict=context.messages[language];for(const key of ["city","townField","townPlaceholder","stop","transport","line","directionField","selectLine","selectDirection","searchError"])assert.equal(typeof dict[key],"string",language+": "+key)}
 });
 
-test("Photon fallback retries invalid optional parameters, keeping country validation",()=>{
- assert.match(script,/HTTP 400\\b/);
- assert.match(script,/new URLSearchParams\(\{q:query,limit:"12"\}\)/);
+test("offline town index is primary, Photon only used if local loading fails",()=>{
+ assert.match(script,/matches=await offlineTownCandidates\(state\.city,query\)/);
+ assert.match(script,/catch\(offlineError\)/);
  assert.match(script,/countrycode:countryCodes\[state\.city\]/);
  assert.match(script,/townCandidates\(data,state\.city\)/);
+});
+test("town list is loaded from same-origin static JSON",()=>{
+ assert.match(script,/getJSON\("\.\/data\/towns\/"\+code\+"\.json"\)/);
+ assert.match(script,/data\.country!==code\.toUpperCase\(\)/);
 });
