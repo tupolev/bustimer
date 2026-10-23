@@ -4,9 +4,9 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.9.6**
+**Version 0.12.0**
 
-**Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
+**Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit and mocked-provider integration tests, plus Python GTFS importer fixtures. Run locally with `npm run ci` (Node.js 22) and `python3 -m unittest discover -s tests -p 'test_*.py'`. Real-browser smoke tests remain pending.
 
 **European data sources:** [Netherlands, Belgium and Luxembourg evaluation](docs/EU-SOURCES.md) — providers, licenses, integration sequence and country activation requirements.
 
@@ -15,7 +15,7 @@ A lightweight, responsive, installable PWA to monitor the next departures of sav
 ## Features
 
 - Four tabs: monitored stops, add stop, settings, help/about.
-- Add a stop in four steps: city → stop search → available transport mode → currently observed line.
+- Add a stop via country → city suggestion → stop search → transport mode → line → direction.
 - Arrival countdown, expected time, reported delay, direction and real-time vs scheduled distinction.
 - Refreshes departure data every 60 seconds while visible; manual refresh supported.
 - English (default), Spanish, German.
@@ -58,7 +58,7 @@ The Transitous service is community-hosted and best effort. Usage and attributio
 | Düsseldorf | [DB transport.rest](https://v6.db.transport.rest/) | Initial DB-backed support; Rheinbahn/VRR local bus, tram and U-Bahn coverage may be incomplete. A dedicated VRR data source is planned, subject to browser CORS validation. |
 | Málaga | Official EMT Málaga GTFS | Scheduled arrivals by stop/line from published GTFS; no verified realtime ETA yet. Data generated daily with GitHub Actions after first workflow run. |
 
-The dropdown of lines is populated from the *next 90 minutes of departures* at a chosen stop. That means a line not operating in the current window may not be selectable yet. Direction is shown on the monitored card, but direction filtering is not yet implemented. The UI excludes cancelled departure records and matches line + transport mode; the next available service is selected.
+The dropdown of lines is populated from the available upcoming departures at a chosen stop. That means a line not operating in the current window may not be selectable yet. New monitored lines can be saved with a selected direction; legacy favorites without direction retain their existing behavior. The UI excludes cancelled departure records and matches line + transport mode; the next available service is selected.
 
 If an API is unavailable, the app shows an error instead of simulated predictions. Time fields come from the upstream provider. Delay appears only if provided; **scheduled is not equivalent to realtime**.
 
