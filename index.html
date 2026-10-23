@@ -91,6 +91,7 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #FFC629
 .station-line .line-footer{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .station-line .status{font-size:.81rem;line-height:1.6;color:var(--muted)}
 @media(max-width:600px){.station-head{padding:17px 15px}.station-line{padding:14px 13px;gap:8px}.station-line .arrival{min-width:86px}.station-line .countdown{font-size:1.5rem}}
+.departure-alarm{grid-column:1/-1;display:flex;align-items:center;gap:9px;flex-wrap:wrap;border-top:1px dashed var(--border);padding-top:11px}.departure-alarm span{font-weight:700;font-size:.83rem}.departure-alarm select{width:auto;min-width:86px;padding:8px}.departure-alarm .alarm-check{display:flex;align-items:center;margin:0;gap:5px;font-weight:500;font-size:.82rem}.departure-alarm .alarm-check input{width:auto}.departure-alarm small{flex-basis:100%;color:var(--muted);font-size:.75rem}
 </style>
 </head>
 <body>
@@ -443,6 +444,60 @@ $("#line").addEventListener("change",renderDirectionOptions);
 $("#direction").addEventListener("change",()=>{$("#save").disabled=!$("#direction").value});
 $("#save").addEventListener("click",()=>{const type=$("#transport").value,line=$("#line").value,direction=$("#direction").value;if(!state.stop||!type||!line||!direction)return;const actualDirection=direction==="__unspecified__"?"":direction;const exists=saved.some(s=>s.city===state.city&&s.stopId===String(state.stop.id)&&s.type===type&&s.line===line&&(s.direction??null)===actualDirection);if(exists){$("#form-error").textContent=t("already");return}saved.push({id:crypto.randomUUID(),city:state.city,stopId:String(state.stop.id),stopName:state.stop.name,type,line,direction:actualDirection,providers:state.stop.providers||[]});persist();resetForm();tab("list")});
 function groupFavoriteStops(stops){const groups=new Map();for(const stop of stops){const key=String(stop.city)+":"+String(stop.stopId);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(stop)}return [...groups.values()]}
+
+const ALARM_MINUTES=[2,5,10,15,20,30,45,60];
+const ALARM_LABELS={
+ en:["Departure alert","Remove after alert","Set alert","Remove alert","Keep BusTimer open for reliable alerts.","Notification permission required."],
+ es:["Alarma de salida","Eliminar al sonar","Activar alarma","Quitar alarma","Mantén BusTimer abierto para recibir el aviso.","Se necesita permiso para notificaciones."],
+ de:["Abfahrtsalarm","Nach Alarm entfernen","Alarm aktivieren","Alarm entfernen","Für zuverlässige Alarme BusTimer geöffnet lassen.","Benachrichtigungen müssen erlaubt sein."]
+};
+function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
+function checkDepartureAlarms(){
+ if(!("Notification" in window)||Notification.permission!=="granted")return;
+ const now=Date.now();
+ for(const s of saved){
+  const a=s.departureAlarm,dep=departureState[s.id]?.departure;
+  if(!a||!dep||!ALARM_MINUTES.includes(a.minutes))continue;
+  const time=Date.parse(dep._time||"");
+  if(!Number.isFinite(time)||time<now||time-now>a.minutes*60000)continue;
+  const key=[s.id,dep.plannedWhen||dep._time,s.direction||dep.direction||""].join("|");
+  if((a.fired||[]).includes(key))continue;
+  a.fired=[...(a.fired||[]).slice(-30),key];
+  if(a.once)delete s.departureAlarm;
+  persist();
+  const direction=s.direction||dep.direction||s.stopName;
+  const remaining=Math.max(0,Math.ceil((time-now)/60000));
+  try{new Notification("BusTimer · "+s.line,{body:direction+" · "+remaining+" min",icon:"./icon.svg",tag:"bustimer-"+s.id+"-"+remaining})}catch(e){console.warn(e)}
+  renderCards();
+ }
+}
+async function armDepartureAlarm(s,minutes,once){
+ if(!("Notification" in window)){alert(alarmLabel(5));return}
+ let permission=Notification.permission;
+ if(permission==="default")permission=await Notification.requestPermission();
+ if(permission!=="granted"){alert(alarmLabel(5));return}
+ s.departureAlarm={minutes,once,fired:[]};persist();renderCards();checkDepartureAlarms();
+}
+function addDepartureAlarm(row,s){
+ const div=document.createElement("div");div.className="departure-alarm";
+ const title=document.createElement("span");title.textContent="🔔 "+alarmLabel(0);
+ const minutes=document.createElement("select");minutes.setAttribute("aria-label",alarmLabel(0));
+ for(const n of ALARM_MINUTES)minutes.add(new Option(n+" min",String(n)));
+ minutes.value=String(s.departureAlarm?.minutes||10);
+ const label=document.createElement("label");label.className="alarm-check";
+ const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.checked=s.departureAlarm?.once??true;
+ label.append(checkbox,document.createTextNode(" "+alarmLabel(1)));
+ const btn=document.createElement("button");btn.type="button";btn.className="btn ghost small";btn.textContent=alarmLabel(s.departureAlarm?3:2);
+ btn.addEventListener("click",async()=>{
+  if(s.departureAlarm){delete s.departureAlarm;persist();renderCards();}
+  else await armDepartureAlarm(s,Number(minutes.value),checkbox.checked);
+ });
+ minutes.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.minutes=Number(minutes.value);s.departureAlarm.fired=[];persist()}});
+ checkbox.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.once=checkbox.checked;persist()}});
+ const note=document.createElement("small");note.textContent=alarmLabel(4);
+ div.append(title,minutes,label,btn,note);row.append(div);
+}
+
 function renderCards(){
  const host=$("#cards");host.replaceChildren();
  if(!saved.length){const empty=document.createElement("div");empty.className="empty";empty.innerHTML='<div class="illustration" aria-hidden="true">🚏</div><h3>'+escapeHTML(t("emptyTitle"))+'</h3><p>'+escapeHTML(t("emptyText"))+'</p>';const btn=document.createElement("button");btn.className="btn";btn.textContent=t("addFirst");btn.addEventListener("click",()=>tab("add"));empty.append(btn);host.append(empty);return}
@@ -463,15 +518,16 @@ function renderCards(){
    const status=data?.error?"⚠ "+escapeHTML(t("error")):dep?(live?"● "+escapeHTML(t("live")):"◷ "+escapeHTML(t("scheduled")))+(source?" · "+escapeHTML(source):""):escapeHTML(message);
    row.innerHTML='<div class="route"><span class="line-badge">'+escapeHTML(s.line)+'</span><span class="type-badge">'+iconFor(s.type)+' '+escapeHTML(productLabels[s.type]||s.type)+'</span></div><div class="arrival"><div class="countdown">'+count+'</div><div class="arrival-details">'+scheduled+'</div>'+(delayText?'<div class="arrival-details '+(delay>0?"late":"")+'">'+delayText+'</div>':"")+'</div><div class="line-footer"><span class="status">'+status+(s.direction?' · '+escapeHTML(t("direction"))+' '+escapeHTML(s.direction):"")+'</span></div>';
    const remove=document.createElement("button");remove.type="button";remove.className="btn ghost small";remove.textContent="✕ "+t("remove");remove.addEventListener("click",()=>{saved=saved.filter(x=>x.id!==s.id);delete departureState[s.id];persist();renderCards()});
-   row.querySelector(".line-footer").append(remove);list.append(row);
+   row.querySelector(".line-footer").append(remove);addDepartureAlarm(row,s);list.append(row);
   }
   card.append(list);host.append(card);
  }
 }
-async function refreshAll(){if(refreshBusy||!saved.length){renderCards();return}refreshBusy=true;$("#refresh").disabled=true;const stops=[...saved];stops.forEach(s=>{departureState[s.id]={...departureState[s.id],loading:!departureState[s.id]?.departure,error:false}});renderCards();const unique=[...new Map(stops.map(s=>[s.city+":"+s.stopId,s])).values()];const results=await Promise.allSettled(unique.map(s=>departures(s.city,s.stopId,s.providers||[])));const batches=new Map(unique.map((s,i)=>[s.city+":"+s.stopId,results[i]]));stops.forEach(s=>{const result=batches.get(s.city+":"+s.stopId);if(result.status==="fulfilled"){const now=Date.now()-30000;const match=result.value.filter(d=>d._line===s.line&&d._product===s.type&&(s.direction==null||directionOf(d)===s.direction)&&new Date(d._time).getTime()>=now).sort((a,b)=>new Date(a._time)-new Date(b._time))[0];departureState[s.id]={departure:match||null,error:false,loading:false}}else{departureState[s.id]={departure:null,error:true,loading:false}}});refreshBusy=false;$("#refresh").disabled=false;renderCards()}
+async function refreshAll(){if(refreshBusy||!saved.length){renderCards();return}refreshBusy=true;$("#refresh").disabled=true;const stops=[...saved];stops.forEach(s=>{departureState[s.id]={...departureState[s.id],loading:!departureState[s.id]?.departure,error:false}});renderCards();const unique=[...new Map(stops.map(s=>[s.city+":"+s.stopId,s])).values()];const results=await Promise.allSettled(unique.map(s=>departures(s.city,s.stopId,s.providers||[])));const batches=new Map(unique.map((s,i)=>[s.city+":"+s.stopId,results[i]]));stops.forEach(s=>{const result=batches.get(s.city+":"+s.stopId);if(result.status==="fulfilled"){const now=Date.now()-30000;const match=result.value.filter(d=>d._line===s.line&&d._product===s.type&&(s.direction==null||directionOf(d)===s.direction)&&new Date(d._time).getTime()>=now).sort((a,b)=>new Date(a._time)-new Date(b._time))[0];departureState[s.id]={departure:match||null,error:false,loading:false}}else{departureState[s.id]={departure:null,error:true,loading:false}}});refreshBusy=false;$("#refresh").disabled=false;renderCards();checkDepartureAlarms()}
 $("#refresh").addEventListener("click",refreshAll);
 let lastVisibilityRefresh=0;document.addEventListener("visibilitychange",()=>{if(!document.hidden&&state.tab==="list"&&Date.now()-lastVisibilityRefresh>MIN_REFRESH_MS){lastVisibilityRefresh=Date.now();refreshAll()}});
 setInterval(()=>{if(!document.hidden&&state.tab==="list")refreshAll()},MIN_REFRESH_MS);
+setInterval(()=>{if(!document.hidden)checkDepartureAlarms()},15000);
 $("#city").value=state.city;translate();renderCards();refreshAll();
 // External catalog is a deployment configuration, not a claim of supported coverage.
 // Candidate countries remain hidden until enabled with verified endpoints and bounds.
