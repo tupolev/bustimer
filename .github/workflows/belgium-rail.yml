@@ -1,0 +1,58 @@
+name: Publish Belgium SNCB rail GTFS
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * 3'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/belgium-rail.yml'
+permissions:
+  contents: write
+concurrency:
+  group: belgium-rail-refresh
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check importer fixtures
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Build SNCB GTFS
+        run: python3 scripts/build_belgium_rail.py --out "$RUNNER_TEMP/belgium-rail"
+      - name: Validate Belgian GTFS publication
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"belgium-rail"
+          data=json.loads((root/"search.json").read_text())
+          sv=json.loads((root/"services.json").read_text())
+          assert data["timezone"]=="Europe/Brussels"
+          assert 100<=len(data["stops"])<=5000
+          assert sv["calendar"] or sv["exceptions"]
+          assert all((root/"stops"/(s["file"]+".json")).exists() for s in data["stops"])
+          print("SNCB stops:",len(data["stops"]))
+          PY
+      - name: Commit validated Belgian railway data
+        run: |
+          rm -rf data/belgium-rail
+          cp -a "$RUNNER_TEMP/belgium-rail" data/belgium-rail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/belgium-rail
+          if ! git diff --cached --quiet; then
+            git commit --quiet -m "data: publish Belgium SNCB GTFS"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
