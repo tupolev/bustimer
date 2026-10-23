@@ -359,3 +359,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 
 - [x] Extend the Belgian Playwright smoke flow to switch to Spanish, verify the original literal stop/direction labels are preserved, and confirm the locale and favorite persist after a second reload (`e2e/belgium.spec.mjs`, commit `108cb6c5`).
 - [ ] Browser CI result still requires an observed run: the available GitHub connector returns PR-only commit workflow runs and the container cannot resolve github.com. Do not claim a successful browser run until jobs/logs are retrieved.
+
+
+## CI cadence adjustment (2026-10-23)
+
+- [x] Keep the quick JavaScript/Node and Python fixture checks on push and pull request in `.github/workflows/ci.yml`.
+- [x] Move Chromium Playwright E2E to its own **manual-only** `.github/workflows/browser-e2e.yml` (`workflow_dispatch`), retaining failure traces. Browser tests no longer run for each commit.
+- [ ] Run Browser E2E manually after substantial UX/provider changes or before an important release. Verify it passes before marking P0-02 complete.
