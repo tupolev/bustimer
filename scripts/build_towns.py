@@ -12,7 +12,15 @@ def build(text,admin):
         try:lat,lon=float(cols[4]),float(cols[5])
         except ValueError:continue
         state=admin.get(cols[8]+"."+cols[10],"")
-        towns[cols[8]].append([cols[1],state,round(lat,5),round(lon,5),int(cols[14] or 0)])
+        preferred={
+            "Brussels":["Bruxelles","Brussel"],"Antwerpen":["Anvers","Antwerp"],
+            "Gent":["Gand","Ghent"],"Liège":["Luik","Lüttich"],
+            "Brugge":["Bruges"],"Leuven":["Louvain"],"Mechelen":["Malines"],
+            "Namur":["Namen"],"Mons":["Bergen"],"Kortrijk":["Courtrai"],
+        }.get(cols[1],[]) if cols[8]=="BE" else []
+        alternates=[x for x in (cols[3] or "").split(",") if x and len(x)<=65 and x.casefold()!=cols[1].casefold()]
+        aliases=list(dict.fromkeys(preferred+alternates))[:40]
+        towns[cols[8]].append([cols[1],state,round(lat,5),round(lon,5),int(cols[14] or 0),aliases])
     return {c:sorted(items,key=lambda x:(-x[4],x[0])) for c,items in towns.items()}
 def main():
     def download(name):
