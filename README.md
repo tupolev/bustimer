@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.1.0** · No build step · No backend · MIT licensed
+**Version 0.2.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -28,10 +28,23 @@ Implementation note for v0.1.0: the current transport.rest integration prefers `
 
 Target architecture per city: query realtime where possible → merge with a published schedule (GTFS, GTFS-RT, NeTEx, or provider-specific feeds as available) by stop, line, direction, and service date → return a clearly labeled provenance and timestamp. Static schedules must be refreshed for service/calendar changes; simply caching a single day's predictions is not a timetable.
 
+## Germany-wide MVP (v0.2.0)
+
+The default option is **Deutschland / nationwide**, powered by the [Transitous MOTIS API](https://transitous.org/api/). Search for a stop anywhere in Germany (ideally include town name), choose a currently operating mode and line, then save it. Nationwide records have a dedicated provider identifier and will persist in the browser.
+
+Transitous combines published timetables and realtime updates if supplied by upstream feeds. The UI labels timetable-only departures as Scheduled and realtime as Live. This is still a third-party live service, **not an independently stored offline timetable**. A later milestone will include a static feed fallback independent of API availability.
+
+Existing saved VBB/DB stops remain compatible, and users can still explicitly choose Berlin-Brandenburg VBB, Köln DB, or Düsseldorf DB. The older entries are intentionally *not* migrated to Transitous stop IDs automatically.
+
+The Transitous service is community-hosted and best effort. Usage and attribution: [Transitous API policy](https://transitous.org/api/), [source attribution](https://transitous.org/sources/), [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright). Keep API calls lightweight; BusTimer refreshes once per minute while visible and deduplicates requests per stop. Do not rely on this API for a commercial or high-volume application without discussing usage with maintainers.
+
+**Verification:** This implementation has not yet been browser-tested against the live production API from GitHub Pages, so geocoder response variations, stop identifiers, CORS and data mappings should be validated on the deployed site.
+
 ## Networks and current limitations
 
 | Network | Implementation | Notes |
 | --- | --- | --- |
+| Germany (nationwide) | [Transitous MOTIS](https://transitous.org/api/) | Default provider, GTFS-based schedules with realtime where supplied. Coverage varies by area. |
 | Berlin / Brandenburg | [VBB transport.rest](https://v6.vbb.transport.rest/) | Browser CORS support; realtime when available upstream. |
 | Köln | [DB transport.rest](https://v6.db.transport.rest/) | DB-backed source; coverage of KVB local bus/tram stops may be incomplete. |
 | Düsseldorf | [DB transport.rest](https://v6.db.transport.rest/) | Initial DB-backed support; Rheinbahn/VRR local bus, tram and U-Bahn coverage may be incomplete. A dedicated VRR data source is planned, subject to browser CORS validation. |
