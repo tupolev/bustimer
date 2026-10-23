@@ -227,3 +227,5 @@ Photon geocoding requests no longer send the app UI's language blindly (which ca
 **Literal by default:** stop, city, region, transport type, line and direction names retain the upstream source's original text, without name translations. **Country names** follow the user's interface language through `Intl.DisplayNames`; when unknown, the original catalog name is retained. All other interface strings, including selector prompts and search feedback, follow the selected UI language, with English fallback for missing translations.
 
 **v0.10.1:** Switching the UI language does not bypass the mandatory city selection; the stop search stays disabled until an actual city suggestion is chosen.
+
+**v0.10.2 Photon resilience:** city autocomplete sends documented geocoder parameters and automatically retries a minimal query on HTTP 400. Client-side country bounding remains mandatory. The demo endpoint has no uptime SLA and may throttle traffic; production should eventually use a dedicated city source.
