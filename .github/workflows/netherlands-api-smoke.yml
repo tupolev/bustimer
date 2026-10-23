@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/netherlands-api-smoke.yml"
+      - "scripts/smoke_netherlands_api.py"
 permissions:
   contents: write
 jobs:
