@@ -306,3 +306,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Inspect older Belgian CI run [39952812129](https://github.com/tupolev/bustimer/actions/runs/39952812129): its checks job completed successfully (JavaScript and Python checks).
 - [ ] Verify CI for latest commits. The linked GitHub action for retrieving runs by commit filters to PR-triggered executions and returns no runs for the push on `main`; previous success must not be attributed to new commits.
 - [ ] Interactive GitHub Pages smoke tests for Brussels, Gent, Liège and stored favorites remain outstanding.
+
+
+## Belgian city-scoped search regression (2026-10-23)
+
+- [x] Add `tests/belgium-search.test.mjs` exercising real `searchCountryStops` and `joinProviderStops` implementation using four mocked regional indexes. Covers co-located STIB platforms and rail/TEC references, selected-city proximity exclusion and literal stop names (commits `675297a6`, `8796c39e`).
+- [ ] Verify the new Node tests pass in Actions. This repository connector cannot enumerate the latest main-branch push workflow; avoid marking CI green without a specific run.
+- [ ] Extend the automated harness to a browser end-to-end flow (town select, stop, mode, line, direction, favorite save/reload); no real-browser verification claimed yet.
