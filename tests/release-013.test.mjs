@@ -64,7 +64,8 @@ test("departure alerts use each favorite, persist once-only settings and avoid d
  assert.match(html,/const ALARM_MINUTES=\[2,5,10,15,20,30,45,60\]/);
  assert.match(html,/s\.departureAlarm=\{minutes,once,fired:\[\]\}/);
  assert.match(html,/if\(a.once\)delete s\.departureAlarm/);
- assert.match(html,/if\(\(a\.fired\|\|\[\]\)\.includes\(key\)\)continue/);
+ assert.match(html,/alarmInFlight/);
+ assert.match(html,/showNotification/);
  assert.match(html,/Notification\.requestPermission\(\)/);
  assert.match(html,/checkDepartureAlarms\(\)/);
  assert.match(html,/addDepartureAlarm\(row,s\)/);
