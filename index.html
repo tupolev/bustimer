@@ -59,7 +59,7 @@ const read=(key,fallback)=>{try{const x=JSON.parse(localStorage.getItem("bustime
 let prefs=read("prefs",{language:"en",theme:"system"}),saved=read("stops",[]),state={city:"germany",stop:null,departures:[],tab:"list",results:[]},departureState={},requestCounter=0,refreshBusy=false,searchTimer;
 if(!I18N[prefs.language])prefs.language="en";if(!["system","light","dark"].includes(prefs.theme))prefs.theme="system";if(!Array.isArray(saved))saved=[];
 const t=k=>I18N[prefs.language]?.[k]??I18N.en?.[k]??k;
-const COUNTRY_ISO={germany:"DE",spain:"ES",france:"FR",portugal:"PT",luxembourg:"LU",belgium:"BE",netherlands:"NL",austria:"AT",switzerland:"CH",italy:"IT",czechia:"CZ"};
+const COUNTRY_ISO={germany:"DE",spain:"ES",france:"FR",portugal:"PT",luxembourg:"LU",belgium:"BE",netherlands:"NL",austria:"AT",switzerland:"CH",italy:"IT",czechia:"CZ",poland:"PL",denmark:"DK",sweden:"SE"};
 function countryLabel(country){
  const iso=COUNTRY_CATALOG?.[country]?.iso||COUNTRY_ISO[country];
  const literal=COUNTRY_CATALOG?.[country]?.name||country;
@@ -213,6 +213,9 @@ const COUNTRY_FALLBACK={
  switzerland:{geocode:"Schweiz",bounds:[45.8,47.9,5.9,10.6],regional:[]},
  italy:{geocode:"Italia",bounds:[35.4,47.2,6.5,18.6],regional:[]},
  czechia:{geocode:"Česko",bounds:[48.4,51.1,12.0,18.9],regional:[]},
+ poland:{geocode:"Polska",bounds:[49,55.1,14,24.3],regional:[]},
+ denmark:{geocode:"Danmark",bounds:[54.4,57.8,7.8,15.3],regional:[]},
+ sweden:{geocode:"Sverige",bounds:[55.3,69.1,10.8,24.2],regional:[]},
  spain:{geocode:"España",bounds:[27.4,43.9,-18.3,4.4],regional:["emt"]},
  france:{geocode:"France",bounds:[41.2,51.3,-5.3,9.8],regional:[]},
  portugal:{geocode:"Portugal",bounds:[32.4,42.2,-31.5,-6.1],regional:[]}
@@ -272,7 +275,7 @@ function townCandidates(data,country){
  .filter(x=>x.name).filter((x,i,a)=>a.findIndex(y=>y.name===x.name&&y.label===x.label)===i).slice(0,8);
 }
 const townIndexCache=new Map();
-function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu",belgium:"be",netherlands:"nl",austria:"at",switzerland:"ch",italy:"it",czechia:"cz"}[country]}
+function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu",belgium:"be",netherlands:"nl",austria:"at",switzerland:"ch",italy:"it",czechia:"cz",poland:"pl",denmark:"dk",sweden:"se"}[country]}
 function foldTown(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 async function offlineTownCandidates(country,query){
  const code=townCode(country);
@@ -333,7 +336,7 @@ $("#town-query").addEventListener("keydown",e=>{
  if(e.key==="Escape"){clearTownSuggestions();return}
  if(e.key==="Enter"){const first=$("#town-results button");if(first){e.preventDefault();first.click()}}
 });
-$("#stop-query").addEventListener("input",()=>{clearTimeout(searchTimer);const query=$("#stop-query").value.trim();state.stop=null;state.departures=[];$("#chosen-stop").textContent="";$("#transport").disabled=true;$("#line").disabled=true;$("#save").disabled=true;const seq=++debounceSeq;$("#stop-results").hidden=!query;if(query.length<2||!chosenTown){$("#stop-results").hidden=true;return}$("#stop-results").textContent=t("searching");searchTimer=setTimeout(async()=>{try{const list=state.city==="malaga"?(await malagaIndex()).stops.filter(s=>s.name.toLocaleLowerCase("es").includes(query.toLocaleLowerCase("es"))||String(s.id)===query).slice(0,20).map(s=>({...s,type:"stop"})):["germany","spain","france","portugal","luxembourg","belgium","netherlands"].includes(state.city)?await searchCountryStops(state.city,query,chosenTown.name):await cachedJSON(url(state.city,"/locations",{query,results:12,stops:true,addresses:false,poi:false,pretty:false}),120000);if(seq!==debounceSeq)return;state.results=(Array.isArray(list)?list:[]).filter(x=>(x.type==="stop"||x.type==="station")&&x.id);renderResults()}catch(e){if(seq===debounceSeq)$("#stop-results").textContent=t("searchError")}},SEARCH_DEBOUNCE_MS)});
+$("#stop-query").addEventListener("input",()=>{clearTimeout(searchTimer);const query=$("#stop-query").value.trim();state.stop=null;state.departures=[];$("#chosen-stop").textContent="";$("#transport").disabled=true;$("#line").disabled=true;$("#save").disabled=true;const seq=++debounceSeq;$("#stop-results").hidden=!query;if(query.length<2||!chosenTown){$("#stop-results").hidden=true;return}$("#stop-results").textContent=t("searching");searchTimer=setTimeout(async()=>{try{const list=state.city==="malaga"?(await malagaIndex()).stops.filter(s=>s.name.toLocaleLowerCase("es").includes(query.toLocaleLowerCase("es"))||String(s.id)===query).slice(0,20).map(s=>({...s,type:"stop"})):["germany","spain","france","portugal","luxembourg","belgium","netherlands","austria","switzerland","italy","czechia","poland","denmark","sweden"].includes(state.city)?await searchCountryStops(state.city,query,chosenTown.name):await cachedJSON(url(state.city,"/locations",{query,results:12,stops:true,addresses:false,poi:false,pretty:false}),120000);if(seq!==debounceSeq)return;state.results=(Array.isArray(list)?list:[]).filter(x=>(x.type==="stop"||x.type==="station")&&x.id);renderResults()}catch(e){if(seq===debounceSeq)$("#stop-results").textContent=t("searchError")}},SEARCH_DEBOUNCE_MS)});
 function renderResults(){const box=$("#stop-results");box.replaceChildren();box.hidden=false;if(!state.results.length){box.textContent=t("noResults");return}state.results.forEach(s=>{const button=document.createElement("button");button.className="result";button.type="button";button.textContent=s.name;button.addEventListener("click",()=>chooseStop(s));box.append(button)})}
 async function chooseStop(stop){++debounceSeq;state.stop=stop;state.departures=[];$("#stop-results").hidden=true;$("#stop-query").value=stop.name;$("#chosen-stop").className="selected";$("#chosen-stop").textContent="✓ "+stop.name;$("#form-error").textContent=t("linesLoading");const seq=++requestCounter;try{const dep=await departures(state.city,stop.id,stop.providers||[]);if(seq!==requestCounter)return;state.departures=dep;$("#form-error").textContent=dep.length?"":t("noLines");renderTransportOptions()}catch(e){if(seq===requestCounter)$("#form-error").textContent=t("error")+" · "+t("retry")}}
 const productLabels={suburban:"S-Bahn",subway:"U-Bahn",tram:"Tram",bus:"Bus",ferry:"Ferry",regional:"Regional",express:"Express",national:"Train",nationalExpress:"Express",regionalExp:"Regional",regionalExpress:"Regional"}; // Stable literal labels; unknown types keep their source codes.
