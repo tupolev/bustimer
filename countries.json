@@ -20,14 +20,16 @@
       ],
       "regional": [
         "vbb",
-        "db"
+        "db",
+        "vrs"
       ],
       "sources": [
         "transitous",
         "vbb",
-        "db"
+        "db",
+        "vrs"
       ],
-      "notes": "Nationwide Transitous and region-scoped VBB / NRW-context DB stop search; coverage remains partial"
+      "notes": "Transitous, VBB, NRW-context DB and optional VRS official static schedules when published; VRS import pending verification"
     },
     {
       "id": "spain",
