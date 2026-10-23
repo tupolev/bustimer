@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.1** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.2** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -101,7 +101,7 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Add `scripts/build_vrs.py` to download official global-ID VRS GTFS, compile service calendars and stop-centric schedules, protect against empty datasets, and stage output atomically into `data/vrs/`.
 - [x] Add `.github/workflows/vrs-gtfs.yml` **manual workflow** for first verification. Daily scheduling is intentionally disabled until tested and repository size reviewed.
 - [ ] Execute workflow, confirm the corrected official VRS download works and generated index/calendar/date exceptions, IDs, license, file counts and total repository size are correct. **Not yet executed.**
-- [ ] Wire `vrs` into Germany stop discovery and departure adapter with Europe/Berlin timezone handling; don't label static times realtime.
+- [x] Wire optional `vrs` into German stop discovery and a schedule-only departure adapter using Europe/Berlin time, reading `data/vrs` if present. Import has not run; catch and isolate missing-dataset errors.
 - [ ] Verify stop matching, midnight/DST and VRS direction labels with sample Bonn/Köln stops, and regression-test old favorites.
 - [ ] Only after successful tests, enable a conservative scheduled refresh and record source freshness in UI.
 
