@@ -10,10 +10,10 @@ test("release version and installed app agree",()=>{
  assert.match(html,/Version 0\.13\.0/);
  assert.match(sw,/bustimer-shell-v32/);
 });
-test("eleven enabled countries include five experimental API-first newcomers",()=>{
+test("fourteen enabled countries include eight experimental API-first additions",()=>{
  const enabled=countries.countries.filter(c=>c.enabled);
- assert.equal(enabled.length,11);
- for(const id of ["austria","switzerland","italy","czechia"])assert.equal(enabled.find(c=>c.id===id)?.status,"experimental");
+ assert.equal(enabled.length,14);
+ for(const id of ["austria","switzerland","italy","czechia","poland","denmark","sweden"])assert.equal(enabled.find(c=>c.id===id)?.status,"experimental");
  assert.equal(enabled.find(c=>c.id==="netherlands")?.status,"experimental");
 });
 test("readme credits remain visible",()=>{
