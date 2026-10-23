@@ -45,3 +45,17 @@ test("station cards group only identical source stop IDs, preserving independent
  assert.match(html,/saved=saved.filter\(x=>x.id!==s.id\)/);
  assert.match(html,/\.station-card\{/);
 });
+
+test("favorite grouping joins same source stop, not similarly named stops or other countries",()=>{
+ const definition=html.match(/function groupFavoriteStops\(stops\)\{[^\n]+\}/)?.[0];
+ assert.ok(definition);
+ const group=new Function(definition+";return groupFavoriteStops;")();
+ const favorites=[
+  {city:"netherlands",stopId:"A",id:"line1",stopName:"Centraal"},
+  {city:"netherlands",stopId:"A",id:"line2",stopName:"Centraal"},
+  {city:"netherlands",stopId:"B",id:"platform",stopName:"Centraal"},
+  {city:"belgium",stopId:"A",id:"other-country",stopName:"Centraal"}
+ ];
+ const grouped=group(favorites);
+ assert.deepEqual(grouped.map(g=>g.map(x=>x.id)),[["line1","line2"],["platform"],["other-country"]]);
+});
