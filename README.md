@@ -24,7 +24,7 @@ The Transitous API is a best-effort, community resource for lightweight, open-so
 
 ## Release v0.13.0 — API-first European expansion
 
-BusTimer supports eleven enabled countries: Germany, Spain, France, Portugal, Belgium, Luxembourg, the Netherlands, Austria, Switzerland, Italy and Czechia. Availability is **not guaranteed for every transit operator**; the Netherlands remains experimental. Germany, Spain, France, Portugal, the Netherlands, Austria, Switzerland, Italy and Czechia primarily use Transitous HTTPS APIs; Belgium and Luxembourg use scheduled GTFS-derived stop assets. Málaga retains its official EMT timetable fallback.
+BusTimer supports fourteen enabled countries: Germany, Spain, France, Portugal, Belgium, Luxembourg, the Netherlands, Austria, Switzerland, Italy, Czechia, Poland, Denmark and Sweden. Availability is **not guaranteed for every transit operator**; the Netherlands remains experimental. Germany, Spain, France, Portugal, the Netherlands, Austria, Switzerland, Italy, Czechia, Poland, Denmark and Sweden primarily use Transitous HTTPS APIs; Belgium and Luxembourg use scheduled GTFS-derived stop assets. Málaga retains its official EMT timetable fallback.
 
 **Release evidence:** [automated checks](https://github.com/tupolev/bustimer/actions/runs/39972036832), [published Pages deployment](https://github.com/tupolev/bustimer/actions/runs/39972157853), [real-browser Pages → Transitous smoke](https://github.com/tupolev/bustimer/actions/runs/39972036506), [four-city Netherlands stops and departures](https://github.com/tupolev/bustimer/actions/runs/39970478094). These confirm the sampled integration, not exhaustive service coverage.
 
@@ -35,6 +35,8 @@ BusTimer supports eleven enabled countries: Germany, Spain, France, Portugal, Be
 Austria, Switzerland, Italy and Czechia have been enabled through the existing Transitous HTTPS API adapter, **without downloading national GTFS files**. Their GeoNames city indices are published as small static search assets.
 
 Evidence: [four-country live API audit](https://github.com/tupolev/bustimer/actions/runs/39974550688) verified geolocated stop search and forthcoming departures for Wien Hauptbahnhof, Zürich HB, Milano Centrale and Praha hlavní nádraží. This is **sample-based experimental coverage**, not confirmation of every urban or regional operator. A full live browser flow with these specific countries has not yet been completed; realtime is operator-dependent.
+
+Poland, Denmark and Sweden have also been enabled as experimental Transitous API-first countries. A live [capital-city sample](https://github.com/tupolev/bustimer/actions/runs/39975149002) returned upcoming departures for Warsaw, Copenhagen and Stockholm, and their GeoNames city indexes are published. Samples do not establish nationwide operator completeness or a verified full browser workflow.
 
 ## Netherlands availability (October 2026)
 
