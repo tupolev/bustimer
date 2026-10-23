@@ -165,9 +165,13 @@
       "tier": "neighbor",
       "status": "candidate",
       "enabled": false,
-      "regional": [],
-      "sources": [],
-      "notes": "Official feed identified. Pending importer, dataset integrity tests, transitous interoperability, and browser validation.",
+      "regional": [
+        "lux"
+      ],
+      "sources": [
+        "lux"
+      ],
+      "notes": "Official GTFS adapter implemented but gated: pending published dataset and browser checks.",
       "geocode": "Luxembourg",
       "bounds": [
         49.43,
