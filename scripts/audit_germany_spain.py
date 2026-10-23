@@ -29,9 +29,24 @@ def audit(title,config):
   p=item.get("place") or item
   sid=p.get("stopId") or p.get("id") or item.get("id")
   name=p.get("name") or p.get("displayName") or item.get("name")
-  if sid and name:candidates.append({"id":sid,"name":name})
+  if sid and name:
+   lat=p.get("lat",p.get("latitude"));lon=p.get("lon",p.get("longitude"))
+   candidates.append({"id":sid,"name":name,"lat":lat,"lon":lon})
+ # Do not credit unrelated regions as proof of coverage (e.g., Bonn queries
+ # can return Hannover or Karlsruhe due to broad geocoder matches).
+ centers={"DE Köln":(50.938,6.959),"DE Bonn":(50.733,7.099),
+          "DE Düsseldorf":(51.227,6.776),"ES Málaga":(36.721,-4.421),
+          "ES Madrid":(40.417,-3.703),"ES Barcelona":(41.387,2.169)}
+ from math import cos,radians,hypot
+ center=centers[title]
+ def distance(stop):
+  try:
+   lat,lon=float(stop["lat"]),float(stop["lon"])
+   return hypot((lat-center[0])*111.2,(lon-center[1])*111.2*cos(radians(center[0])))
+  except (TypeError,ValueError,KeyError):return float("inf")
+ nearby=[x for x in candidates if distance(x)<=20]
  inspected=[];errors=[]
- for stop in sorted(candidates,key=lambda x:not x["id"].startswith(config["prefix"]))[:2]:
+ for stop in sorted(nearby,key=lambda x:(not x["id"].startswith(config["prefix"]),distance(x)))[:2]:
   try:
    feed,access=request("/api/v6/stoptimes",{"stopId":stop["id"],"n":10})
    times=feed.get("stopTimes",[])
@@ -39,7 +54,7 @@ def audit(title,config):
    inspected.append({"stop":stop,"departures":len(times),"cors":access,
     "lines":list(dict.fromkeys(str(x.get("routeShortName") or x.get("displayName") or "") for x in times[:10]))})
   except Exception as exc:errors.append({"stop":stop,"error":str(exc)})
- return {"query":config["q"],"geocode_cors":cors,"candidates":candidates[:6],
+ return {"query":config["q"],"geocode_cors":cors,"candidates":candidates[:6],"nearby_candidates":nearby[:6],
          "sampled_departures":inspected,"errors":errors,
          "sample_has_departures":any(s["departures"]>0 for s in inspected)}
 def main():
