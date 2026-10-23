@@ -15,5 +15,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Syntax checks and unit tests
+      - name: Syntax checks and JavaScript tests
         run: npm run ci
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: VRS GTFS importer fixture tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
