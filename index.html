@@ -38,7 +38,7 @@
 <button id="save" class="btn" disabled data-i18n="save">+ Monitor this line</button><p class="hint" id="form-error" role="status"></p>
 </div></section>
 <section class="panel" id="tab-settings" role="tabpanel" aria-labelledby="nav-settings" hidden><h2 data-i18n="settingsTitle">Preferences</h2><div class="setting-row"><div><label for="language" data-i18n="language">Language</label><p class="hint" data-i18n="languageHelp">Choose your interface language.</p></div><select id="language"><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option></select></div><div class="setting-row"><div><label for="theme" data-i18n="theme">Appearance</label><p class="hint" data-i18n="themeHelp">Use your device setting or override it.</p></div><select id="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="info"><p data-i18n="privacy">Your stops and preferences are stored only in this browser. No account or analytics are used.</p></div></section>
-<section class="panel" id="tab-about" role="tabpanel" aria-labelledby="nav-about" hidden><h2 data-i18n="aboutTitle">About BusTimer</h2><p data-i18n="aboutIntro">BusTimer is a lightweight, installable web app that helps you keep an eye on departures from your favorite stops.</p><div class="info"><h3 data-i18n="howTitle">How it works</h3><p data-i18n="howText">Search for a stop, choose the vehicle type and line, and save it. Live predictions are displayed when provided by the data source; otherwise times are scheduled estimates.</p></div><div class="info"><h3 data-i18n="coverageTitle">Current coverage</h3><p data-i18n="coverageText">Germany and Spain: Transitous timetable and realtime where supplied; Spain beta coverage varies. VBB remains optional for Berlin-Brandenburg. Málaga: EMT published timetables, no live predictions.</p></div><div class="info"><h3 data-i18n="limitationsTitle">Limitations</h3><p><a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous data sources</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></p><p data-i18n="limitationsText">An internet connection is required for current departures. Predictions depend on external providers. Updates run only while the app is open, and background refresh is not guaranteed.</p></div><div class="info"><h3>Data sources, licenses & contact</h3><p>Málaga: <a href="https://datos.gob.es/es/catalogo/l01290672-lineas-y-horarios-bus-google-transit" target="_blank" rel="noopener">GTFS EMT Málaga / Ayuntamiento de Málaga (CC BY-SA 4.0)</a>. Nationwide data: <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous sources and attribution</a>. Regional services: <a href="https://v6.vbb.transport.rest/" target="_blank" rel="noopener">VBB transport.rest</a> and <a href="https://v6.db.transport.rest/" target="_blank" rel="noopener">DB transport.rest</a>. Maps and geographic data may contain <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>. Check source-specific licenses before redistributing timetable data.</p><p>Contact / support: <a href="https://github.com/tupolev/bustimer/issues" target="_blank" rel="noopener">BusTimer GitHub Issues</a>. Open-source, non-commercial project; provider APIs may log your IP and queried stops. No credentials are embedded in this web app.</p></div><p>Version 0.10.2 · <a href="https://github.com/tupolev/bustimer" target="_blank" rel="noopener">GitHub / tupolev/bustimer</a></p></section>
+<section class="panel" id="tab-about" role="tabpanel" aria-labelledby="nav-about" hidden><h2 data-i18n="aboutTitle">About BusTimer</h2><p data-i18n="aboutIntro">BusTimer is a lightweight, installable web app that helps you keep an eye on departures from your favorite stops.</p><div class="info"><h3 data-i18n="howTitle">How it works</h3><p data-i18n="howText">Search for a stop, choose the vehicle type and line, and save it. Live predictions are displayed when provided by the data source; otherwise times are scheduled estimates.</p></div><div class="info"><h3 data-i18n="coverageTitle">Current coverage</h3><p data-i18n="coverageText">Germany and Spain: Transitous timetable and realtime where supplied; Spain beta coverage varies. VBB remains optional for Berlin-Brandenburg. Málaga: EMT published timetables, no live predictions.</p></div><div class="info"><h3 data-i18n="limitationsTitle">Limitations</h3><p><a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous data sources</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></p><p data-i18n="limitationsText">An internet connection is required for current departures. Predictions depend on external providers. Updates run only while the app is open, and background refresh is not guaranteed.</p></div><div class="info"><h3>Data sources, licenses & contact</h3><p>Málaga: <a href="https://datos.gob.es/es/catalogo/l01290672-lineas-y-horarios-bus-google-transit" target="_blank" rel="noopener">GTFS EMT Málaga / Ayuntamiento de Málaga (CC BY-SA 4.0)</a>. Nationwide data: <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous sources and attribution</a>. Regional services: <a href="https://v6.vbb.transport.rest/" target="_blank" rel="noopener">VBB transport.rest</a> and <a href="https://v6.db.transport.rest/" target="_blank" rel="noopener">DB transport.rest</a>. Maps and geographic data may contain <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>. Check source-specific licenses before redistributing timetable data.</p><p>Contact / support: <a href="https://github.com/tupolev/bustimer/issues" target="_blank" rel="noopener">BusTimer GitHub Issues</a>. Open-source, non-commercial project; provider APIs may log your IP and queried stops. No credentials are embedded in this web app.</p></div><p>Version 0.11.0 · <a href="https://github.com/tupolev/bustimer" target="_blank" rel="noopener">GitHub / tupolev/bustimer</a></p></section>
 </div><footer class="footer">BusTimer · <span data-i18n="footer">Made for the next ride.</span></footer></main>
 <script>
 "use strict";
@@ -222,6 +222,24 @@ function townCandidates(data,country){
   label:[x.properties.name,x.properties.state].filter(Boolean).join(" · ")}))
  .filter(x=>x.name).filter((x,i,a)=>a.findIndex(y=>y.name===x.name&&y.label===x.label)===i).slice(0,8);
 }
+const townIndexCache=new Map();
+function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu"}[country]}
+function foldTown(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+async function offlineTownCandidates(country,query){
+ const code=townCode(country);
+ if(!code)throw Error("Country town dataset missing");
+ if(!townIndexCache.has(code)){
+  const pending=getJSON("./data/towns/"+code+".json").catch(e=>{townIndexCache.delete(code);throw e});
+  townIndexCache.set(code,pending);
+ }
+ const data=await townIndexCache.get(code);
+ if(!Array.isArray(data.towns)||data.country!==code.toUpperCase())throw Error("Invalid offline towns");
+ const q=foldTown(query);
+ return data.towns.filter(row=>foldTown(row[0]).includes(q)).sort((a,b)=>{
+  const prefix=Number(foldTown(b[0]).startsWith(q))-Number(foldTown(a[0]).startsWith(q));
+  return prefix||b[4]-a[4];
+ }).slice(0,8).map(row=>({name:row[0],lat:row[2],lon:row[3],label:[row[0],row[1]].filter(Boolean).join(" · ")}));
+}
 $("#town-query").addEventListener("input",()=>{
  clearTimeout(townTimer);clearTimeout(searchTimer);++debounceSeq;
  const seq=++townSeq;chosenTown=null;clearTownSuggestions();
@@ -241,17 +259,18 @@ $("#town-query").addEventListener("input",()=>{
    const countryCodes={germany:"DE",spain:"ES",france:"FR",portugal:"PT",luxembourg:"LU"};
    const params=new URLSearchParams({q:query,limit:"12",countrycode:countryCodes[state.city]});
    if(cfg?.bounds)params.set("bbox",[cfg.bounds[2],cfg.bounds[0],cfg.bounds[3],cfg.bounds[1]].join(","));
-   let data;
+   let matches;
    try{
-    data=await cachedJSON("https://photon.komoot.io/api/?"+params,300000);
-   }catch(error){
-    // Retry with the smallest documented request: some public Photon
-    // installations reject optional parameters or change their support.
-    if(!/HTTP 400\b/.test(String(error)))throw error;
-    data=await cachedJSON("https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"12"}),300000);
+    matches=await offlineTownCandidates(state.city,query);
+   }catch(offlineError){
+    // Optional fallback for first deployment, outages or missing small hamlets.
+    let data;
+    try{data=await cachedJSON("https://photon.komoot.io/api/?"+params,300000)}
+    catch(e){data=await cachedJSON("https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"12"}),300000)}
+    matches=townCandidates(data,state.city);
    }
    if(seq!==townSeq)return;
-   const matches=townCandidates(data,state.city);box.replaceChildren();
+   box.replaceChildren();
    if(!matches.length){box.textContent=t("noResults");return}
    for(const item of matches){
     const button=document.createElement("button");button.className="result";button.type="button";
