@@ -462,7 +462,7 @@ const ALARM_LABELS={
 function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
 const REMOTE_ALARM_LABELS={"en":["Web Push · Background alerts enabled","Could not cancel server alert. Please retry."],"es":["Web Push · Avisos en segundo plano activados","No se ha podido cancelar la alarma del servidor. Inténtalo de nuevo."],"de":["Web Push · Hintergrundalarme aktiviert","Serveralarm konnte nicht gelöscht werden. Bitte erneut versuchen."],"fr":["Web Push · Alertes en arrière-plan activées","Impossible de supprimer l’alerte du serveur. Réessayez."],"pt":["Web Push · Alertas em segundo plano ativados","Não foi possível cancelar o alerta no servidor. Tente novamente."],"nl":["Web Push · Meldingen op de achtergrond aan","Servermelding kon niet worden verwijderd. Probeer opnieuw."],"it":["Web Push · Avvisi in background attivi","Impossibile annullare l’avviso sul server. Riprova."],"cs":["Web Push · Upozornění na pozadí zapnuta","Upozornění na serveru nelze zrušit. Zkuste to znovu."],"pl":["Web Push · Powiadomienia w tle włączone","Nie można usunąć alarmu z serwera. Spróbuj ponownie."],"da":["Web Push · Baggrundsalarmer aktiveret","Serveralarmen kunne ikke annulleres. Prøv igen."],"sv":["Web Push · Bakgrundslarm aktiverade","Det gick inte att avbryta serverlarmet. Försök igen."]};
 function remoteAlarmLabel(i){return (REMOTE_ALARM_LABELS[prefs.language]||REMOTE_ALARM_LABELS.en)[i]}
-const PUSH_API="https://bustimer.kodesoft.net/server/api.php";
+const PUSH_API=new URL("server/api.php",document.baseURI).href;
 const PUSH_IDENTITY_KEY="bustimer:push-identity";
 let remotePush=null;
 function vapidBytes(key){const value=atob(key.replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(value,c=>c.charCodeAt(0))}
