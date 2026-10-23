@@ -234,3 +234,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Changing the interface language no longer unlocks stop searches unless the user has selected a valid city suggestion; preserves language rules and avoids unscoped queries.
 - [x] Regression check added to literal-label tests.
 - [ ] Follow up with real-browser integration checks for all three UI languages and saved stops.
+
+## Country → city → stop → line → direction regression suite (2026-10-23)
+
+- [x] Added fixture-based tests for country-bounded city autocomplete, literal city/region labels, deduplicated suggestions and filtering out station POIs.
+- [x] Added tests for line-specific direction choices preserving original destination strings.
+- [x] Added checks that EN/ES/DE dictionaries expose all key six-step form labels and errors.
+- [ ] Validate new tests in GitHub CI and follow with an actual browser interaction test (the new fixture tests are not a browser smoke test).
+- [ ] Begin Belgian operator feed integration after browser coverage and the Photon city suggestion issue are stable.
