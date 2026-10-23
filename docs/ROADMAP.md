@@ -498,3 +498,13 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] [Corrected run 39973671961](https://github.com/tupolev/bustimer/actions/runs/39973671961) succeeded: sampled true-nearby stops and departures in Köln (Neumarkt/Heumarkt), Bonn (Hauptbahnhof), Düsseldorf (Heinrich-Heine-Allee), Málaga (Alameda Principal), Madrid (Atocha) and Barcelona (Sants).
 - [ ] Expand coverage checks from individual stops to representative *local* bus/tram/metro lines, operator ownership, and direction/platform IDs; do not equate one successful stop with network completeness.
 - [ ] Verify current post-audit GitHub Pages deployment and monitor the v0.13.0 release test suite as subsequent commits land.
+
+
+## European expansion: 11 enabled countries (2026-10-23)
+
+- [x] Added API-first catalog support, geographic bounds, localized country labels and GeoNames offline town lookup for Austria (AT), Switzerland (CH), Italy (IT), Czechia (CZ).
+- [x] Generated and published `data/towns/at.json`, `ch.json`, `it.json`, `cz.json` without adding national timetable mirrors.
+- [x] Live Transitous geocoding and stop-times sample passed for Wien Hauptbahnhof, Zürich HB, Milano Centrale and Praha hlavní nádraží in [Actions run 39974550688](https://github.com/tupolev/bustimer/actions/runs/39974550688).
+- [x] Enabled all four as **experimental**; now 11 countries enabled. README and localized About copy updated. Realtime/complete operator coverage must not be assumed.
+- [ ] Run country-specific real-browser end-to-end search → departure → favorite scenarios and review corner cases (e.g. Swiss stop sources and Czech diacritics) before marking any as beta.
+- [ ] Confirm final CI and Pages deploy following the last expansion commits.
