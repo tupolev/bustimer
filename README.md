@@ -4,7 +4,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.8.0**
+**Version 0.9.0**
 
 **Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
 
@@ -157,3 +157,7 @@ The European Commission's [National Access Points](https://transport.ec.europa.e
 - Transitous usage policy: https://transitous.org/api/ ; attribution: https://transitous.org/sources/ .
 
 Activation does not mean all operators work. In this iteration live web API requests and end-to-end GitHub Pages rendering were not verifiable from the development environment; validate Paris Gare du Nord, Lyon Part-Dieu, Lisboa Oriente and Porto São Bento and mark unsupported networks clearly. The provider catalog distinguishes experimental coverage from the core countries.
+
+## Direction-aware favorites (v0.9.0)
+
+The Add Stop form now requires selecting the direction displayed in the departure feed after choosing a line. Each saved favorite includes its direction, allowing the same route at the same stop to be monitored separately in opposite directions. Existing favorites remain compatible and retain their previous all-directions behavior until recreated. When upstream sources do not supply a direction, an explicit unspecified option is offered; some providers may use slightly different direction labels, so matching follows their displayed text and needs browser validation.
