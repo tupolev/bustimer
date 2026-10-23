@@ -61,8 +61,12 @@ jobs:
           [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
           [[ "$DEPLOY_PATH" == "/home/$DEPLOY_USER/bustimer.kodesoft.net/" ]]
-          ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
-            'php -r '\''if (PHP_VERSION_ID < 80200) {fwrite(STDERR, "PHP >= 8.2 required\\n");exit(1);} foreach (["pdo_sqlite","curl","openssl","mbstring"] as $ext) {if (!extension_loaded($ext)) {fwrite(STDERR,"Missing PHP extension: ".$ext."\\n");exit(1);}} echo PHP_VERSION." OK\\n";'\'''
+          remote_php=$(ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" 'php -r "echo PHP_VERSION_ID;"')
+          [[ "$remote_php" =~ ^[0-9]+$ ]] && (( remote_php >= 80200 )) || { echo "DreamHost CLI PHP 8.2+ required (got $remote_php)"; exit 1; }
+          for extension in pdo_sqlite curl openssl mbstring; do
+            ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+              "php -r \"exit(extension_loaded('$extension') ? 0 : 1);\"" || { echo "DreamHost PHP missing $extension"; exit 1; }
+          done
           ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
             "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
       - name: Upload release without touching server settings or database
@@ -89,7 +93,6 @@ jobs:
           set -euo pipefail
           curl --fail --silent --show-error --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/ | grep -qi 'bustimer'
           curl --fail --silent --show-error --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/sw.js | grep -q 'bustimer-shell'
-          # Before private settings exist, api.php may respond 500. A 404 means it was not deployed.
-          api_status=$(curl --silent --show-error -o /dev/null -w '%{http_code}' https://bustimer.kodesoft.net/server/api.php?action=config)
-          if [[ "$api_status" == "404" || "$api_status" == "000" ]]; then echo "API not reachable: $api_status"; exit 1; fi
-          echo "API HTTP status: $api_status (200 requires private settings)."
+          config=$(curl --fail --silent --show-error --retry 3 --retry-delay 3 'https://bustimer.kodesoft.net/server/api.php?action=config')
+          echo "$config" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d.get("enabled") is True and isinstance(d.get("publicKey"),str) and len(d["publicKey"]) > 20'
+          echo 'PWA and configured PHP API are reachable.'
