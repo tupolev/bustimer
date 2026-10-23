@@ -1,0 +1,31 @@
+name: Live branding browser smoke
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/live-brand-smoke.yml"
+permissions:
+  contents: read
+jobs:
+  visual-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium
+      - name: Verify live Pages palette and icon
+        run: npx playwright test e2e/brand-live-pages.spec.mjs --retries=2
+      - name: Save screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-brand-screenshot
+          path: |
+            brand-live.png
+            test-results/
+          retention-days: 7
