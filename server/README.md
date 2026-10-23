@@ -12,9 +12,7 @@ Target: **https://bustimer.kodesoft.net/server/api.php**. The PWA stays on **htt
 
 1. Upload the entire `server/` directory under the host's document root so `https://bustimer.kodesoft.net/server/api.php?action=config` is reachable.
 2. From `server/`, run `composer install --no-dev --optimize-autoloader` (or run it locally and upload `vendor/`).
-3. Generate **one** VAPID key pair with:
-   `php -r 'require "vendor/autoload.php"; print_r(\\Minishlink\\WebPush\\VAPID::createVapidKeys());'`
-   Put the resulting public/private strings into `settings.php`. Do not change them after users subscribe.
+3. Generate **one** VAPID key pair using `php generate-vapid.php` from the `server/` directory. Keep the private output secret and do not regenerate keys after users subscribe.
 4. Copy `settings.example.php` to `settings.php`, fill the VAPID keys, a genuine contact email in `vapid_subject`, and an **absolute SQLite file path outside the public document root**. Set the origin to exactly `https://tupolev.github.io`.
 5. Ensure the PHP user can write to the SQLite directory. Do **not** publicly expose the database, `settings.php`, `vendor/`, source files, error logs or Composer files. `.htaccess` protects Apache; **Nginx needs equivalent explicit deny rules**. The example path `/home/YOUR_ACCOUNT/private/` is a placeholder, not a production path.
 6. Add a control-panel cron job at **one-minute frequency** (adapt path to your hosting):
@@ -43,6 +41,7 @@ Target: **https://bustimer.kodesoft.net/server/api.php**. The PWA stays on **htt
 ## Endpoint overview
 - `GET /server/api.php?action=config` — VAPID public key
 - `POST /server/api.php?action=subscribe` — creates device subscription and bearer credentials
+- `GET /server/api.php?action=alarms` — list the current device's active alarm IDs (authenticated)
 - `PUT /server/api.php?action=alarm` — create/update one alarm (authenticated)
 - `DELETE /server/api.php?action=alarm&favoriteId=...` — delete one alarm (authenticated)
 - `DELETE /server/api.php?action=unsubscribe` — remove all alarms and the device subscription (authenticated)
@@ -51,3 +50,5 @@ Device-authenticated requests carry `X-BusTimer-Device` and `X-BusTimer-Token` h
 
 ## Limitations before production rollout
 This is an initial implementation. Test with real Android/iOS/desktop push subscriptions and cron on your specific host; real-time provider fields vary by country. Provide subscription cleanup/expiration, better abuse prevention and end-to-end failure instrumentation before advertising guaranteed background alarms.
+
+Note: the subscription endpoint permits only known Apple, Mozilla, Google FCM and Microsoft push-service hosts to limit outbound-request abuse. Expand that list carefully only if a supported browser uses another verified endpoint.
