@@ -209,3 +209,7 @@ Official Luxembourg national GTFS is published, and country selection is enabled
 ## Automatic Luxembourg refresh
 
 The Luxembourg GTFS publisher runs automatically **every Tuesday at 05:43 UTC** and also when its workflow YAML changes on `main`. Concurrent executions are serialized; manual dispatch is still supported. The first automatic trigger requires validation. Data are scheduled-only under CC BY 4.0 with attribution in the dataset metadata.
+
+## City-first stop search (v0.9.7)
+
+The **Add stop** form now asks for country, **city/town**, and then stop name before transport, line and direction. Entering a new city clears only the new-stop search, not saved favorite stops. Country-wide Transitous searches are qualified by the city; local adapter results are narrowed by available municipality names. City suggestions and coordinate-based filtering are planned next.
