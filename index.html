@@ -447,17 +447,17 @@ function groupFavoriteStops(stops){const groups=new Map();for(const stop of stop
 
 const ALARM_MINUTES=[2,5,10,15,20,30,45,60];
 const ALARM_LABELS={
- en:["Departure alert","Remove after alert","Set alert","Remove alert","Keep BusTimer open for reliable alerts.","Notification permission required."],
- es:["Alarma de salida","Eliminar al sonar","Activar alarma","Quitar alarma","Mantén BusTimer abierto para recibir el aviso.","Se necesita permiso para notificaciones."],
- de:["Abfahrtsalarm","Nach Alarm entfernen","Alarm aktivieren","Alarm entfernen","Für zuverlässige Alarme BusTimer geöffnet lassen.","Benachrichtigungen müssen erlaubt sein."],
- fr:["Alerte de départ","Supprimer après l’alerte","Activer l’alerte","Supprimer l’alerte","Gardez BusTimer ouvert pour recevoir les alertes.","Autorisez les notifications."],
- pt:["Alerta de partida","Eliminar após o aviso","Ativar alerta","Remover alerta","Mantenha o BusTimer aberto para receber alertas.","Autorize as notificações."],
- nl:["Vertrekmelding","Na melding verwijderen","Melding instellen","Melding verwijderen","Laat BusTimer open voor meldingen.","Sta meldingen toe."],
- it:["Avviso di partenza","Rimuovi dopo l’avviso","Attiva avviso","Rimuovi avviso","Tieni BusTimer aperto per gli avvisi.","Consenti le notifiche."],
- cs:["Upozornění na odjezd","Po upozornění odstranit","Zapnout upozornění","Odebrat upozornění","Pro upozornění nechte BusTimer otevřený.","Povolte oznámení."],
- pl:["Powiadomienie o odjeździe","Usuń po powiadomieniu","Włącz powiadomienie","Usuń powiadomienie","Pozostaw BusTimer otwarty, aby otrzymywać powiadomienia.","Zezwól na powiadomienia."],
- da:["Afgangsalarm","Fjern efter første alarm","Aktivér alarm","Fjern alarm","Hold BusTimer åben for at få alarmer.","Tillad notifikationer."],
- sv:["Avgångslarm","Ta bort efter första larmet","Aktivera larm","Ta bort larm","Håll BusTimer öppet för att få larm.","Tillåt aviseringar."]
+ en:["Departure alert","Remove after alert","Set alert","Remove alert","Keep BusTimer open for reliable alerts.","Notification permission required.","Alert","before departure"],
+ es:["Alarma de salida","Eliminar al sonar","Activar alarma","Quitar alarma","Mantén BusTimer abierto para recibir el aviso.","Se necesita permiso para notificaciones.","Avisar","antes de la salida"],
+ de:["Abfahrtsalarm","Nach Alarm entfernen","Alarm aktivieren","Alarm entfernen","Für zuverlässige Alarme BusTimer geöffnet lassen.","Benachrichtigungen müssen erlaubt sein.","Erinnern","vor Abfahrt"],
+ fr:["Alerte de départ","Supprimer après l’alerte","Activer l’alerte","Supprimer l’alerte","Gardez BusTimer ouvert pour recevoir les alertes.","Autorisez les notifications.","Alerter","avant le départ"],
+ pt:["Alerta de partida","Eliminar após o aviso","Ativar alerta","Remover alerta","Mantenha o BusTimer aberto para receber alertas.","Autorize as notificações.","Avisar","antes da partida"],
+ nl:["Vertrekmelding","Na melding verwijderen","Melding instellen","Melding verwijderen","Laat BusTimer open voor meldingen.","Sta meldingen toe.","Meld","voor vertrek"],
+ it:["Avviso di partenza","Rimuovi dopo l’avviso","Attiva avviso","Rimuovi avviso","Tieni BusTimer aperto per gli avvisi.","Consenti le notifiche.","Avvisa","prima della partenza"],
+ cs:["Upozornění na odjezd","Po upozornění odstranit","Zapnout upozornění","Odebrat upozornění","Pro upozornění nechte BusTimer otevřený.","Povolte oznámení.","Upozornit","před odjezdem"],
+ pl:["Powiadomienie o odjeździe","Usuń po powiadomieniu","Włącz powiadomienie","Usuń powiadomienie","Pozostaw BusTimer otwarty, aby otrzymywać powiadomienia.","Zezwól na powiadomienia.","Powiadom","przed odjazdem"],
+ da:["Afgangsalarm","Fjern efter første alarm","Aktivér alarm","Fjern alarm","Hold BusTimer åben for at få alarmer.","Tillad notifikationer.","Giv besked","før afgang"],
+ sv:["Avgångslarm","Ta bort efter första larmet","Aktivera larm","Ta bort larm","Håll BusTimer öppet för att få larm.","Tillåt aviseringar.","Påminn","före avgång"]
 };
 function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
 const REMOTE_ALARM_LABELS={"en":["Web Push · Background alerts enabled","Could not cancel server alert. Please retry."],"es":["Web Push · Avisos en segundo plano activados","No se ha podido cancelar la alarma del servidor. Inténtalo de nuevo."],"de":["Web Push · Hintergrundalarme aktiviert","Serveralarm konnte nicht gelöscht werden. Bitte erneut versuchen."],"fr":["Web Push · Alertes en arrière-plan activées","Impossible de supprimer l’alerte du serveur. Réessayez."],"pt":["Web Push · Alertas em segundo plano ativados","Não foi possível cancelar o alerta no servidor. Tente novamente."],"nl":["Web Push · Meldingen op de achtergrond aan","Servermelding kon niet worden verwijderd. Probeer opnieuw."],"it":["Web Push · Avvisi in background attivi","Impossibile annullare l’avviso sul server. Riprova."],"cs":["Web Push · Upozornění na pozadí zapnuta","Upozornění na serveru nelze zrušit. Zkuste to znovu."],"pl":["Web Push · Powiadomienia w tle włączone","Nie można usunąć alarmu z serwera. Spróbuj ponownie."],"da":["Web Push · Baggrundsalarmer aktiveret","Serveralarmen kunne ikke annulleres. Prøv igen."],"sv":["Web Push · Bakgrundslarm aktiverade","Det gick inte att avbryta serverlarmet. Försök igen."]};
@@ -550,10 +550,11 @@ async function armDepartureAlarm(s,minutes,once){
 }
 function addDepartureAlarm(row,s){
  const div=document.createElement("div");div.className="departure-alarm";
- const title=document.createElement("span");title.textContent="🔔 "+alarmLabel(0);
+ const title=document.createElement("span");title.textContent="🔔 "+alarmLabel(6);
  const minutes=document.createElement("select");minutes.setAttribute("aria-label",alarmLabel(0));
  for(const n of ALARM_MINUTES)minutes.add(new Option(n+" min",String(n)));
  minutes.value=String(s.departureAlarm?.minutes||10);
+ const beforeDeparture=document.createElement("span");beforeDeparture.textContent=alarmLabel(7);
  const label=document.createElement("label");label.className="alarm-check";
  const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.checked=s.departureAlarm?.once??true;
  label.append(checkbox,document.createTextNode(" "+alarmLabel(1)));
@@ -565,7 +566,7 @@ function addDepartureAlarm(row,s){
  minutes.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.minutes=Number(minutes.value);s.departureAlarm.fired=[];persist();if(s.departureAlarm.remote)remoteAlarm(s).catch(console.warn)}});
  checkbox.addEventListener("change",()=>{if(s.departureAlarm){s.departureAlarm.once=checkbox.checked;persist();if(s.departureAlarm.remote)remoteAlarm(s).catch(console.warn)}});
  const note=document.createElement("small");note.textContent=s.departureAlarm?.remote?remoteAlarmLabel(0):alarmLabel(4);
- div.append(title,minutes,label,btn,note);row.append(div);
+ div.append(title,minutes,beforeDeparture,label,btn,note);row.append(div);
 }
 
 function renderCards(){
