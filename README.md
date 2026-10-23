@@ -4,7 +4,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.9.3**
+**Version 0.9.4**
 
 **Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
 
@@ -185,3 +185,7 @@ The German search now attempts an official VRS static stop index (if it exists u
 ## VRS coverage search ranking (v0.9.3)
 
 Verified VRS source index contains **20,494 stops**, service calendars and exceptions. Country search now processes regional results first (VRS, VBB, DB, EMT) and gives prefix matches priority before limiting results to 20, reducing the chance that locally sourced platform stops disappear behind Transitous matches. A VRS provider-ID regression test protects correct namespace handling. A separate lightweight search-index optimization remains planned; VRS raw index is about 5.4 MB, so initial first-load time may vary by connection.
+
+## VRS split dataset (v0.9.4)
+
+GTFS importer now produces `data/vrs/search.json` for stop lookup and `data/vrs/services.json` for calendar/exception data. The app downloads calendar data on departure requests only. Until a new VRS import is published, the app uses the existing monolithic `index.json` as fallback; running the workflow on main publishes the new split dataset. Neighboring countries are tracked as candidates, not enabled without verified sources.
