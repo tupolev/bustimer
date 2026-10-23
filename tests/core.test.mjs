@@ -6,7 +6,7 @@ const html=fs.readFileSync("index.html","utf8");
 const script=html.match(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/i)?.[1];
 assert.ok(script,"inline app script found");
 function extract(begin,end){const s=script.indexOf(begin),e=script.indexOf(end,s+begin.length);assert.ok(s>=0&&e>s,"functions found: "+begin);return script.slice(s,e)}
-const library="const DATA_PROVIDERS={emt:()=>{},vbb:()=>{},db:()=>{},vrs:()=>{},lux:()=>{},transitous:()=>{}};\n"+extract("function defaultProvider(","async function departures(city,id,more=[]){")
+const library="const DATA_PROVIDERS={emt:()=>{},vbb:()=>{},db:()=>{},vrs:()=>{},lux:()=>{},belgiumRail:()=>{},transitous:()=>{}};\n"+extract("function defaultProvider(","async function departures(city,id,more=[]){")
  +extract("function motisStops(","let debounceSeq=0,");
 const context=vm.createContext({console,Date,Math,Number,String,Array,Object,JSON,Intl,URLSearchParams});
 vm.runInContext(library,context);
@@ -57,4 +57,10 @@ test("Luxembourg source IDs stay local to official GTFS provider",()=>{
  const refs=call("providerLinks","luxembourg","lux:stop:123",[]);
  assert.equal(refs.length,1);
  assert.equal(refs[0].id,"stop:123");
+});
+
+test("Belgian rail favorites keep source identity",()=>{
+ assert.equal(call("defaultProvider","belgium","belgiumRail:123"),"belgiumRail");
+ const ids=call("providerLinks","belgium","belgiumRail:123",[{provider:"belgiumRail",id:"123"}]);
+ assert.equal(ids.length,1);assert.equal(ids[0].id,"123");
 });
