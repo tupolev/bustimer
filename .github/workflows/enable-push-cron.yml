@@ -1,0 +1,59 @@
+name: Enable minute Web Push cron on DreamHost
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dreamhost-production
+  cancel-in-progress: false
+jobs:
+  enable-cron:
+    runs-on: ubuntu-latest
+    environment: dreamhost-production
+    timeout-minutes: 10
+    steps:
+      - name: Install SSH password helper
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+      - name: Configure verified host key
+        env:
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DREAMHOST_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Verify PHP CLI and install dedicated cron entry
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DREAMHOST_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DREAMHOST_WEB_ROOT }}
+          SSHPASS: ${{ secrets.DREAMHOST_SSH_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$SSHPASS" && test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
+          [[ "$DEPLOY_HOST" == "bustimer.kodesoft.net" ]]
+          [[ "$DEPLOY_USER" == "dh_ikhr5d" ]]
+          [[ "$DEPLOY_PATH" == "/home/dh_ikhr5d/bustimer.kodesoft.net/" ]]
+          # Send a fixed, non-secret script over SSH. Never overwrite unrelated cron jobs.
+          sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password,keyboard-interactive \
+            "$DEPLOY_USER@$DEPLOY_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          root=/home/dh_ikhr5d/bustimer.kodesoft.net/server
+          test -f "$root/settings.php" && test -f "$root/cron.php"
+          php_bin=$(command -v php)
+          "$php_bin" -r 'exit(PHP_VERSION_ID >= 80200 && extension_loaded("pdo_sqlite") && extension_loaded("curl") ? 0 : 1);'
+          "$php_bin" -l "$root/cron.php" >/dev/null
+          command -v flock >/dev/null || { echo 'flock is required to prevent overlapping cron invocations'; exit 1; }
+          # CLI smoke with no alarm subscriptions should be harmless. Avoid printing any private data.
+          "$php_bin" "$root/cron.php"
+          marker='# BusTimer anonymous Web Push'
+          line="* * * * * /usr/bin/flock -n /home/dh_ikhr5d/bustimer-private/bustimer-cron.lock $php_bin $root/cron.php >/dev/null 2>&1 $marker"
+          if crontab -l 2>/dev/null | grep -Fq "$marker"; then
+            echo 'BusTimer cron already present; leaving crontab unchanged.'
+          else
+            { crontab -l 2>/dev/null || true; printf '%s\n' "$line"; } | crontab -
+            echo 'Installed once-per-minute BusTimer cron without altering existing entries.'
+          fi
+          REMOTE
