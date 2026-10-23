@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.9** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.10.0** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -220,3 +220,11 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Remove direct `lang=prefs.language` parameter from public Photon calls (UI language may not be supported on that instance), retain translated interface.
 - [x] Add ISO country code and country bounding box to geocoding request, reducing irrelevant results.
 - [ ] Browser-verify real autocomplete behavior in ES/DE UI and Bonn/Málaga searches; consider a fallback city search source if the Photon demo is unavailable.
+
+## Literal vs localized names (v0.10.0)
+
+- [x] User-language country names via browser Intl.DisplayNames (DE/ES/EN); country selector rerenders on language changes, retains original catalog values as fallback.
+- [x] Preserve stop, city, region, route, direction and transport labels literally as delivered by their sources. Unknown transport categories display their literal codes rather than a forced English “Other”.
+- [x] Translate UI labels and selector prompts in ES/EN/DE; correct country/city/stop/transport/line/direction step numbering.
+- [x] Add automated translation policy regression tests.
+- [ ] Verify literal naming for any new providers before enabling and browser-smoke-test language switches.
