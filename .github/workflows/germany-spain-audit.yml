@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/germany-spain-audit.yml"
+      - "scripts/audit_germany_spain.py"
 permissions:
   contents: write
 jobs:
