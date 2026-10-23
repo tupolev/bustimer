@@ -221,3 +221,7 @@ Typing into **City / town** now displays selectable city suggestions via Photon 
 ## City autocomplete hotfix (v0.9.9)
 
 Photon geocoding requests no longer send the app UI's language blindly (which can return HTTP 400 for unsupported languages). Requests now specify the selected country's ISO code and geographic bounding box. A browser smoke test is still needed.
+
+## Label localization policy (v0.10.0)
+
+**Literal by default:** stop, city, region, transport type, line and direction names retain the upstream source's original text, without name translations. **Country names** follow the user's interface language through `Intl.DisplayNames`; when unknown, the original catalog name is retained. All other interface strings, including selector prompts and search feedback, follow the selected UI language, with English fallback for missing translations.
