@@ -177,3 +177,5 @@ The optional VRS static-data build is in `scripts/build_vrs.py`, using the VRS g
 ## Optional VRS static adapter (v0.9.2)
 
 The German search now attempts an official VRS static stop index (if it exists under `data/vrs`) alongside Transitous, VBB and NRW-context DB searches. VRS stop IDs are source-namespaced as `vrs:`, and departures use `Europe/Berlin` service dates, calendar exceptions and scheduled-only labels. The index is **not yet generated**; a missing index fails over to the existing providers. Once the manual import succeeds, VRS data becomes available without another application deployment. The first feed must still be checked for GTFS route types, stop naming, service dates, DST behavior and repository size.
+
+**Importer regression fix:** VRS GTFS records are streamed with the ZIP file handle kept open. Synthetic GTFS archive tests now run in the main GitHub Actions CI, independent of network access. The official dataset import still requires a first manual workflow run.
