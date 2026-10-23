@@ -40,7 +40,7 @@ foreach($records as $alarm){
   $key=departureKey($best);
   if(!$key||$alarm['last_notified']===$key)continue;
   $remaining=max(0,(int)ceil(($bestTime-$now)/60));
-  $message=json_encode(['title'=>'BusTimer · '.$alarm['line'],'body'=>($alarm['direction']?:$alarm['line']).' · '.$remaining.' min','url'=>'https://tupolev.github.io/bustimer/'],JSON_UNESCAPED_UNICODE);
+  $message=json_encode(['title'=>'BusTimer · '.$alarm['line'],'body'=>($alarm['direction']?:$alarm['line']).' · '.$remaining.' min','url'=>rtrim($cfg['origin'],'/').'/'],JSON_UNESCAPED_UNICODE);
   $sub=Subscription::create(json_decode($alarm['subscription'],true));
   $report=$push->sendOneNotification($sub,$message);
   if(!$report->isSuccess()){++$errors;error_log('BusTimer push delivery failed: '.$report->getReason());continue;}
