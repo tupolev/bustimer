@@ -81,3 +81,26 @@ test("same-operator platforms are not incorrectly merged",()=>{
  assert.equal(merged[0].providers.length,1);
  assert.equal(merged[1].providers.length,1);
 });
+
+test("Belgian shared interchange merges across operators without swallowing a second platform",()=>{
+ const stops=[
+  {name:"GARE CENTRALE",id:"belgiumStib:1000",provider:"belgiumStib",lat:50.8451,lon:4.3596},
+  {name:"GARE CENTRALE",id:"belgiumStib:1001",provider:"belgiumStib",lat:50.84511,lon:4.35961},
+  {name:"Gare Centrale",id:"belgiumRail:BE:42",provider:"belgiumRail",lat:50.84512,lon:4.35962},
+  {name:"GARE CENTRALE",id:"belgiumTec:777",provider:"belgiumTec",lat:50.84513,lon:4.35963}
+ ];
+ const merged=call("joinProviderStops",stops);
+ assert.equal(merged.length,2,"same-operator platforms must remain selectable");
+ const providerNames=Array.from(merged[0].providers,ref=>ref.provider);
+ assert.deepEqual(providerNames,["belgiumStib","belgiumRail","belgiumTec"]);
+ assert.equal(merged[0].providers[1].id,"BE:42","nested Belgian stop IDs must survive prefix removal");
+ assert.equal(merged[1].providers.length,1);
+ assert.equal(merged[1].providers[0].id,"1001");
+});
+test("Belgian similarly named stops sufficiently far apart are distinct",()=>{
+ const stops=[
+  {name:"GARE CENTRALE",id:"belgiumStib:1000",provider:"belgiumStib",lat:50.8451,lon:4.3596},
+  {name:"Gare Centrale",id:"belgiumRail:9999",provider:"belgiumRail",lat:50.85,lon:4.36}
+ ];
+ assert.equal(call("joinProviderStops",stops).length,2);
+});
