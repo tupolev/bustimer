@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.2.1** · No build step · No backend · MIT licensed
+**Version 0.3.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -48,7 +48,7 @@ The Transitous service is community-hosted and best effort. Usage and attributio
 | Berlin / Brandenburg | [VBB transport.rest](https://v6.vbb.transport.rest/) | Browser CORS support; realtime when available upstream. |
 | Köln | [DB transport.rest](https://v6.db.transport.rest/) | DB-backed source; coverage of KVB local bus/tram stops may be incomplete. |
 | Düsseldorf | [DB transport.rest](https://v6.db.transport.rest/) | Initial DB-backed support; Rheinbahn/VRR local bus, tram and U-Bahn coverage may be incomplete. A dedicated VRR data source is planned, subject to browser CORS validation. |
-| Málaga | Planned | EMT Málaga publishes open datasets, but these do not themselves constitute a verified stop-level arrival-prediction API accessible from a static web page. Disabled until a suitable source is tested. |
+| Málaga | Official EMT Málaga GTFS | Scheduled arrivals by stop/line from published GTFS; no verified realtime ETA yet. Data generated daily with GitHub Actions after first workflow run. |
 
 The dropdown of lines is populated from the *next 90 minutes of departures* at a chosen stop. That means a line not operating in the current window may not be selectable yet. Direction is shown on the monitored card, but direction filtering is not yet implemented. The UI excludes cancelled departure records and matches line + transport mode; the next available service is selected.
 
@@ -91,3 +91,15 @@ Transit predictions are supplied by third-party services and may be unavailable 
 - Refresh only while visible and on the monitored-stops tab. Stop queries share results via short-lived client-side cache for 60 seconds; search queries use 550 ms debounce and 2-minute memoization. These mitigations are per-browser, not a global quota. A production-scale user base should contact upstream maintainers before generating substantial traffic.
 - Public JavaScript must never contain private API keys. **No keys or access tokens are currently committed.** Any future credentialed API needs a protected server-side proxy with secret management and rate limits, not GitHub Pages frontend code.
 - External API requests reveal the browser's IP and queried stops to providers; stop preferences remain in localStorage in this app.
+
+## Málaga static timetable importer (v0.3.0)
+
+Official source: [EMT Málaga GTFS](https://gtfs.emtmalaga.es/GTFS/google_transit.zip), published by EMT Málaga / Ayuntamiento de Málaga, distributed as open data under **CC BY-SA 4.0**. Preserve this attribution when redistributing timetable data. The importer in `scripts/build_malaga.py` converts the GTFS into `data/malaga/index.json` and per-stop JSON files, including route, trip, service calendar and exceptions. These assets are served directly from GitHub Pages; the user's browser does not download the complete GTFS archive. No API key is required.
+
+**Initial activation required:** open [Actions → Refresh Málaga EMT timetables](https://github.com/tupolev/bustimer/actions/workflows/malaga-gtfs.yml), select **Run workflow**, branch **main**. After the run commits `data/malaga/` and GitHub Pages rebuilds, Málaga stop search and scheduled countdowns can work. The workflow also runs daily at 03:17 UTC. The app reports an error if this dataset has not yet been generated rather than showing fabricated times.
+
+The importer and live browser workflow require validation on the published site. EMT's published bus locations are not stop-level ETA predictions; future real-time functionality depends on finding a legally reusable public stop-arrivals endpoint.
+
+### Spain roadmap
+
+Once Málaga's schedule flow is validated, extend the data-provider abstraction to feeds from the official Spanish National Access Point (NAP), with regional static GTFS, calendars, licensing and available GTFS-RT. Do not commit NAP private access tokens to the public repository.
