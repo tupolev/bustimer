@@ -8,7 +8,7 @@ const countries=JSON.parse(fs.readFileSync("countries.json","utf8"));
 test("release version and installed app agree",()=>{
  assert.equal(pkg.version,"0.13.0");
  assert.match(html,/Version 0\.13\.0/);
- assert.match(sw,/bustimer-shell-v34/);
+ assert.match(sw,/bustimer-shell-v35/);
 });
 test("fourteen enabled countries include eight experimental API-first additions",()=>{
  const enabled=countries.countries.filter(c=>c.enabled);
