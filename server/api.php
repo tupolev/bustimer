@@ -13,6 +13,9 @@ if($action==='subscribe'&&$method==='POST'){
  $p=payload();$sub=$p['subscription']??null;
  if(!is_array($sub)||!is_array($sub['keys']??null)||!is_string($sub['endpoint']??null))respond(400,['error'=>'Invalid subscription']);
  $url=parse_url($sub['endpoint']);if(($url['scheme']??'')!=='https'||empty($url['host'])||strlen($sub['endpoint'])>2000)respond(400,['error'=>'Invalid push endpoint']);
+ $host=strtolower($url['host']);
+ $trusted=($host==='fcm.googleapis.com'||$host==='updates.push.services.mozilla.com'||$host==='web.push.apple.com'||str_ends_with($host,'.push.apple.com')||str_ends_with($host,'.notify.windows.com'));
+ if(!$trusted||isset($url['user'])||isset($url['pass'])||(isset($url['port'])&&(int)$url['port']!==443))respond(400,['error'=>'Unsupported push service']);
  foreach(['auth','p256dh'] as $key)if(!is_string($sub['keys'][$key]??null)||strlen($sub['keys'][$key])>400)respond(400,['error'=>'Invalid push keys']);
  $device=bin2hex(random_bytes(16));$secret=bin2hex(random_bytes(32));
  db()->prepare('INSERT INTO devices(id,token_hash,subscription,created_at) VALUES (?,?,?,?)')->execute([$device,hash('sha256',$secret),json_encode($sub),time()]);
