@@ -19,13 +19,15 @@
         15.2
       ],
       "regional": [
-        "vbb"
+        "vbb",
+        "db"
       ],
       "sources": [
         "transitous",
-        "vbb"
+        "vbb",
+        "db"
       ],
-      "notes": "Nationwide aggregate plus VBB regional stop search"
+      "notes": "Nationwide Transitous and region-scoped VBB / NRW-context DB stop search; coverage remains partial"
     },
     {
       "id": "spain",
