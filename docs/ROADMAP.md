@@ -141,12 +141,19 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Split VRS GTFS into `search.json` (stops) and `services.json` (calendars and exceptions); retain per-stop files. App downloads calendars only when requesting departures.
 - [x] Keep compatibility fallback to old `index.json` until next successful import; import replaces directory and removes obsolete index.
 - [x] Update Python importer test and GTFS workflow validation to require split files.
-- [ ] Run VRS workflow to publish split dataset, then verify real stop search and departure responses in Bonn and Köln.
+- [x] VRS split publication verified: [run 39942424131](https://github.com/tupolev/bustimer/actions/runs/39942424131) succeeded; `search.json` has 20,494 stops (2,604,805 bytes), `services.json` has 4,507 calendars and 4,345 exception sets (2,770,503 bytes), and old `index.json` returns 404. Browser stop search and departures in Bonn/Köln still require hands-on validation.
 - [x] Add Node timezone tests for winter/summer, spring DST gap, autumn repeated hour and >24h service times. The conversion omits nonexistent spring local times and chooses the first occurrence for ambiguous autumn times; operator semantics still require real-world inspection.
 - [ ] Assess Netherlands (NDOV), Belgium (STIB/De Lijn/TEC/SNCB), Luxembourg (Mobiliteit), Austria (VAO), Switzerland (opentransportdata), Poland, Czechia, Denmark. Validate licenses and browser access before enabling, while prioritizing Germany and Spain.
 
 ### Follow-up: rollout verification
 
-- [ ] Confirm GitHub Actions passed with `tests/vrs-time.test.mjs`.
-- [ ] Run VRS publication for `search.json` and `services.json`, and confirm both load on GitHub Pages; test representative Bonn/Köln departures.
+- [x] GitHub Actions passed with `tests/vrs-time.test.mjs`: [CI run 39939584167](https://github.com/tupolev/bustimer/actions/runs/39939584167).
+- [x] Published `search.json` and `services.json` to `main` through GitHub Actions. **Pending:** verify actual GitHub Pages network load and representative Bonn/Köln departures.
 - [ ] Inspect provider coverage, license and browser CORS before enabling Netherlands, Belgium, Luxembourg, Austria, Switzerland, Czechia, Denmark and Poland.
+
+## Verified VRS split rollout — 2026-10-23
+
+- [x] Successful VRS [workflow #39942424131](https://github.com/tupolev/bustimer/actions/runs/39942424131), with split dataset committed.
+- [x] Verified published GitHub repository files: `search.json` = 2,604,805 bytes / 20,494 stops; `services.json` = 2,770,503 bytes / 4,507 calendars and 4,345 exception sets; obsolete `index.json` removed.
+- [x] JavaScript/Python test CI successful, [run #39939584167](https://github.com/tupolev/bustimer/actions/runs/39939584167).
+- [ ] Validate representative VRS departures and browser behavior on the live Pages site; optimize search beyond 2.6 MB, potentially via shard indexes.
