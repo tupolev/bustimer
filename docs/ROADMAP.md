@@ -438,3 +438,11 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] Add a separate manual-only Netherlands Playwright end-to-end fixture with mock Transitous data and a local, test-only enabled country catalog; no browser job is added to per-commit CI.
 - [ ] Diagnose 403 on normal browser origin and establish Transitous permission/Referer compliance. Real multi-city live stop search, stop-times, CORS and provider IDs still require evidence.
 - [ ] Verify CI fast suite and manually run Chromium suite successfully; do not bump/release a stable version until green tests and live upstream access are confirmed.
+
+
+## Netherlands Transitous 403 resolved (2026-10-23)
+
+- [x] Identified API identification requirement from Transitous usage policy: server clients must send an identifiable User-Agent including application/version/contact; browser clients use Referer. Initial GitHub Actions probe spoofed Origin/Referer and received 403 in four cities.
+- [x] Corrected network probe User-Agent and reran Actions [39970122882](https://github.com/tupolev/bustimer/actions/runs/39970122882). Live geocoding **passed** for Amsterdam, Rotterdam, Utrecht and Den Haag, with Access-Control-Allow-Origin: *. Evidence: `docs/validation/netherlands-api-latest.json`.
+- [ ] Validate actual stop-times responses and that the geocoder's top results can identify correct Dutch provider IDs; some search candidates are international source IDs.
+- [ ] Browser CORS and end-to-end favorites remain unverified. Netherlands is still gated until live departure queries and browser smoke succeed.
