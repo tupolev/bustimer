@@ -59,7 +59,7 @@ const read=(key,fallback)=>{try{const x=JSON.parse(localStorage.getItem("bustime
 let prefs=read("prefs",{language:"en",theme:"system"}),saved=read("stops",[]),state={city:"germany",stop:null,departures:[],tab:"list",results:[]},departureState={},requestCounter=0,refreshBusy=false,searchTimer;
 if(!I18N[prefs.language])prefs.language="en";if(!["system","light","dark"].includes(prefs.theme))prefs.theme="system";if(!Array.isArray(saved))saved=[];
 const t=k=>I18N[prefs.language]?.[k]??I18N.en?.[k]??k;
-const COUNTRY_ISO={germany:"DE",spain:"ES",france:"FR",portugal:"PT",luxembourg:"LU",belgium:"BE"};
+const COUNTRY_ISO={germany:"DE",spain:"ES",france:"FR",portugal:"PT",luxembourg:"LU",belgium:"BE",netherlands:"NL"};
 function countryLabel(country){
  const iso=COUNTRY_CATALOG?.[country]?.iso||COUNTRY_ISO[country];
  const literal=COUNTRY_CATALOG?.[country]?.name||country;
@@ -208,6 +208,7 @@ const COUNTRY_FALLBACK={
  germany:{geocode:"Deutschland",bounds:[47.2,55.1,5.8,15.2],regional:["vbb","db","vrs"]},
  luxembourg:{geocode:"Luxembourg",bounds:[49.43,50.2,5.72,6.55],regional:["lux"]},
  belgium:{geocode:"Belgium",bounds:[49.48,51.52,2.5,6.42],regional:["belgiumRail","belgiumStib","belgiumTec","belgiumDelijn"]},
+ netherlands:{geocode:"Nederland",bounds:[50.73,53.75,3.25,7.3],regional:[]},
  spain:{geocode:"España",bounds:[27.4,43.9,-18.3,4.4],regional:["emt"]},
  france:{geocode:"France",bounds:[41.2,51.3,-5.3,9.8],regional:[]},
  portugal:{geocode:"Portugal",bounds:[32.4,42.2,-31.5,-6.1],regional:[]}
@@ -267,7 +268,7 @@ function townCandidates(data,country){
  .filter(x=>x.name).filter((x,i,a)=>a.findIndex(y=>y.name===x.name&&y.label===x.label)===i).slice(0,8);
 }
 const townIndexCache=new Map();
-function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu",belgium:"be"}[country]}
+function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu",belgium:"be",netherlands:"nl"}[country]}
 function foldTown(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 async function offlineTownCandidates(country,query){
  const code=townCode(country);
