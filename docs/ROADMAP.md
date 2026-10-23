@@ -163,6 +163,14 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Document source evaluation in [docs/EU-SOURCES.md](EU-SOURCES.md) for Luxembourg's CC BY 4.0 national GTFS, Belgium's four-operator GTFS catalog, and Netherlands' open NDOV/openOV GTFS/GTFS-RT.
 - [x] Add candidate source URLs and suggested geographic bounds to `countries.json` without exposing unverified countries in the UI.
 - [x] Extend CI country metadata validation: unique IDs, mandatory source metadata, and reject `enabled:true` when `status:"candidate"`.
-- [ ] Build a reusable GTFS importer for Luxembourg based on VRS's split stop/calendar pipeline; respect source attribution and confirm the latest dated ZIP via official dataset API.
+- [x] Implement Luxembourg staging importer using official data.public.lu dataset API, shared VRS split GTFS builder, CC BY 4.0 attribution and geographic bounds. Actual-feed validation and country activation remain pending.
 - [ ] Independently validate representative Luxembourg stops and timetables, then consider experimental activation.
 - [ ] Continue with Belgian operator-by-operator ingestion; design bounded, sharded data processing before loading the larger Dutch national GTFS.
+
+## Luxembourg importer (2026-10-23)
+
+- [x] Generalized VRS split GTFS builder with configurable national bounds, timezone, attribution and minimum stop count.
+- [x] Added Luxembourg latest-feed discovery through official data.public.lu API and source host allowlist, plus offline catalog-selection tests.
+- [x] Added manual-only \`luxembourg-gtfs.yml\` workflow; validates stop files and calendar data; publishes only validation index artifacts, without automatically committing thousands of files.
+- [ ] Run and review the [Luxembourg validation workflow](https://github.com/tupolev/bustimer/actions/workflows/luxembourg-gtfs.yml).
+- [ ] Integrate Luxembourg stop search and departure adapter, validate actual timetables and licenses, then enable the country.
