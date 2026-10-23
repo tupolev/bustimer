@@ -33,7 +33,7 @@ Last reviewed: 2026-10-23 · Current application version: **0.9.1** (tests rollo
 - [ ] **P1-05 — Málaga GTFS end-to-end verification.** Test calendars, exceptions, >24h trips, midnight and DST (Europe/Madrid), and stop+line predictions on Pages. Import implemented, testing outstanding.
 - [ ] **P1-06 — Spanish national GTFS ingestion.** Catalogue official NAP/operator feeds; validate licenses, ingest stable GTFS, generate usable country-specific stop index and service calendars. Not started.
 - [ ] **P1-07 — German nationwide static timetable fallback.** Verify national GTFS/DELFI access and create a manageable cache/source independent of live APIs. Not started.
-- [ ] **P1-08 — Germany regional coverage beyond VBB.** Integrate and validate VRS/KVB, VRR/Rheinbahn, plus other regional feeds where legally/technically possible. **Partial progress (v0.9.1):** DB-backed stop search is now available for explicit NRW-location queries; not full VRS/VRR support. Investigate VRS's daily open GTFS and VRR licensing/CORS before a dedicated rollout.
+- [ ] **P1-08 — Germany regional coverage beyond VBB.** Integrate and validate VRS/KVB, VRR/Rheinbahn, plus other regional feeds where legally/technically possible. **Partial progress (v0.9.1):** DB-backed stop search is now available for explicit NRW-location queries; `scripts/build_vrs.py` and manual `vrs-gtfs.yml` workflow prepare official scheduled GTFS conversion, but no verified VRS export or app integration yet. Not full VRS/VRR support. Investigate VRS's daily open GTFS and VRR licensing/CORS before a dedicated rollout.
 - [ ] **P1-09 — Realtime quality tiers.** Prefer confirmed realtime updates over static schedules; show provenance, last update, delay and missing-delay distinction accurately. Basic implementation exists; cross-provider merging and source quality still unverified.
 - [ ] **P1-10 — Dataset freshness and attribution checks.** Date stamps, data expiry, source licenses and copyright in Help for all enabled feeds. Some attribution exists; comprehensive verification pending.
 
@@ -95,3 +95,12 @@ Last reviewed: 2026-10-23 · Current application version: **0.9.1** (tests rollo
 ## CI setup and first-run verification
 
 Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/actions/workflows/ci.yml). Commands: `npm run check`, `npm test`, `npm run ci`. The suite uses Node.js 22 and no third-party test dependencies. GitHub Actions should trigger on every push to `main` and each pull request. **As of this checklist update, the workflow was committed but a successful run has not been independently confirmed**; inspect the Actions page, fix any failures, and only then mark P0-01 and the initial tests complete.
+
+## VRS static GTFS import — staged rollout (2026-10-23)
+
+- [x] Add `scripts/build_vrs.py` to download official global-ID VRS GTFS, compile service calendars and stop-centric schedules, protect against empty datasets, and stage output atomically into `data/vrs/`.
+- [x] Add `.github/workflows/vrs-gtfs.yml` **manual workflow** for first verification. Daily scheduling is intentionally disabled until tested and repository size reviewed.
+- [ ] Execute workflow, confirm the VRS download works and generated index/calendar/date exceptions, IDs, license, file counts and total repository size are correct. **Not yet executed.**
+- [ ] Wire `vrs` into Germany stop discovery and departure adapter with Europe/Berlin timezone handling; don't label static times realtime.
+- [ ] Verify stop matching, midnight/DST and VRS direction labels with sample Bonn/Köln stops, and regression-test old favorites.
+- [ ] Only after successful tests, enable a conservative scheduled refresh and record source freshness in UI.
