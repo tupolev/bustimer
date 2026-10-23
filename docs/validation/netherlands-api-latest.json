@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-23T14:30:13.651404+00:00",
-  "run_id": "39970122882",
+  "checked_at": "2026-10-23T14:32:45.255388+00:00",
+  "run_id": "39970478094",
   "passed": true,
   "cities": {
     "Amsterdam": {
@@ -30,6 +30,49 @@
       "match_count": 10,
       "cors": "*",
       "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "departures": [
+        {
+          "stop_id": "nl-OpenOV_stoparea:18184",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "18",
+            "51",
+            "1"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_NL:S:30009520",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "54",
+            "54",
+            "50"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_NL:S:30004320",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "2",
+            "2",
+            "2"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_3894791",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "195",
+            "195",
+            "195"
+          ]
+        }
+      ],
+      "departure_errors": [],
       "passed": true
     },
     "Rotterdam": {
@@ -59,6 +102,49 @@
       "match_count": 10,
       "cors": "*",
       "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "departures": [
+        {
+          "stop_id": "nl-OpenOV_NL:S:31008000",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "D",
+            "44",
+            "38"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_NL:S:31003947",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "N67",
+            "N60",
+            "N60"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_4016148",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "4",
+            "8",
+            "8"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_stoparea:17891",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "7",
+            "B",
+            "1"
+          ]
+        }
+      ],
+      "departure_errors": [],
       "passed": true
     },
     "Utrecht": {
@@ -88,6 +174,49 @@
       "match_count": 10,
       "cors": "*",
       "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "departures": [
+        {
+          "stop_id": "nl-OpenOV_3924001",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "2",
+            "2",
+            "2"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_3256672",
+          "count": 21,
+          "cors": "*",
+          "sample_lines": [
+            "8",
+            "27",
+            "73"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_3924312",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "6",
+            "6",
+            "6"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_3923931",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "7",
+            "7",
+            "7"
+          ]
+        }
+      ],
+      "departure_errors": [],
       "passed": true
     },
     "Den Haag": {
@@ -117,8 +246,51 @@
       "match_count": 10,
       "cors": "*",
       "cors_note": "CORS must be checked in a real browser; server response alone does not prove browser access",
+      "departures": [
+        {
+          "stop_id": "nl-OpenOV_stoparea:18217",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "Sprinter",
+            "Sprinter",
+            "Intercity"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_4031148",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "1",
+            "1",
+            "15"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_4031474",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "30",
+            "19",
+            "30"
+          ]
+        },
+        {
+          "stop_id": "nl-OpenOV_3185288",
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "30",
+            "30",
+            "30"
+          ]
+        }
+      ],
+      "departure_errors": [],
       "passed": true
     }
   },
-  "note": "Geocode and CORS only; departures/browser E2E not verified"
+  "note": "Live geocode and departure smoke; browser E2E still pending"
 }
