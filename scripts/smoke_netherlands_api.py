@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+"""Live API-first smoke: representative Dutch cities, response shape and CORS."""
+import argparse
+import json
+import os
+from pathlib import Path
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+from datetime import datetime, timezone
+
+BASE="https://api.transitous.org/api/v1/geocode"
+CITIES={"Amsterdam":"Amsterdam Centraal","Rotterdam":"Rotterdam Centraal","Utrecht":"Utrecht Centraal","Den Haag":"Den Haag Centraal"}
+
+def check(city,stop):
+    query=urlencode({"text":stop+", "+city+", Nederland","type":"STOP"})
+    request=Request(BASE+"?"+query,headers={
+        "Accept":"application/json",
+        "Origin":"https://tupolev.github.io",
+        "Referer":"https://tupolev.github.io/bustimer/"
+    })
+    with urlopen(request,timeout=25) as response:
+        cors=response.headers.get("Access-Control-Allow-Origin")
+        document=json.load(response)
+    items=document if isinstance(document,list) else document.get("matches",document.get("results",[]))
+    if not isinstance(items,list):raise ValueError("Unexpected geocode payload")
+    matches=[]
+    for item in items:
+        place=item.get("place") or item
+        ident=place.get("stopId") or place.get("id") or item.get("id")
+        name=place.get("name") or place.get("displayName") or item.get("name")
+        if ident and name:matches.append({"id":ident,"name":name})
+    # Stop names returned by upstream must remain literal; never invent arrivals.
+    return {"query":stop,"matches":matches[:5],"match_count":len(matches),"cors":cors,
+      "passed":bool(matches) and cors in ("*","https://tupolev.github.io")}
+def main():
+    p=argparse.ArgumentParser();p.add_argument("--report",type=Path,required=True);a=p.parse_args()
+    observations={};ok=True
+    for city,stop in CITIES.items():
+        try: observations[city]=check(city,stop)
+        except Exception as exc:observations[city]={"passed":False,"error":str(exc)}
+        ok=ok and observations[city]["passed"]
+    result={"checked_at":datetime.now(timezone.utc).isoformat(),"run_id":os.getenv("GITHUB_RUN_ID"),
+            "passed":ok,"cities":observations,"note":"Geocode and CORS only; departures/browser E2E not verified"}
+    a.report.parent.mkdir(parents=True,exist_ok=True)
+    a.report.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(json.dumps(result,ensure_ascii=False,indent=2))
+    if not ok:raise SystemExit(1)
+if __name__=="__main__":main()
