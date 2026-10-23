@@ -1,0 +1,56 @@
+name: Initialize anonymous Web Push on DreamHost
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dreamhost-production
+  cancel-in-progress: false
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    environment: dreamhost-production
+    timeout-minutes: 10
+    steps:
+      - name: Install SSH password helper
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+      - name: Configure verified SSH host
+        env:
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DREAMHOST_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Initialize VAPID and private database
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DREAMHOST_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DREAMHOST_WEB_ROOT }}
+          SSHPASS: ${{ secrets.DREAMHOST_SSH_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$SSHPASS" && test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
+          [[ "$DEPLOY_HOST" == "bustimer.kodesoft.net" ]]
+          [[ "$DEPLOY_USER" == "dh_ikhr5d" ]]
+          [[ "$DEPLOY_PATH" == "/home/dh_ikhr5d/bustimer.kodesoft.net/" ]]
+          sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password,keyboard-interactive \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "php '$DEPLOY_PATH/server/provision.php'"
+      - name: Verify public configuration (never private credentials)
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 \
+            --output /tmp/bustimer-config.json \
+            'https://bustimer.kodesoft.net/server/api.php?action=config'
+          python3 - <<'PY'
+          import json
+          with open('/tmp/bustimer-config.json') as file:
+              cfg = json.load(file)
+          assert cfg.get('enabled') is True
+          assert isinstance(cfg.get('publicKey'), str) and len(cfg['publicKey']) > 20
+          assert not any(key in cfg for key in ('privateKey', 'vapid_private', 'token', 'db_path'))
+          print('Public push config available; private credentials not exposed.')
+          PY
