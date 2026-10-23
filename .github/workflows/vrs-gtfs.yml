@@ -24,9 +24,11 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
-          x=json.loads(Path("data/vrs/index.json").read_text())
+          x=json.loads(Path("data/vrs/search.json").read_text())
           assert len(x["stops"])>100
           assert x["timezone"]=="Europe/Berlin"
+          services=json.loads(Path("data/vrs/services.json").read_text())
+          assert services["calendar"] or services["exceptions"]
           assert len(x["stops"]) <= 50000
           assert all(s.get("file") for s in x["stops"])
           print(len(x["stops"]),"VRS stops")
