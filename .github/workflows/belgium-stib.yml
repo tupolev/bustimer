@@ -1,0 +1,58 @@
+name: Publish Belgium STIB GTFS
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '27 5 * * 4'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/belgium-stib.yml'
+permissions:
+  contents: write
+concurrency:
+  group: belgium-stib-refresh
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate importer
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Build STIB scheduled GTFS
+        run: python3 scripts/build_belgium_operator.py --operator stib --out "$RUNNER_TEMP/belgium-stib"
+      - name: Verify static stop dataset
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"belgium-stib"
+          x=json.loads((p/"search.json").read_text())
+          y=json.loads((p/"services.json").read_text())
+          assert x["timezone"]=="Europe/Brussels"
+          assert 100<=len(x["stops"])<=30000
+          assert y["calendar"] or y["exceptions"]
+          assert all((p/"stops"/(s["file"]+".json")).exists() for s in x["stops"])
+          print("Validated STIB:",len(x["stops"]))
+          PY
+      - name: Publish STIB data
+        run: |
+          rm -rf data/belgium-stib
+          cp -a "$RUNNER_TEMP/belgium-stib" data/belgium-stib
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/belgium-stib
+          if ! git diff --cached --quiet; then
+            git commit --quiet -m "data: publish Belgium STIB static GTFS"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
