@@ -4,7 +4,7 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const html=fs.readFileSync("index.html","utf8");
-const script=html.match(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/i)?.[1];
+const script=html.match(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/i)?.[1];
 assert.ok(script,"app script found");
 function slice(start,end){
  const a=script.indexOf(start),b=script.indexOf(end,a+start.length);
@@ -19,7 +19,7 @@ const central={lat:50.8451,lon:4.3596};
 const indexes={
  belgiumStib:[{id:"1000",name:"GARE CENTRALE",...central},{id:"1001",name:"GARE CENTRALE",lat:50.84511,lon:4.35961}],
  belgiumRail:[{id:"BE:42",name:"Gare Centrale",lat:50.84512,lon:4.35962}],
- belgiumTec:[{id:"777",name:"GARE CENTRALE",lat:50.84513,lon:4.35963},{id:"888",name:"GARE CENTRALE",lat:50.90,lon:4.38}],
+ belgiumTec:[{id:"777",name:"GARE CENTRALE",lat:50.84513,lon:4.35963},{id:"888",name:"GARE CENTRALE",lat:51.10,lon:4.38}],
  belgiumDelijn:[{id:"DL1",name:"CENTRAAL",lat:51.05,lon:3.73}]
 };
 function harness(town){
