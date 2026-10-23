@@ -1,0 +1,394 @@
+{
+  "checked_at": "2026-10-23T14:52:26.339306+00:00",
+  "run_id": "39973313676",
+  "scope": "diagnostic samples; not proof of completeness",
+  "cases": {
+    "DE Köln": {
+      "query": "Köln Neumarkt, Köln, Deutschland",
+      "geocode_cors": "*",
+      "candidates": [
+        {
+          "id": "de-DELFI_de:05315:11111:1:11",
+          "name": "Köln Neumarkt"
+        },
+        {
+          "id": "de-DELFI_de:05315:11110:1:11",
+          "name": "Köln Heumarkt"
+        },
+        {
+          "id": "de-DELFI_de:09373:17019:0:1",
+          "name": "Neumarkt Egerländer Str."
+        },
+        {
+          "id": "de-DELFI_de:16075:2864471::286447100",
+          "name": "Schleiz, Neumarkt"
+        },
+        {
+          "id": "de-DELFI_de:14521:20570:0:BS",
+          "name": "Zschopau, Neumarkt"
+        },
+        {
+          "id": "de-DELFI_de:14522:60463:0:BW",
+          "name": "Hainichen, Neumarkt"
+        }
+      ],
+      "sampled_departures": [
+        {
+          "stop": {
+            "id": "de-DELFI_de:05315:11111:1:11",
+            "name": "Köln Neumarkt"
+          },
+          "departures": 13,
+          "cors": "*",
+          "lines": [
+            "18",
+            "3",
+            "1",
+            "101",
+            "136",
+            "16",
+            "9"
+          ]
+        },
+        {
+          "stop": {
+            "id": "de-DELFI_de:05315:11110:1:11",
+            "name": "Köln Heumarkt"
+          },
+          "departures": 11,
+          "cors": "*",
+          "lines": [
+            "133",
+            "5",
+            "?",
+            "106",
+            "101",
+            "1"
+          ]
+        }
+      ],
+      "errors": [],
+      "sample_has_departures": true
+    },
+    "DE Bonn": {
+      "query": "Bonn Hauptbahnhof, Bonn, Deutschland",
+      "geocode_cors": "*",
+      "candidates": [
+        {
+          "id": "be-sncb_8015485",
+          "name": "Bonn Hauptbahnhof"
+        },
+        {
+          "id": "at-Railway-Current-Reference-Data-2026_de:09162:100:11:11",
+          "name": "Hauptbahnhof (U, Tram)"
+        },
+        {
+          "id": "at-Railway-Current-Reference-Data-2026_de:11000:900003200:1:51",
+          "name": "S+U Berlin Hauptbahnhof"
+        },
+        {
+          "id": "de-DELFI_de:03241:31",
+          "name": "Hannover Hauptbahnhof/ZOB"
+        },
+        {
+          "id": "be-sncb_8015345",
+          "name": "Aachen, Hauptbahnhof (Bus)"
+        },
+        {
+          "id": "eu-flixbus_dcbbeac7-9603-11e6-9066-549f350fcb0c",
+          "name": "Lübeck ZOB/Hauptbahnhof"
+        }
+      ],
+      "sampled_departures": [
+        {
+          "stop": {
+            "id": "de-DELFI_de:03241:31",
+            "name": "Hannover Hauptbahnhof/ZOB"
+          },
+          "departures": 15,
+          "cors": "*",
+          "lines": [
+            "8",
+            "22",
+            "9",
+            "121",
+            "E",
+            "128",
+            "RE60",
+            "1"
+          ]
+        },
+        {
+          "stop": {
+            "id": "de-DELFI_de:08212:90_G",
+            "name": "KA Hauptbahnhof (Vorplatz)"
+          },
+          "departures": 11,
+          "cors": "*",
+          "lines": [
+            "6",
+            "S1",
+            "3",
+            "62",
+            "FlixBus 027",
+            "S3",
+            "44"
+          ]
+        }
+      ],
+      "errors": [],
+      "sample_has_departures": true
+    },
+    "DE Düsseldorf": {
+      "query": "Düsseldorf Heinrich-Heine-Allee, Düsseldorf, Deutschland",
+      "geocode_cors": "*",
+      "candidates": [
+        {
+          "id": "de-DELFI_de:05111:18036",
+          "name": "D-Heinrich-Heine-Allee U"
+        },
+        {
+          "id": "de-DELFI_de:05913:535:1:01",
+          "name": "DO-Heinrich-Czerkus-Allee"
+        },
+        {
+          "id": "de-DELFI_de:06611:200236::A",
+          "name": "Kassel Heinrich-Schütz-Allee"
+        },
+        {
+          "id": "de-VBN_080022007401",
+          "name": "Thale Heinrich-Heine-Straße"
+        },
+        {
+          "id": "de-DELFI_000000458101",
+          "name": "Sandersdorf, Heinrich-Heine-Str."
+        },
+        {
+          "id": "de-DELFI_de:01058:16760::1",
+          "name": "Büdelsdorf Heinrich-Heine-Schule"
+        }
+      ],
+      "sampled_departures": [
+        {
+          "stop": {
+            "id": "de-DELFI_de:05111:18036",
+            "name": "D-Heinrich-Heine-Allee U"
+          },
+          "departures": 11,
+          "cors": "*",
+          "lines": [
+            "U75",
+            "U80",
+            "U70",
+            "U79",
+            "U78",
+            "U73",
+            "U77"
+          ]
+        },
+        {
+          "stop": {
+            "id": "de-DELFI_de:05913:535:1:01",
+            "name": "DO-Heinrich-Czerkus-Allee"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "436"
+          ]
+        }
+      ],
+      "errors": [],
+      "sample_has_departures": true
+    },
+    "ES Málaga": {
+      "query": "Málaga Alameda Principal, Málaga, España",
+      "geocode_cors": "*",
+      "candidates": [
+        {
+          "id": "es-Empresa-Malagueña-de-Transportes-(EMT)_482",
+          "name": "Alameda Principal - Sur"
+        },
+        {
+          "id": "es-ALSA-autobuses_0002032400000001",
+          "name": "Alameda Marquesina"
+        },
+        {
+          "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_19365",
+          "name": "AV.PRINCIPAL-SALAMANCA"
+        },
+        {
+          "id": "es-ALSA-autobuses_0031936600000001",
+          "name": "Ribatejada - Principal/Salaman"
+        },
+        {
+          "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_19353",
+          "name": "PRINCIPAL-PALOMA"
+        },
+        {
+          "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_21202",
+          "name": "AV.PRÍNCIPES ESPAÑA-CALVARIO"
+        }
+      ],
+      "sampled_departures": [
+        {
+          "stop": {
+            "id": "es-Empresa-Malagueña-de-Transportes-(EMT)_482",
+            "name": "Alameda Principal - Sur"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "25",
+            "32",
+            "34",
+            "7",
+            "8",
+            "11",
+            "20",
+            "3",
+            "A"
+          ]
+        },
+        {
+          "stop": {
+            "id": "es-ALSA-autobuses_0002032400000001",
+            "name": "Alameda Marquesina"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "ALSA - Alamed-Mal"
+          ]
+        }
+      ],
+      "errors": [],
+      "sample_has_departures": true
+    },
+    "ES Madrid": {
+      "query": "Madrid Atocha, Madrid, España",
+      "geocode_cors": "*",
+      "candidates": [
+        {
+          "id": "es-RENFE-Larga-Distancia-y-AVE_18000",
+          "name": "Madrid-Atocha Cercanías"
+        },
+        {
+          "id": "es-Ouigo_007160000",
+          "name": "MADRID-PUERTA DE ATOCHA"
+        },
+        {
+          "id": "es-RENFE-Larga-Distancia-y-AVE_60000",
+          "name": "Madrid-Puerta de Atocha-Almudena Grandes"
+        },
+        {
+          "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_13012",
+          "name": "ATENAS-MADRID"
+        },
+        {
+          "id": "es-Consorcio-Regional-de-Transportes-de-Madrid-CRTM-I_par_8_10309",
+          "name": "PATONES-AV.MADRID"
+        },
+        {
+          "id": "es-ALSA-autobuses_0031990400000001",
+          "name": "Av.Madrid-Av.España"
+        }
+      ],
+      "sampled_departures": [
+        {
+          "stop": {
+            "id": "es-RENFE-Larga-Distancia-y-AVE_18000",
+            "name": "Madrid-Atocha Cercanías"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "C2",
+            "C4b",
+            "C5",
+            "REG.EXP.",
+            "C3",
+            "C10"
+          ]
+        },
+        {
+          "stop": {
+            "id": "es-Ouigo_007160000",
+            "name": "MADRID-PUERTA DE ATOCHA"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "TGV"
+          ]
+        }
+      ],
+      "errors": [],
+      "sample_has_departures": true
+    },
+    "ES Barcelona": {
+      "query": "Barcelona Sants, Barcelona, España",
+      "geocode_cors": "*",
+      "candidates": [
+        {
+          "id": "es-Ouigo_007171801",
+          "name": "Barcelona-Sants"
+        },
+        {
+          "id": "eu-blablacar-bus_BCS",
+          "name": "Barcelona - Sants Train station"
+        },
+        {
+          "id": "fr-horaires-ave-espagne-france_71801",
+          "name": "Estación de tren Barcelona-Sants"
+        },
+        {
+          "id": "es-Autobús-interurbano-de-Cataluña_PF08019019",
+          "name": "Estació d'Autobusos Barcelona Sants"
+        },
+        {
+          "id": "es-Cercanías-Renfe_79104",
+          "name": "Sant Celoni"
+        },
+        {
+          "id": "es-Autobuses-Sarbus_9090",
+          "name": "Sant Celoni"
+        }
+      ],
+      "sampled_departures": [
+        {
+          "stop": {
+            "id": "es-Ouigo_007171801",
+            "name": "Barcelona-Sants"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "R1",
+            "R4",
+            "AVE",
+            "AVANT",
+            "R2S"
+          ]
+        },
+        {
+          "stop": {
+            "id": "es-Autobús-interurbano-de-Cataluña_PF08019019",
+            "name": "Estació d'Autobusos Barcelona Sants"
+          },
+          "departures": 10,
+          "cors": "*",
+          "lines": [
+            "L0371",
+            "L1625",
+            "L0420",
+            "L2176",
+            "L2205"
+          ]
+        }
+      ],
+      "errors": [],
+      "sample_has_departures": true
+    }
+  }
+}
