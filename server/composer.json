@@ -1,0 +1,11 @@
+{
+  "name": "kodesoft/bustimer-push",
+  "description": "Minimal PHP Web Push alarm relay for BusTimer",
+  "require": {
+    "php": "^8.2",
+    "minishlink/web-push": "^9.0"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
