@@ -217,3 +217,7 @@ The **Add stop** form now asks for country, **city/town**, and then stop name be
 ## City suggestions (v0.9.8)
 
 Typing into **City / town** now displays selectable city suggestions via Photon (OpenStreetMap), with country bounds, delayed requests, stale-response protection and Enter/Escape support. Choosing a suggestion enables stop search, which restricts stop results geographically. Photon’s public instance is best-effort, so a production-scale city index or hosted endpoint remains an improvement target.
+
+## City autocomplete hotfix (v0.9.9)
+
+Photon geocoding requests no longer send the app UI's language blindly (which can return HTTP 400 for unsupported languages). Requests now specify the selected country's ISO code and geographic bounding box. A browser smoke test is still needed.
