@@ -1,7 +1,6 @@
 # BusTimer 🚌 🚇
 
 [![Build](https://github.com/tupolev/bustimer/actions/workflows/ci.yml/badge.svg)](https://github.com/tupolev/bustimer/actions/workflows/ci.yml)
-[![Tests](https://github.com/tupolev/bustimer/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/tupolev/bustimer/actions/workflows/ci.yml)
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
