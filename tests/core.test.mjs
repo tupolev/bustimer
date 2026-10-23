@@ -64,3 +64,12 @@ test("Belgian rail favorites keep source identity",()=>{
  const ids=call("providerLinks","belgium","belgiumRail:123",[{provider:"belgiumRail",id:"123"}]);
  assert.equal(ids.length,1);assert.equal(ids[0].id,"123");
 });
+
+test("all four Belgian operator IDs retain their source and original stop ID",()=>{
+ for(const provider of ["belgiumRail","belgiumStib","belgiumTec","belgiumDelijn"]){
+  const refs=call("providerLinks","belgium",provider+":BE:42",[{provider,id:"BE:42"}]);
+  assert.equal(call("defaultProvider","belgium",provider+":BE:42"),provider);
+  assert.equal(refs.length,1);
+  assert.equal(refs[0].id,"BE:42");
+ }
+});
