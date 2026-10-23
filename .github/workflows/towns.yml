@@ -1,0 +1,41 @@
+name: Refresh offline towns
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 3 * * 0'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/towns.yml'
+      - 'scripts/build_towns.py'
+permissions:
+  contents: write
+concurrency:
+  group: towns-geonames-refresh
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build national town indexes
+        run: python3 scripts/build_towns.py
+      - name: Publish checked indexes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/towns
+          if ! git diff --cached --quiet; then
+            git commit --quiet -m "data: refresh GeoNames offline town indexes"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
