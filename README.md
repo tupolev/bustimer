@@ -1,9 +1,12 @@
 # BusTimer 🚌 🚇
 
-## Optional self-hosted PHP Web Push
+## Hosting and optional anonymous Web Push
 
-The [server directory](server/README.md) contains the optional PHP 8.2+ Web Push backend for `https://bustimer.kodesoft.net/server/api.php`. The target production PWA is `https://bustimer.kodesoft.net/`; the existing GitHub Pages site may remain accessible during migration. The [manual DreamHost deployment workflow](.github/workflows/deploy-dreamhost.yml) packages both frontend and backend, but production requires private VAPID settings, SQLite, HTTPS, compatible PHP and a one-minute cron. Do not infer that deployment is complete from a successful commit or CI run. When remote setup fails, BusTimer falls back to alarms while the PWA is open. Background delivery is experimental and not time-guaranteed.
+BusTimer is a single installable PWA with an optional PHP 8.2+ backend for background departure reminders. Frontend assets and the PHP API are deployed together under **the same origin**; the public client uses the relative endpoint `./server/api.php`. Deployment is performed by the [manual production workflow](.github/workflows/deploy-dreamhost.yml), and private Web Push initialization by the [separate manual workflow](.github/workflows/initialize-push.yml). See [backend setup and operations](server/README.md) for hosting-specific instructions.
 
+**Deployment state (October 2026):** The production deployment workflow completed successfully, with checks for the frontend and uploaded PHP files. The API returned HTTP 500 at the last verified deployment because private VAPID/SQLite configuration had not yet been initialized. Completing the one-time server initialization and configuring the scheduled PHP cron remain necessary before remote alarms can work. The CI result alone is not proof that Push delivery works.
+
+**Privacy:** No user accounts, user email addresses, names, profiles, tracking, or analytics are required. The server stores only random device identifiers, hashed device authorization tokens, technical Push subscriptions, and the minimum alarm parameters for delivery. Subscriptions may constitute personal data even without names; they must be protected and removed when no longer needed. Browser-local favorites and application preferences remain on the device. Local alarms require the PWA to be active; remote Web Push delivery is experimental and its exact timing is not guaranteed.
 
 [![Build](https://github.com/tupolev/bustimer/actions/workflows/ci.yml/badge.svg)](https://github.com/tupolev/bustimer/actions/workflows/ci.yml)
 
@@ -59,7 +62,7 @@ The Netherlands is **enabled as experimental API-first coverage**, with no natio
 - System/light/dark theme.
 - Stops and preferences persist in `localStorage`.
 - Web app manifest, service worker and SVG icon for PWA installation.
-- Static site deployable to GitHub Pages from the root of `main`.
+- Frontend and optional PHP backend deployable together to a conventional HTTPS host; static-only hosting remains possible without remote Push.
 
 ## Data quality and graceful degradation
 
@@ -69,7 +72,7 @@ BusTimer is **schedule-first**, and improves the estimate whenever more reliable
 2. **Published timetable**: when realtime information is missing, fall back to the provider's planned departure time and label it **Scheduled / Horario / Fahrplan**. Show no invented delay.
 3. **No timetable available**: only when neither a current departure nor an applicable published timetable can be obtained, show **Unavailable** or **No upcoming service** as appropriate. Never invent departure times.
 
-Implementation note for v0.1.0: the current transport.rest integration prefers `when` and otherwise uses `plannedWhen` from the same API response. This already provides a basic static-time fallback **if the departures endpoint itself responds**. It does **not** currently include an independent GTFS or static-timetable feed: if the API fails outright, the app cannot yet retrieve timetable data. That independent fallback, including GTFS ZIP ingestion/conversion to static JSON suitable for GitHub Pages, is the next milestone.
+Implementation note for v0.1.0: the current transport.rest integration prefers `when` and otherwise uses `plannedWhen` from the same API response. This already provides a basic static-time fallback **if the departures endpoint itself responds**. It does **not** currently include an independent GTFS or static-timetable feed: if the API fails outright, the app cannot yet retrieve timetable data. That independent fallback, including GTFS ZIP ingestion/conversion to static JSON suitable for static hosting, is the next milestone.
 
 Target architecture per city: query realtime where possible → merge with a published schedule (GTFS, GTFS-RT, NeTEx, or provider-specific feeds as available) by stop, line, direction, and service date → return a clearly labeled provenance and timestamp. Static schedules must be refreshed for service/calendar changes; simply caching a single day's predictions is not a timetable.
 
@@ -83,7 +86,7 @@ Existing saved VBB/DB stops remain compatible, and users can still explicitly ch
 
 The Transitous service is community-hosted and best effort. Usage and attribution: [Transitous API policy](https://transitous.org/api/), [source attribution](https://transitous.org/sources/), [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright). Keep API calls lightweight; BusTimer refreshes once per minute while visible and deduplicates requests per stop. Do not rely on this API for a commercial or high-volume application without discussing usage with maintainers.
 
-**Verification:** This implementation has not yet been browser-tested against the live production API from GitHub Pages, so geocoder response variations, stop identifiers, CORS and data mappings should be validated on the deployed site.
+**Verification:** This implementation has not yet been browser-tested against the live production API from the deployed browser origin, so geocoder response variations, stop identifiers, CORS and data mappings should be validated on the deployed site.
 
 ## Networks and current limitations
 
@@ -134,14 +137,14 @@ Transit predictions are supplied by third-party services and may be unavailable 
 - Public data providers: https://transitous.org/api/, https://transitous.org/sources/, https://v6.vbb.transport.rest/, https://v6.db.transport.rest/. Data licenses vary by originating operator. OSM attribution: https://www.openstreetmap.org/copyright.
 - Browser requests cannot reliably set a custom User-Agent (a forbidden request header); Transitous accepts browser Referer when website contact details are present. Avoid policies that strip the HTTP Referer from API requests. If the browser suppresses the Referer, the provider may reject or limit requests.
 - Refresh only while visible and on the monitored-stops tab. Stop queries share results via short-lived client-side cache for 60 seconds; search queries use 550 ms debounce and 2-minute memoization. These mitigations are per-browser, not a global quota. A production-scale user base should contact upstream maintainers before generating substantial traffic.
-- Public JavaScript must never contain private API keys. **No keys or access tokens are currently committed.** Any future credentialed API needs a protected server-side proxy with secret management and rate limits, not GitHub Pages frontend code.
+- Public JavaScript must never contain private API keys. **No keys or access tokens are currently committed.** Any future credentialed API needs a protected server-side proxy with secret management and rate limits, not public frontend code.
 - External API requests reveal the browser's IP and queried stops to providers; stop preferences remain in localStorage in this app.
 
 ## Málaga static timetable importer (v0.3.0)
 
-Official source: [EMT Málaga GTFS](https://gtfs.emtmalaga.es/GTFS/google_transit.zip), published by EMT Málaga / Ayuntamiento de Málaga, distributed as open data under **CC BY-SA 4.0**. Preserve this attribution when redistributing timetable data. The importer in `scripts/build_malaga.py` converts the GTFS into `data/malaga/index.json` and per-stop JSON files, including route, trip, service calendar and exceptions. These assets are served directly from GitHub Pages; the user's browser does not download the complete GTFS archive. No API key is required.
+Official source: [EMT Málaga GTFS](https://gtfs.emtmalaga.es/GTFS/google_transit.zip), published by EMT Málaga / Ayuntamiento de Málaga, distributed as open data under **CC BY-SA 4.0**. Preserve this attribution when redistributing timetable data. The importer in `scripts/build_malaga.py` converts the GTFS into `data/malaga/index.json` and per-stop JSON files, including route, trip, service calendar and exceptions. These assets are served as static assets; the user's browser does not download the complete GTFS archive. No API key is required.
 
-**Initial activation required:** open [Actions → Refresh Málaga EMT timetables](https://github.com/tupolev/bustimer/actions/workflows/malaga-gtfs.yml), select **Run workflow**, branch **main**. After the run commits `data/malaga/` and GitHub Pages rebuilds, Málaga stop search and scheduled countdowns can work. The workflow also runs daily at 03:17 UTC. The app reports an error if this dataset has not yet been generated rather than showing fabricated times.
+**Initial activation required:** open [Actions → Refresh Málaga EMT timetables](https://github.com/tupolev/bustimer/actions/workflows/malaga-gtfs.yml), select **Run workflow**, branch **main**. After the run commits `data/malaga/` and the next production deployment completes, Málaga stop search and scheduled countdowns can work. The workflow also runs daily at 03:17 UTC. The app reports an error if this dataset has not yet been generated rather than showing fabricated times.
 
 The importer and live browser workflow require validation on the published site. EMT's published bus locations are not stop-level ETA predictions; future real-time functionality depends on finding a legally reusable public stop-arrivals endpoint.
 
@@ -157,7 +160,7 @@ BusTimer now provides an **España / nationwide (beta)** stop-search option via 
 
 The official Spanish [National Access Point (NAP)](https://nap.transportes.gob.es/ConjuntoDato/List) catalogs hundreds of GTFS and realtime feeds from Spanish operators. Those feeds must be checked individually for access, calendars, licensing, update mechanisms, and overlap before generating a deduplicated national stop index. A full Spain GTFS ingestion pipeline is **not** part of this beta. Avoid claiming nationwide-complete coverage until that pipeline has been implemented and tested.
 
-This project continues to use no API key and retains the public GitHub Pages architecture.
+This project continues to use no API key and retains public, API-first frontend access with no private API key.
 
 ## Unified Spain selection (v0.4.1)
 
@@ -195,7 +198,7 @@ The European Commission's [National Access Points](https://transport.ec.europa.e
 - Portugal National Access Point: https://nap-portugal.imt-ip.pt/nap/multimodalsupply (operator feed discovery, not a uniform arrivals API).
 - Transitous usage policy: https://transitous.org/api/ ; attribution: https://transitous.org/sources/ .
 
-Activation does not mean all operators work. In this iteration live web API requests and end-to-end GitHub Pages rendering were not verifiable from the development environment; validate Paris Gare du Nord, Lyon Part-Dieu, Lisboa Oriente and Porto São Bento and mark unsupported networks clearly. The provider catalog distinguishes experimental coverage from the core countries.
+Activation does not mean all operators work. In this iteration live web API requests and end-to-end deployed-site rendering were not verifiable from the development environment; validate Paris Gare du Nord, Lyon Part-Dieu, Lisboa Oriente and Porto São Bento and mark unsupported networks clearly. The provider catalog distinguishes experimental coverage from the core countries.
 
 ## Direction-aware favorites (v0.9.0)
 
@@ -269,7 +272,7 @@ Photon geocoding requests no longer send the app UI's language blindly (which ca
 
 ## Offline-first city search (v0.11.0)
 
-City suggestions no longer require Photon during normal use. Country-specific compact town indexes generated from [GeoNames cities500](https://www.geonames.org/) are served by this site's GitHub Pages under `data/towns/<country>.json`. Search is local, country-filtered, accent-insensitive and ranked by prefix and population. GeoNames data are licensed **CC BY 4.0, © GeoNames contributors**; please retain attribution. The weekly Sunday CI import refreshes the data automatically. Photon remains an optional fallback only when a static index cannot load. Small rural places missing from cities500 are a known coverage limitation.
+City suggestions no longer require Photon during normal use. Country-specific compact town indexes generated from [GeoNames cities500](https://www.geonames.org/) are served by the application's static assets under `data/towns/<country>.json`. Search is local, country-filtered, accent-insensitive and ranked by prefix and population. GeoNames data are licensed **CC BY 4.0, © GeoNames contributors**; please retain attribution. The weekly Sunday CI import refreshes the data automatically. Photon remains an optional fallback only when a static index cannot load. Small rural places missing from cities500 are a known coverage limitation.
 
 ## 🇧🇪 Belgium — experimental scheduled coverage (v0.12.0)
 
