@@ -344,3 +344,12 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Strengthened `tests/belgium-search.test.mjs` to require actual matching Brussels stops before asserting on their names (avoids vacuously passing an empty result), and added a Gent-selected-city negative scenario to reject Brussels-only interchange matches (commit `0c09ee10`).
 - [ ] Confirm updated Node suite in GitHub Actions and publish CI run reference; tests have not been certified by a new successful push run in this session.
 - [ ] Continue with real-browser E2E of country → town → stop → line → direction → save and reload, plus VRS and EMT regression paths.
+
+
+## Chromium browser E2E rollout (2026-10-23)
+
+- [x] Add Playwright `e2e/belgium.spec.mjs` to drive the actual page through Belgium country → Brussels town autocomplete → Gare Centrale stop → tram line → direction → favorite persistence → page reload. Browser network fixtures serve deterministic country/town/GTFS files; external API availability does not determine this test's result.
+- [x] Add `playwright.config.mjs` running a local Python static server and Chromium with service workers blocked for deterministic tests.
+- [x] Add separate `browser` CI job installing Playwright Chromium, running `npm run test:e2e` and uploading traces on failure. Existing JS/Python `checks` job remains intact.
+- [ ] Verify a complete successful `browser` job in GitHub Actions. The new test has been committed but no successful Playwright run has yet been observed. Inspect traces and fix fixture or production issues as evidence demands.
+- [ ] Expand tests to other Belgian operators and German/Spanish regression cases, plus real Pages smoke tests (mocked sources do not prove current real GTFS correctness).
