@@ -1,5 +1,10 @@
 # BusTimer 🚌 🚇
 
+## Optional self-hosted PHP Web Push
+
+The [server directory](server/README.md) contains a PHP 8.2+ backend for background departure reminders at `https://bustimer.kodesoft.net/server/api.php`. It needs private VAPID settings, SQLite, Composer packages, HTTPS and cron every minute. The PWA remains hosted by GitHub Pages. Until the owner uploads and configures that backend, BusTimer falls back to alarms while the PWA is open. Background delivery is experimental and timing cannot be guaranteed.
+
+
 [![Build](https://github.com/tupolev/bustimer/actions/workflows/ci.yml/badge.svg)](https://github.com/tupolev/bustimer/actions/workflows/ci.yml)
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
