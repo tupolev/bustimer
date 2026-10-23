@@ -254,8 +254,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate. Pending actual nearby-stop/departure smoke, offline cities file, and browser check.",
+      "bounds": [
+        49,
+        55.1,
+        14,
+        24.3
+      ],
+      "geocode": "Polska"
     },
     {
       "id": "czechia",
@@ -287,8 +296,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate. Pending actual nearby-stop/departure smoke, offline cities file, and browser check.",
+      "bounds": [
+        54.4,
+        57.8,
+        7.8,
+        15.3
+      ],
+      "geocode": "Danmark"
     },
     {
       "id": "andorra",
@@ -332,8 +350,17 @@
       "status": "candidate",
       "enabled": false,
       "regional": [],
-      "sources": [],
-      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+      "sources": [
+        "transitous"
+      ],
+      "notes": "API-first candidate. Pending actual nearby-stop/departure smoke, offline cities file, and browser check.",
+      "bounds": [
+        55.3,
+        69.1,
+        10.8,
+        24.2
+      ],
+      "geocode": "Sverige"
     },
     {
       "id": "finland",
