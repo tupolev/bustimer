@@ -325,3 +325,9 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 
 - [x] Correct the test-only `Option` mock in `tests/favorites-flow.test.mjs`: production code invokes `new Option(...)`, but the test declared an arrow function, which is not constructible. Changed to a regular constructor (commit `2250c5f2`). No production UI code changed.
 - [ ] Verify this correction in the next GitHub Actions run; the supplied failure log showed 46 tests, 42 passes and 4 failures, of which two were explicitly the `Option is not a constructor` failures. Investigate the other two failures from the complete CI log before claiming green.
+
+
+## CI regression: async search extraction (2026-10-23)
+
+- [x] Repair `tests/belgium-search.test.mjs` function extraction to include the `async` modifier in `async function searchCountryStops(...)` (commit `deda8dd3`). The previous string slice began at `function` and produced invalid JavaScript containing `await` outside an async function.
+- [ ] Obtain a successful CI run after both test-harness corrections (`Option` constructor and async extraction). Previous log showed 42/46 passing, with two specifically attributable to Option; do not claim the other two are proven fixed without the complete error output.
