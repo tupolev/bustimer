@@ -193,3 +193,7 @@ Verified VRS source index contains **20,494 stops**, service calendars and excep
 GTFS importer now produces `data/vrs/search.json` for stop lookup and `data/vrs/services.json` for calendar/exception data. The app downloads calendar data on departure requests only. Until a new VRS import is published, the app uses the existing monolithic `index.json` as fallback; running the workflow on main publishes the new split dataset. Neighboring countries are tracked as candidates, not enabled without verified sources.
 
 **DST guard:** Berlin timetable conversion rejects nonexistent local times during the spring DST jump and picks the earlier occurrence of repeated autumn times. Node tests check these boundaries and >24h GTFS service hours. Validate operator semantics with real-world trips as well.
+
+## Luxembourg GTFS importer (staged)
+
+\`scripts/build_luxembourg.py\` selects the latest official GTFS ZIP using the public Luxembourg catalog API, then reuses the split VRS GTFS builder. The [Luxembourg GTFS validation workflow](https://github.com/tupolev/bustimer/actions/workflows/luxembourg-gtfs.yml) currently runs manually and does not publish the full dataset. Luxembourg remains disabled pending end-to-end validation.
