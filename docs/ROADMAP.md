@@ -489,3 +489,12 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [ ] **Spain coverage audit:** Málaga EMT plus two cities in different regions; compare local timetable fallback and live Transitous data, with explicit missing routes, service calendars, source licensing and CORS.
 - [ ] Identify cross-provider line/direction inconsistencies and eliminate duplicate stop IDs without mixing distinct platforms.
 - [ ] Prefer direct HTTPS APIs when usable from the PWA; only ingest static GTFS when independent timetables are needed to cover a demonstrated gap.
+
+
+## DE/ES geographically verified provider audit (2026-10-23)
+
+- [x] Original six-city audit produced misleading positives: a query for Bonn Hauptbahnhof returned valid but geographically unrelated Hannover and Karlsruhe stops. This is **not** evidence of Bonn coverage.
+- [x] Updated the audit to use each stop's returned coordinates and retain candidates only within 20 km of each requested city; never claim regional coverage from a place-name match alone.
+- [x] [Corrected run 39973671961](https://github.com/tupolev/bustimer/actions/runs/39973671961) succeeded: sampled true-nearby stops and departures in Köln (Neumarkt/Heumarkt), Bonn (Hauptbahnhof), Düsseldorf (Heinrich-Heine-Allee), Málaga (Alameda Principal), Madrid (Atocha) and Barcelona (Sants).
+- [ ] Expand coverage checks from individual stops to representative *local* bus/tram/metro lines, operator ownership, and direction/platform IDs; do not equate one successful stop with network completeness.
+- [ ] Verify current post-audit GitHub Pages deployment and monitor the v0.13.0 release test suite as subsequent commits land.
