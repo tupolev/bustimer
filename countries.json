@@ -142,13 +142,12 @@
         "belgiumDelijn"
       ],
       "sources": [
-        "transitous",
         "belgiumRail",
         "belgiumStib",
         "belgiumTec",
         "belgiumDelijn"
       ],
-      "notes": "Experimental Belgian coverage: scheduled GTFS from SNCB-NMBS, STIB-MIVB, LETEC and De Lijn. Transitous optional; realtime not promised. CC BY 4.0 operator attribution in data metadata.",
+      "notes": "Experimental Belgium: scheduled GTFS from SNCB-NMBS, STIB-MIVB, LETEC and De Lijn (country-wide official operator data). Searches use published local GTFS only; realtime is not provided. Operator licenses and attribution in dataset metadata.",
       "geocode": "Belgium",
       "bounds": [
         49.48,
