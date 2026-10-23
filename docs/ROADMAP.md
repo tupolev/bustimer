@@ -264,3 +264,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Keep all matching Luxembourg and VRS local stop candidates until the selected city filter is applied, then cap to 20.
 - [x] Normalize lux:/vrs:/emt: references when combining regional and Transitous results.
 - [ ] Verify actual browser search for Luxembourg → Luxembourg → Hamilius / Gare and other towns; inspect app network behavior if an HTTP error persists.
+
+## Belgium candidate groundwork (2026-10-23)
+
+- [x] Extend offline GeoNames city generation to Belgium (BE) without prematurely enabling Belgian departures.
+- [x] Record official Belgian multi-operator GTFS sources and gated API authorization concerns in `docs/EU-SOURCES.md`.
+- [ ] Confirm generated Belgian dataset publication and CI before relying on it in app.
+- [ ] Verify feed download authorization/license and build a bounded Belgian schedule adapter. Belgium remains a disabled candidate.
