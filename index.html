@@ -223,7 +223,7 @@ function townCandidates(data,country){
  .filter(x=>x.name).filter((x,i,a)=>a.findIndex(y=>y.name===x.name&&y.label===x.label)===i).slice(0,8);
 }
 const townIndexCache=new Map();
-function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu"}[country]}
+function townCode(country){return {germany:"de",spain:"es",france:"fr",portugal:"pt",luxembourg:"lu",belgium:"be"}[country]}
 function foldTown(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 async function offlineTownCandidates(country,query){
  const code=townCode(country);
