@@ -492,6 +492,23 @@ async function remoteAlarm(s,remove=false){
  if(!response.ok)throw Error("Remote alarm HTTP "+response.status);
  return true;
 }
+let lastRemoteReconcile=0;
+async function reconcileRemoteAlarms(){
+ if(Date.now()-lastRemoteReconcile<60000)return;
+ const identity=remotePush||JSON.parse(localStorage.getItem(PUSH_IDENTITY_KEY)||"null");
+ if(!identity||!saved.some(s=>s.departureAlarm?.remote))return;
+ lastRemoteReconcile=Date.now();
+ try{
+  const response=await fetch(PUSH_API+"?action=alarms",{cache:"no-store",headers:{"X-BusTimer-Device":identity.deviceId,"X-BusTimer-Token":identity.token}});
+  if(!response.ok)return;
+  const data=await response.json();
+  if(!Array.isArray(data.favoriteIds))return;
+  const active=new Set(data.favoriteIds);
+  let changed=false;
+  for(const item of saved)if(item.departureAlarm?.remote&&!active.has(String(item.id))){delete item.departureAlarm;changed=true}
+  if(changed){persist();renderCards()}
+ }catch(e){console.warn("Cannot synchronize alarm status",e)}
+}
 const alarmInFlight=new Set();
 async function checkDepartureAlarms(){
  if(!("Notification" in window)||Notification.permission!=="granted")return;
@@ -574,7 +591,7 @@ function renderCards(){
   card.append(list);host.append(card);
  }
 }
-async function refreshAll(){if(refreshBusy||!saved.length){renderCards();return}refreshBusy=true;$("#refresh").disabled=true;const stops=[...saved];stops.forEach(s=>{departureState[s.id]={...departureState[s.id],loading:!departureState[s.id]?.departure,error:false}});renderCards();const unique=[...new Map(stops.map(s=>[s.city+":"+s.stopId,s])).values()];const results=await Promise.allSettled(unique.map(s=>departures(s.city,s.stopId,s.providers||[])));const batches=new Map(unique.map((s,i)=>[s.city+":"+s.stopId,results[i]]));stops.forEach(s=>{const result=batches.get(s.city+":"+s.stopId);if(result.status==="fulfilled"){const now=Date.now()-30000;const match=result.value.filter(d=>d._line===s.line&&d._product===s.type&&(s.direction==null||directionOf(d)===s.direction)&&new Date(d._time).getTime()>=now).sort((a,b)=>new Date(a._time)-new Date(b._time))[0];departureState[s.id]={departure:match||null,error:false,loading:false}}else{departureState[s.id]={departure:null,error:true,loading:false}}});refreshBusy=false;$("#refresh").disabled=false;renderCards();if(typeof checkDepartureAlarms==="function")checkDepartureAlarms()}
+async function refreshAll(){if(refreshBusy||!saved.length){renderCards();return}refreshBusy=true;$("#refresh").disabled=true;const stops=[...saved];stops.forEach(s=>{departureState[s.id]={...departureState[s.id],loading:!departureState[s.id]?.departure,error:false}});renderCards();const unique=[...new Map(stops.map(s=>[s.city+":"+s.stopId,s])).values()];const results=await Promise.allSettled(unique.map(s=>departures(s.city,s.stopId,s.providers||[])));const batches=new Map(unique.map((s,i)=>[s.city+":"+s.stopId,results[i]]));stops.forEach(s=>{const result=batches.get(s.city+":"+s.stopId);if(result.status==="fulfilled"){const now=Date.now()-30000;const match=result.value.filter(d=>d._line===s.line&&d._product===s.type&&(s.direction==null||directionOf(d)===s.direction)&&new Date(d._time).getTime()>=now).sort((a,b)=>new Date(a._time)-new Date(b._time))[0];departureState[s.id]={departure:match||null,error:false,loading:false}}else{departureState[s.id]={departure:null,error:true,loading:false}}});refreshBusy=false;$("#refresh").disabled=false;renderCards();if(typeof checkDepartureAlarms==="function")checkDepartureAlarms();if(typeof reconcileRemoteAlarms==="function")reconcileRemoteAlarms()}
 $("#refresh").addEventListener("click",refreshAll);
 let lastVisibilityRefresh=0;document.addEventListener("visibilitychange",()=>{if(!document.hidden&&state.tab==="list"&&Date.now()-lastVisibilityRefresh>MIN_REFRESH_MS){lastVisibilityRefresh=Date.now();refreshAll()}});
 setInterval(()=>{if(!document.hidden&&state.tab==="list")refreshAll()},MIN_REFRESH_MS);
