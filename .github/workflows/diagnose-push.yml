@@ -1,0 +1,50 @@
+name: Diagnose DreamHost Web Push
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dreamhost-production
+  cancel-in-progress: false
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    environment: dreamhost-production
+    timeout-minutes: 10
+    steps:
+      - name: Install SSH helper
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+      - name: Configure trusted SSH host
+        env:
+          KNOWN: ${{ secrets.DREAMHOST_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          test -n "$KNOWN"
+          printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Check cron and run private aggregate diagnostics
+        env:
+          HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
+          USERNAME: ${{ secrets.DREAMHOST_SSH_USER }}
+          SSHPASS: ${{ secrets.DREAMHOST_SSH_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$SSHPASS" && test -n "$HOST" && test -n "$USERNAME"
+          [[ "$HOST" == 'bustimer.kodesoft.net' ]] && [[ "$USERNAME" == 'dh_ikhr5d' ]]
+          sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password,keyboard-interactive "$USERNAME@$HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          cd /home/dh_ikhr5d/bustimer.kodesoft.net/server
+          echo 'Cron installed:'
+          crontab -l 2>/dev/null | grep -Fq '# BusTimer anonymous Web Push' && echo yes || echo no
+          echo 'Database and alarms:'
+          php -r '
+            require "lib.php";
+            $db=db();
+            $active=(int)$db->query("SELECT COUNT(*) FROM alarms")->fetchColumn();
+            $devices=(int)$db->query("SELECT COUNT(*) FROM devices")->fetchColumn();
+            echo "Devices: $devices, active alarms: $active\\n";
+          '
+          echo 'Cron one-time check (aggregate values only):'
+          php cron.php
+          REMOTE
