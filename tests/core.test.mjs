@@ -73,3 +73,11 @@ test("all four Belgian operator IDs retain their source and original stop ID",()
   assert.equal(refs[0].id,"BE:42");
  }
 });
+
+test("same-operator platforms are not incorrectly merged",()=>{
+ const stops=[{name:"GARE CENTRALE",id:"belgiumStib:1000",provider:"belgiumStib",lat:50.8451,lon:4.3596},{name:"GARE CENTRALE",id:"belgiumStib:1001",provider:"belgiumStib",lat:50.84511,lon:4.35961}];
+ const merged=call("joinProviderStops",stops);
+ assert.equal(merged.length,2);
+ assert.equal(merged[0].providers.length,1);
+ assert.equal(merged[1].providers.length,1);
+});
