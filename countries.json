@@ -103,13 +103,13 @@
       "name": "Nederland",
       "flag": "🇳🇱",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first integration implemented but launch temporarily gated: 2026-10-23 real API smoke from GitHub Actions received HTTP 403 for four cities. Confirm browser Referer/CORS and source permissions before enabling.",
+      "notes": "Experimental API-first through Transitous: verified geocode and stop-times in Amsterdam, Rotterdam, Utrecht and Den Haag (run 39970478094), with mocked Playwright browser smoke successful (39970861237). Realtime and operator coverage vary; no GTFS mirror.",
       "geocode": "Nederland",
       "bounds": [
         50.73,
