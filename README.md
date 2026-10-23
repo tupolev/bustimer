@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.6.0** · No build step · No backend · MIT licensed
+**Version 0.7.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -133,3 +133,11 @@ German stop searches combine Transitous national search and the VBB regional API
 ## EU-ready provider discovery (v0.6.0)
 
 One `COUNTRY_CATALOG` routes Germany and Spain through a national Transitous search and country-specific regional adapters. Regional responses are geographically checked and matched by name and coordinates within 75 metres, preserving original source IDs. A failure of one source does not prevent others returning results. Other EU countries are not enabled until their feed coverage, API contract, licensing and browser access are checked; EU National Access Points are catalogs, not one universal live API.
+
+## Country roadmap and activation gate (v0.7.0)
+
+`countries.json` is the machine-readable catalog for the Spain/Germany-first expansion strategy. **Only Germany and Spain are enabled**; the catalog holds neighboring countries (France, Portugal, Netherlands, Belgium, Luxembourg, Austria, Switzerland, Poland, Czechia, Denmark and Andorra) as disabled candidates, and several subsequent European candidates. Each entry stores the country ISO code, audience priority, rollout status, enabled flag, and anticipated regional adapters. The app reads the catalog at startup and shows enabled, validated core countries only; it falls back to its bundled DE/ES configuration when the JSON cannot load. The service worker caches the catalog as part of the app shell.
+
+**Activation checklist:** verify a public and legally reusable timetable feed with dates and exceptions; a working stop search and stop departures endpoint (plus browser CORS); real stop-ID consistency; transport-mode and route mapping; attribution/licensing; sample searches in multiple cities and directions; rate limits; and fallback/error behavior. Then add verified bounds/geo-hint, register the corresponding provider and expand the allow-list, followed by regression testing. Merely flipping `enabled` to true in JSON is deliberately insufficient.
+
+The European Commission's [National Access Points](https://transport.ec.europa.eu/transport-themes/smart-mobility/road/its-directive-and-action-plan/national-access-points_en) are useful discovery catalogs, **not** a unified API granting automatic coverage. Transitous remains best-effort and open-source/non-commercial usage applies: https://transitous.org/api/.
