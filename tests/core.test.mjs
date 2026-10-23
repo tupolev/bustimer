@@ -6,7 +6,7 @@ const html=fs.readFileSync("index.html","utf8");
 const script=html.match(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/i)?.[1];
 assert.ok(script,"inline app script found");
 function extract(begin,end){const s=script.indexOf(begin),e=script.indexOf(end,s+begin.length);assert.ok(s>=0&&e>s,"functions found: "+begin);return script.slice(s,e)}
-const library="const DATA_PROVIDERS={emt:()=>{},vbb:()=>{},db:()=>{},transitous:()=>{}};\n"+extract("function defaultProvider(","async function departures(city,id,more=[]){")
+const library="const DATA_PROVIDERS={emt:()=>{},vbb:()=>{},db:()=>{},vrs:()=>{},transitous:()=>{}};\n"+extract("function defaultProvider(","async function departures(city,id,more=[]){")
  +extract("function motisStops(","let debounceSeq=0;");
 const context=vm.createContext({console,Date,Math,Number,String,Array,Object,JSON,Intl,URLSearchParams});
 vm.runInContext(library,context);
@@ -43,4 +43,11 @@ test("country region filter rejects distant results",()=>{
 });
 test("malformed app scripts fail parser",()=>{
  assert.throws(()=>new vm.Script("const broken = ;"),SyntaxError);
+});
+
+test("VRS filenames and namespace remain distinct from Transitous IDs",()=>{
+ assert.equal(call("defaultProvider","germany","vrs:de:05314:61101:7:73"),"vrs");
+ const refs=call("providerLinks","germany","vrs:de:05314:61101:7:73",[{provider:"transitous",id:"de:05314:61101:7:73"}]);
+ assert.equal(refs.length,2);
+ assert.equal(refs[0].id,"de:05314:61101:7:73");
 });
