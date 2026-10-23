@@ -366,3 +366,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Keep the quick JavaScript/Node and Python fixture checks on push and pull request in `.github/workflows/ci.yml`.
 - [x] Move Chromium Playwright E2E to its own **manual-only** `.github/workflows/browser-e2e.yml` (`workflow_dispatch`), retaining failure traces. Browser tests no longer run for each commit.
 - [ ] Run Browser E2E manually after substantial UX/provider changes or before an important release. Verify it passes before marking P0-02 complete.
+
+
+## P0-06 — Stale departure safety fix (2026-10-23)
+
+- [x] On complete provider failure during a monitored-stop refresh, discard the old departure object and present the existing error state rather than continuing to display the previously cached clock time/countdown as if current (`index.html`, commit `0ac4ea1e`).
+- [x] Add dependency-free Node fixture tests for failure and successful empty timetable refresh (`tests/stale-departures.test.mjs`, commit `9f9348d7`). These run in the existing fast CI job, not Playwright.
+- [ ] Confirm the new tests pass in CI; test offline browser behavior and partial provider outages before marking P0-06 wholly complete.
