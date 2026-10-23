@@ -34,6 +34,7 @@ Target architecture per city: query realtime where possible → merge with a pub
 | --- | --- | --- |
 | Berlin / Brandenburg | [VBB transport.rest](https://v6.vbb.transport.rest/) | Browser CORS support; realtime when available upstream. |
 | Köln | [DB transport.rest](https://v6.db.transport.rest/) | DB-backed source; coverage of KVB local bus/tram stops may be incomplete. |
+| Düsseldorf | [DB transport.rest](https://v6.db.transport.rest/) | Initial DB-backed support; Rheinbahn/VRR local bus, tram and U-Bahn coverage may be incomplete. A dedicated VRR data source is planned, subject to browser CORS validation. |
 | Málaga | Planned | EMT Málaga publishes open datasets, but these do not themselves constitute a verified stop-level arrival-prediction API accessible from a static web page. Disabled until a suitable source is tested. |
 
 The dropdown of lines is populated from the *next 90 minutes of departures* at a chosen stop. That means a line not operating in the current window may not be selectable yet. Direction is shown on the monitored card, but direction filtering is not yet implemented. The UI excludes cancelled departure records and matches line + transport mode; the next available service is selected.
@@ -64,6 +65,7 @@ Visit `http://localhost:8000/`. There are no packages to install.
 ## Roadmap
 
 - Validate and integrate dedicated KVB/VRS local transport coverage.
+- Integrate the VRR openservice stop finder and departure monitor for Düsseldorf/Rheinbahn, after checking CORS and provider data formats.
 - Investigate EMT Málaga arrival predictions, CORS and licensing; potentially a serverless backend if necessary.
 - Allow selection of direction and stops not serving in the next 90 minutes.
 - Multiple upcoming departures and service alerts.
