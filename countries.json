@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-23",
+  "strategy": "Germany and Spain first; expand to adjacent countries after per-provider validation.",
+  "countries": [
+    {
+      "id": "germany",
+      "iso": "DE",
+      "name": "Deutschland",
+      "flag": "🇩🇪",
+      "tier": "core",
+      "status": "beta",
+      "enabled": true,
+      "geocode": "Deutschland",
+      "bounds": [
+        47.2,
+        55.1,
+        5.8,
+        15.2
+      ],
+      "regional": [
+        "vbb"
+      ],
+      "sources": [
+        "transitous",
+        "vbb"
+      ],
+      "notes": "Nationwide aggregate plus VBB regional stop search"
+    },
+    {
+      "id": "spain",
+      "iso": "ES",
+      "name": "España",
+      "flag": "🇪🇸",
+      "tier": "core",
+      "status": "beta",
+      "enabled": true,
+      "geocode": "España",
+      "bounds": [
+        27.4,
+        43.9,
+        -18.3,
+        4.4
+      ],
+      "regional": [
+        "emt"
+      ],
+      "sources": [
+        "transitous",
+        "emt"
+      ],
+      "notes": "National aggregate and official EMT Málaga timetable"
+    },
+    {
+      "id": "france",
+      "iso": "FR",
+      "name": "France",
+      "flag": "🇫🇷",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "portugal",
+      "iso": "PT",
+      "name": "Portugal",
+      "flag": "🇵🇹",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "netherlands",
+      "iso": "NL",
+      "name": "Nederland",
+      "flag": "🇳🇱",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "belgium",
+      "iso": "BE",
+      "name": "België / Belgique",
+      "flag": "🇧🇪",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "luxembourg",
+      "iso": "LU",
+      "name": "Luxembourg",
+      "flag": "🇱🇺",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "austria",
+      "iso": "AT",
+      "name": "Österreich",
+      "flag": "🇦🇹",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "switzerland",
+      "iso": "CH",
+      "name": "Schweiz / Suisse",
+      "flag": "🇨🇭",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "poland",
+      "iso": "PL",
+      "name": "Polska",
+      "flag": "🇵🇱",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "czechia",
+      "iso": "CZ",
+      "name": "Česko",
+      "flag": "🇨🇿",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "denmark",
+      "iso": "DK",
+      "name": "Danmark",
+      "flag": "🇩🇰",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "andorra",
+      "iso": "AD",
+      "name": "Andorra",
+      "flag": "🇦🇩",
+      "tier": "neighbor",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "italy",
+      "iso": "IT",
+      "name": "Italia",
+      "flag": "🇮🇹",
+      "tier": "later",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "sweden",
+      "iso": "SE",
+      "name": "Sverige",
+      "flag": "🇸🇪",
+      "tier": "later",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "finland",
+      "iso": "FI",
+      "name": "Suomi",
+      "flag": "🇫🇮",
+      "tier": "later",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    },
+    {
+      "id": "norway",
+      "iso": "NO",
+      "name": "Norge",
+      "flag": "🇳🇴",
+      "tier": "later",
+      "status": "candidate",
+      "enabled": false,
+      "regional": [],
+      "sources": [],
+      "notes": "Requires confirmed feeds, API interoperability, attribution and browser tests"
+    }
+  ]
+}
