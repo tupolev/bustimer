@@ -83,7 +83,7 @@ function dateKey(p){return String(p.year)+String(p.month).padStart(2,"0")+String
 function gtfsDateUTC(parts,dayOffset){return new Date(Date.UTC(parts.year,parts.month-1,parts.day+dayOffset,12))}
 function madridTimestamp(serviceDate,minute){const target=Date.UTC(serviceDate.getUTCFullYear(),serviceDate.getUTCMonth(),serviceDate.getUTCDate(),0,minute);let candidate=target;for(let i=0;i<3;i++){const p=madridParts(new Date(candidate));const represented=Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second);candidate+=target-represented}return new Date(candidate)}
 function serviceRuns(data,service,day){const date=dateKey({year:day.getUTCFullYear(),month:day.getUTCMonth()+1,day:day.getUTCDate()});const ex=data.exceptions?.[service]?.[date];if(typeof ex==="boolean")return ex;const c=data.calendar?.[service];const dow=(day.getUTCDay()+6)%7;return !!c&&date>=c.from&&date<=c.to&&c.days[dow]}
-async function malagaDepartures(id){const [index,records]=await Promise.all([malagaIndex(),cachedJSON("./data/malaga/stops/"+encodeURIComponent(id)+".json",MIN_REFRESH_MS)]);const now=new Date(),local=madridParts(now),all=[];for(let offset=-1;offset<=1;offset++){const day=gtfsDateUTC(local,offset);for(const row of records){const [minute,service,line,direction]=row;if(!serviceRuns(index,service,day))continue;const clock=madridTimestamp(day,minute);if(clock.getTime()<now.getTime()-30000||clock.getTime()>now.getTime()+120*60000)continue;all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:"bus",_line:String(line),direction:direction||"",line:{name:String(line),product:"bus"}})}}return all.sort((a,b)=>new Date(a._time)-new Date(b._time))}
+async function malagaDepartures(id){const [index,records]=await Promise.all([malagaIndex(),cachedJSON("./data/malaga/stops/"+encodeURIComponent(id)+".json",MIN_REFRESH_MS)]);const now=new Date(),local=madridParts(now),all=[];for(let offset=-1;offset<=1;offset++){const day=gtfsDateUTC(local,offset);for(const row of records){const [minute,service,line,direction]=row;if(!serviceRuns(index,service,day))continue;const clock=madridTimestamp(day,minute);if(!clock||clock.getTime()<now.getTime()-30000||clock.getTime()>now.getTime()+120*60000)continue;all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:"bus",_line:String(line),direction:direction||"",line:{name:String(line),product:"bus"}})}}return all.sort((a,b)=>new Date(a._time)-new Date(b._time))}
 
 
 let vrsIndexPromise,vrsServicesPromise;
@@ -91,7 +91,18 @@ function vrsIndex(){return vrsIndexPromise||(vrsIndexPromise=getJSON("./data/vrs
 function vrsServices(){return vrsServicesPromise||(vrsServicesPromise=getJSON("./data/vrs/services.json").catch(async()=>{const legacy=await vrsIndex();if(legacy.calendar)return legacy;return getJSON("./data/vrs/index.json")}).catch(e=>{vrsServicesPromise=null;throw e}))}
 const berlinFormatter=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Berlin",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"});
 function berlinParts(d){return Object.fromEntries(berlinFormatter.formatToParts(d).filter(x=>x.type!=="literal").map(x=>[x.type,Number(x.value)]))}
-function berlinTimestamp(serviceDay,minute){const target=Date.UTC(serviceDay.getUTCFullYear(),serviceDay.getUTCMonth(),serviceDay.getUTCDate(),0,minute);let candidate=target;for(let i=0;i<3;i++){const p=berlinParts(new Date(candidate));candidate+=target-Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second)}return new Date(candidate)}
+function berlinTimestamp(serviceDay,minute){
+ // GTFS clock times refer to Berlin wall time. On spring DST transition
+ // 02:00–02:59 does not exist; on autumn transition it occurs twice.
+ // Prefer the first occurrence; never fabricate a missing local time.
+ const target=Date.UTC(serviceDay.getUTCFullYear(),serviceDay.getUTCMonth(),serviceDay.getUTCDate(),0,minute);
+ const matches=[];
+ for(const offsetHours of [0,1,2]){
+  const candidate=new Date(target-offsetHours*3600000),p=berlinParts(candidate);
+  if(Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second)===target)matches.push(candidate);
+ }
+ return matches.length?new Date(Math.min(...matches.map(d=>d.getTime()))):null;
+}
 function vrsStopFile(id){return String(id).replace(/[^A-Za-z0-9_-]/g,"_")}
 async function vrsDepartures(id){const [index,services]=await Promise.all([vrsIndex(),vrsServices()]),stop=index.stops.find(s=>String(s.id)===String(id));if(!stop)throw Error("VRS stop not found");const records=await cachedJSON("./data/vrs/stops/"+encodeURIComponent(stop.file||vrsStopFile(id))+".json",MIN_REFRESH_MS);
  const now=new Date(),local=berlinParts(now),all=[];for(let offset=-1;offset<=1;offset++){const day=gtfsDateUTC(local,offset);for(const row of records){const [minute,service,line,direction,kind]=row;if(!serviceRuns(services,service,day))continue;const clock=berlinTimestamp(day,minute);if(clock.getTime()<now.getTime()-30000||clock.getTime()>now.getTime()+120*60000)continue;const product=kind==="0"||kind==="900"?"tram":kind==="1"||kind==="400"?"subway":kind==="2"||kind==="100"?"train":"bus";all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:product,_line:String(line),direction:direction||"",line:{name:String(line),product}})}}return all.sort((a,b)=>new Date(a._time)-new Date(b._time))}
