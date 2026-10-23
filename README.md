@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.4.0** · No build step · No backend · MIT licensed
+**Version 0.4.1** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -113,3 +113,9 @@ BusTimer now provides an **España / nationwide (beta)** stop-search option via 
 The official Spanish [National Access Point (NAP)](https://nap.transportes.gob.es/ConjuntoDato/List) catalogs hundreds of GTFS and realtime feeds from Spanish operators. Those feeds must be checked individually for access, calendars, licensing, update mechanisms, and overlap before generating a deduplicated national stop index. A full Spain GTFS ingestion pipeline is **not** part of this beta. Avoid claiming nationwide-complete coverage until that pipeline has been implemented and tested.
 
 This project continues to use no API key and retains the public GitHub Pages architecture.
+
+## Unified Spain selection (v0.4.1)
+
+The Málaga choice was removed from the Add Stop network dropdown. **España** now combines Transitous results with EMT Málaga scheduled-stop results automatically. EMT candidates carry an `emt:` prefix internally and a visible `EMT timetable` label. Selecting one uses the already published GTFS data, not Transitous, and displays scheduled predictions only. Previously saved `city: malaga` items continue to work through their legacy provider, so favorites are preserved. The daily EMT import workflow is retained.
+
+This does not imply full Spanish operator coverage; national GTFS ingestion is still pending. Search results from different providers are not yet deduplicated by geographic coordinates. If a stop appears twice, the EMT-labeled entry explicitly uses the official schedule.
