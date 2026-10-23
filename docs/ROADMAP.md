@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.8.0**  
+Last reviewed: 2026-10-23 · Current application version: **0.8.0** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -13,7 +13,10 @@ Last reviewed: 2026-10-23 · Current application version: **0.8.0**
 
 ## P0 — Reliability and validation (do before expanding further)
 
-- [ ] **P0-01 — Automated JavaScript checks.** Extract JS into modules or add a lint/syntax workflow; reject broken commits in CI. **Done when:** the workflow fails on deliberately malformed JS and passes on the current source.
+- [ ] **P0-01 — Automated JavaScript checks.** **Implemented, CI verification pending:** `scripts/check-js.mjs` checks inline JavaScript, service worker and enabled-country JSON. `.github/workflows/ci.yml` runs on pushes and PRs. **Done when:** a GitHub Actions run succeeds and a deliberately malformed test fixture is rejected.
+- [ ] **P0-01b — Unit-test battery in CI.** **Initial 7 cases implemented, CI verification pending:** `tests/core.test.mjs` uses Node's built-in test runner; covers provider mapping, provider IDs, realtime deduplication, stop merging, geographic filtering and malformed JS detection. **Done when:** the GitHub Actions run passes and additional fixtures cover service calendars, midnight/DST, cancelled departures and stale data.
+- [ ] **P0-01c — Integration tests in CI.** **Not started:** test app provider requests via stubbed API responses, localStorage migrations and full add/save/refresh workflows. **Done when:** automated integration fixtures pass and network failures exercise fallback behavior.
+- [ ] **P0-01d — CI quality gate for pull requests.** **Workflow implemented, verification pending:** require `checks` in branch protection after a successful CI run; preserve a way to roll back a broken release.
 - [ ] **P0-02 — Browser smoke tests on GitHub Pages.** Test each tab, language, theme, favorite save/remove, PWA update, offline shell and restored localStorage. **Done when:** reproducible Playwright or equivalent tests run in CI and are documented.
 - [ ] **P0-03 — Validate Transitous API integration.** Confirm request paths, schemas, CORS, stop search, timetable, delay, cancellation and error behavior. **Done when:** fixtures and at least one tested stop per enabled country pass.
 - [ ] **P0-04 — Fix provider identity and stop matching.** Avoid incorrect merging of different platforms or stop IDs; preserve source-specific IDs and coordinates. **Done when:** tests cover nearby distinct platforms, aliases and duplicates.
@@ -88,3 +91,7 @@ Last reviewed: 2026-10-23 · Current application version: **0.8.0**
 | 0.8.0 | Experimental France and Portugal selection |
 
 **Scope rule:** Focus development and reliability investment on **Germany and Spain** first, then their neighbors, then the rest of Europe.
+
+## CI setup and first-run verification
+
+Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/actions/workflows/ci.yml). Commands: `npm run check`, `npm test`, `npm run ci`. The suite uses Node.js 22 and no third-party test dependencies. GitHub Actions should trigger on every push to `main` and each pull request. **As of this checklist update, the workflow was committed but a successful run has not been independently confirmed**; inspect the Actions page, fix any failures, and only then mark P0-01 and the initial tests complete.
