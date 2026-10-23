@@ -25,7 +25,7 @@ jobs:
         run: composer install --working-dir=server --no-dev --no-interaction --prefer-dist --optimize-autoloader
       - name: Verify Web Push HTTP client is instantiable
         run: |
-          php -r 'require "server/vendor/autoload.php"; if (!(Http\\Discovery\\Psr18ClientDiscovery::find() instanceof Psr\\Http\\Client\\ClientInterface)) exit(1);'
+          php -r 'require "server/vendor/autoload.php"; if (!(Http\Discovery\Psr18ClientDiscovery::find() instanceof Psr\Http\Client\ClientInterface)) exit(1);'
       - name: Prepare deployable files
         shell: bash
         run: |
