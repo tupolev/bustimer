@@ -49,7 +49,8 @@ jobs:
           # CLI smoke with no alarm subscriptions should be harmless. Avoid printing any private data.
           "$php_bin" "$root/cron.php"
           marker='# BusTimer anonymous Web Push'
-          line="* * * * * /usr/bin/flock -n /home/dh_ikhr5d/bustimer-private/bustimer-cron.lock $php_bin $root/cron.php >/dev/null 2>&1 $marker"
+          flock_bin=$(command -v flock)
+          line="* * * * * $flock_bin -n /home/dh_ikhr5d/bustimer-private/bustimer-cron.lock $php_bin $root/cron.php >/dev/null 2>&1 $marker"
           if crontab -l 2>/dev/null | grep -Fq "$marker"; then
             echo 'BusTimer cron already present; leaving crontab unchanged.'
           else
