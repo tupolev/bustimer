@@ -37,7 +37,7 @@
 <button id="save" class="btn" disabled data-i18n="save">+ Monitor this line</button><p class="hint" id="form-error" role="status"></p>
 </div></section>
 <section class="panel" id="tab-settings" role="tabpanel" aria-labelledby="nav-settings" hidden><h2 data-i18n="settingsTitle">Preferences</h2><div class="setting-row"><div><label for="language" data-i18n="language">Language</label><p class="hint" data-i18n="languageHelp">Choose your interface language.</p></div><select id="language"><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option></select></div><div class="setting-row"><div><label for="theme" data-i18n="theme">Appearance</label><p class="hint" data-i18n="themeHelp">Use your device setting or override it.</p></div><select id="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="info"><p data-i18n="privacy">Your stops and preferences are stored only in this browser. No account or analytics are used.</p></div></section>
-<section class="panel" id="tab-about" role="tabpanel" aria-labelledby="nav-about" hidden><h2 data-i18n="aboutTitle">About BusTimer</h2><p data-i18n="aboutIntro">BusTimer is a lightweight, installable web app that helps you keep an eye on departures from your favorite stops.</p><div class="info"><h3 data-i18n="howTitle">How it works</h3><p data-i18n="howText">Search for a stop, choose the vehicle type and line, and save it. Live predictions are displayed when provided by the data source; otherwise times are scheduled estimates.</p></div><div class="info"><h3 data-i18n="coverageTitle">Current coverage</h3><p data-i18n="coverageText">Germany and Spain: Transitous timetable and realtime where supplied; Spain beta coverage varies. VBB remains optional for Berlin-Brandenburg. Málaga: EMT published timetables, no live predictions.</p></div><div class="info"><h3 data-i18n="limitationsTitle">Limitations</h3><p><a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous data sources</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></p><p data-i18n="limitationsText">An internet connection is required for current departures. Predictions depend on external providers. Updates run only while the app is open, and background refresh is not guaranteed.</p></div><div class="info"><h3>Data sources, licenses & contact</h3><p>Málaga: <a href="https://datos.gob.es/es/catalogo/l01290672-lineas-y-horarios-bus-google-transit" target="_blank" rel="noopener">GTFS EMT Málaga / Ayuntamiento de Málaga (CC BY-SA 4.0)</a>. Nationwide data: <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous sources and attribution</a>. Regional services: <a href="https://v6.vbb.transport.rest/" target="_blank" rel="noopener">VBB transport.rest</a> and <a href="https://v6.db.transport.rest/" target="_blank" rel="noopener">DB transport.rest</a>. Maps and geographic data may contain <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>. Check source-specific licenses before redistributing timetable data.</p><p>Contact / support: <a href="https://github.com/tupolev/bustimer/issues" target="_blank" rel="noopener">BusTimer GitHub Issues</a>. Open-source, non-commercial project; provider APIs may log your IP and queried stops. No credentials are embedded in this web app.</p></div><p>Version 0.9.4 · <a href="https://github.com/tupolev/bustimer" target="_blank" rel="noopener">GitHub / tupolev/bustimer</a></p></section>
+<section class="panel" id="tab-about" role="tabpanel" aria-labelledby="nav-about" hidden><h2 data-i18n="aboutTitle">About BusTimer</h2><p data-i18n="aboutIntro">BusTimer is a lightweight, installable web app that helps you keep an eye on departures from your favorite stops.</p><div class="info"><h3 data-i18n="howTitle">How it works</h3><p data-i18n="howText">Search for a stop, choose the vehicle type and line, and save it. Live predictions are displayed when provided by the data source; otherwise times are scheduled estimates.</p></div><div class="info"><h3 data-i18n="coverageTitle">Current coverage</h3><p data-i18n="coverageText">Germany and Spain: Transitous timetable and realtime where supplied; Spain beta coverage varies. VBB remains optional for Berlin-Brandenburg. Málaga: EMT published timetables, no live predictions.</p></div><div class="info"><h3 data-i18n="limitationsTitle">Limitations</h3><p><a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous data sources</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></p><p data-i18n="limitationsText">An internet connection is required for current departures. Predictions depend on external providers. Updates run only while the app is open, and background refresh is not guaranteed.</p></div><div class="info"><h3>Data sources, licenses & contact</h3><p>Málaga: <a href="https://datos.gob.es/es/catalogo/l01290672-lineas-y-horarios-bus-google-transit" target="_blank" rel="noopener">GTFS EMT Málaga / Ayuntamiento de Málaga (CC BY-SA 4.0)</a>. Nationwide data: <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous sources and attribution</a>. Regional services: <a href="https://v6.vbb.transport.rest/" target="_blank" rel="noopener">VBB transport.rest</a> and <a href="https://v6.db.transport.rest/" target="_blank" rel="noopener">DB transport.rest</a>. Maps and geographic data may contain <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>. Check source-specific licenses before redistributing timetable data.</p><p>Contact / support: <a href="https://github.com/tupolev/bustimer/issues" target="_blank" rel="noopener">BusTimer GitHub Issues</a>. Open-source, non-commercial project; provider APIs may log your IP and queried stops. No credentials are embedded in this web app.</p></div><p>Version 0.9.5 · <a href="https://github.com/tupolev/bustimer" target="_blank" rel="noopener">GitHub / tupolev/bustimer</a></p></section>
 </div><footer class="footer">BusTimer · <span data-i18n="footer">Made for the next ride.</span></footer></main>
 <script>
 "use strict";
@@ -105,17 +105,40 @@ function berlinTimestamp(serviceDay,minute){
 }
 function vrsStopFile(id){return String(id).replace(/[^A-Za-z0-9_-]/g,"_")}
 async function vrsDepartures(id){const [index,services]=await Promise.all([vrsIndex(),vrsServices()]),stop=index.stops.find(s=>String(s.id)===String(id));if(!stop)throw Error("VRS stop not found");const records=await cachedJSON("./data/vrs/stops/"+encodeURIComponent(stop.file||vrsStopFile(id))+".json",MIN_REFRESH_MS);
- const now=new Date(),local=berlinParts(now),all=[];for(let offset=-1;offset<=1;offset++){const day=gtfsDateUTC(local,offset);for(const row of records){const [minute,service,line,direction,kind]=row;if(!serviceRuns(services,service,day))continue;const clock=berlinTimestamp(day,minute);if(clock.getTime()<now.getTime()-30000||clock.getTime()>now.getTime()+120*60000)continue;const product=kind==="0"||kind==="900"?"tram":kind==="1"||kind==="400"?"subway":kind==="2"||kind==="100"?"train":"bus";all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:product,_line:String(line),direction:direction||"",line:{name:String(line),product}})}}return all.sort((a,b)=>new Date(a._time)-new Date(b._time))}
+ const now=new Date(),local=berlinParts(now),all=[];for(let offset=-1;offset<=1;offset++){const day=gtfsDateUTC(local,offset);for(const row of records){const [minute,service,line,direction,kind]=row;if(!serviceRuns(services,service,day))continue;const clock=berlinTimestamp(day,minute);if(!clock||clock.getTime()<now.getTime()-30000||clock.getTime()>now.getTime()+120*60000)continue;const product=kind==="0"||kind==="900"?"tram":kind==="1"||kind==="400"?"subway":kind==="2"||kind==="100"?"train":"bus";all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:product,_line:String(line),direction:direction||"",line:{name:String(line),product}})}}return all.sort((a,b)=>new Date(a._time)-new Date(b._time))}
 
+
+let luxIndexPromise,luxServicesPromise;
+function luxIndex(){return luxIndexPromise||(luxIndexPromise=getJSON("./data/luxembourg/search.json").catch(e=>{luxIndexPromise=null;throw e}))}
+function luxServices(){return luxServicesPromise||(luxServicesPromise=getJSON("./data/luxembourg/services.json").catch(e=>{luxServicesPromise=null;throw e}))}
+function luxTimestamp(day,minute){return berlinTimestamp(day,minute)} // Both countries use CET/CEST.
+async function luxDepartures(id){
+ const [index,services]=await Promise.all([luxIndex(),luxServices()]);
+ const stop=index.stops.find(s=>String(s.id)===String(id));
+ if(!stop)throw Error("Luxembourg stop not found");
+ const records=await cachedJSON("./data/luxembourg/stops/"+encodeURIComponent(stop.file)+".json",MIN_REFRESH_MS);
+ const now=new Date(),local=berlinParts(now),all=[];
+ for(let offset=-1;offset<=1;offset++){const day=gtfsDateUTC(local,offset);
+  for(const row of records){const [minute,service,line,direction,kind]=row;
+   if(!serviceRuns(services,service,day))continue;
+   const clock=luxTimestamp(day,minute);
+   if(!clock||clock.getTime()<now.getTime()-30000||clock.getTime()>now.getTime()+120*60000)continue;
+   const product=kind==="0"||kind==="900"?"tram":kind==="1"||kind==="400"?"subway":kind==="2"||kind==="100"?"train":"bus";
+   all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:product,_line:String(line),direction:direction||"",line:{name:String(line),product}});
+  }
+ }
+ return all.sort((a,b)=>new Date(a._time)-new Date(b._time));
+}
 const DATA_PROVIDERS={
+  lux: id=>luxDepartures(id),
   vrs: id=>vrsDepartures(id),
   transitous: id=>cachedJSON("https://api.transitous.org/api/v6/stoptimes?"+new URLSearchParams({stopId:id,n:100}),MIN_REFRESH_MS).then(extractMotis),
   emt: id=>malagaDepartures(id),
   vbb: id=>cachedJSON(url("berlin","/stops/"+encodeURIComponent(id)+"/departures",{duration:90,results:100,remarks:false,pretty:false}),MIN_REFRESH_MS).then(extractDepartures),
   db: id=>cachedJSON(url("cologne","/stops/"+encodeURIComponent(id)+"/departures",{duration:90,results:100,remarks:false,pretty:false}),MIN_REFRESH_MS).then(extractDepartures)
 };
-function defaultProvider(city,id){return city==="malaga"||String(id).startsWith("emt:")?"emt":String(id).startsWith("vrs:")?"vrs":city==="berlin"?"vbb":city==="cologne"||city==="dusseldorf"?"db":"transitous"}
-function providerLinks(city,id,more=[]){const first={provider:defaultProvider(city,id),id:String(id).replace(/^(?:emt|vrs):/,"")};return [first,...more].filter((s,i,a)=>s&&DATA_PROVIDERS[s.provider]&&a.findIndex(x=>x&&x.provider===s.provider&&String(x.id)===String(s.id))===i)}
+function defaultProvider(city,id){return city==="malaga"||String(id).startsWith("emt:")?"emt":String(id).startsWith("vrs:")?"vrs":String(id).startsWith("lux:")?"lux":city==="berlin"?"vbb":city==="cologne"||city==="dusseldorf"?"db":"transitous"}
+function providerLinks(city,id,more=[]){const first={provider:defaultProvider(city,id),id:String(id).replace(/^(?:emt|vrs|lux):/,"")};return [first,...more].filter((s,i,a)=>s&&DATA_PROVIDERS[s.provider]&&a.findIndex(x=>x&&x.provider===s.provider&&String(x.id)===String(s.id))===i)}
 function mergeDepartures(rows){const prioritized=[...rows].sort((a,b)=>Number(Boolean(b._realtime))-Number(Boolean(a._realtime)));const out=[];for(const d of prioritized){const planned=new Date(d.plannedWhen||d._time).getTime();if(out.some(x=>x._source!==d._source&&x._line===d._line&&x._product===d._product&&x.direction===d.direction&&Math.abs(new Date(x.plannedWhen||x._time).getTime()-planned)<90000))continue;out.push(d)}return out.sort((a,b)=>new Date(a._time)-new Date(b._time))}
 async function departures(city,id,more=[]){const refs=providerLinks(city,id,more);const results=await Promise.allSettled(refs.map(s=>DATA_PROVIDERS[s.provider](s.id)));if(results.every(x=>x.status==="rejected"))throw Error("All sources failed");return mergeDepartures(results.flatMap((r,i)=>r.status==="fulfilled"?r.value.map(d=>({...d,_source:refs[i].provider})):[]))}
 
@@ -129,6 +152,7 @@ function joinStopResults(stops){const out=[];for(const s of stops){const other=o
 // Country configuration drives all searches; providers retain their own IDs.
 const COUNTRY_FALLBACK={
  germany:{geocode:"Deutschland",bounds:[47.2,55.1,5.8,15.2],regional:["vbb","db","vrs"]},
+ luxembourg:{geocode:"Luxembourg",bounds:[49.43,50.2,5.72,6.55],regional:["lux"]},
  spain:{geocode:"España",bounds:[27.4,43.9,-18.3,4.4],regional:["emt"]},
  france:{geocode:"France",bounds:[41.2,51.3,-5.3,9.8],regional:[]},
  portugal:{geocode:"Portugal",bounds:[32.4,42.2,-31.5,-6.1],regional:[]}
@@ -146,6 +170,11 @@ async function regionalStops(provider,query){if(provider==="vbb"){const result=a
   return (Array.isArray(result)?result:[]).filter(s=>s.id&&(s.type==="stop"||s.type==="station"))
    .map(s=>({id:String(s.id),name:s.name,type:"stop",lat:s.latitude,lon:s.longitude,provider:"db"}))
    .filter(s=>inBounds(s,REGION_BOUNDS.db));
+ }
+ if(provider==="lux"){
+   const index=await luxIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+   if(q.length<2)return [];
+   return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q)).slice(0,20).map(s=>({id:"lux:"+s.id,name:s.name,type:"stop",lat:s.lat,lon:s.lon,provider:"lux"}));
  }
  if(provider==="vrs"){
   const index=await vrsIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
