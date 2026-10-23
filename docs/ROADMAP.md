@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.11.1** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.12.0** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -271,3 +271,15 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Record official Belgian multi-operator GTFS sources and gated API authorization concerns in `docs/EU-SOURCES.md`.
 - [ ] Confirm generated Belgian dataset publication and CI before relying on it in app.
 - [ ] Verify feed download authorization/license and build a bounded Belgian schedule adapter. Belgium remains a disabled candidate.
+
+## Belgium experimental launch — 2026-10-23 (v0.12.0)
+
+- [x] Published and validated SNCB-NMBS (2,213 GTFS stops), [run 39951852629](https://github.com/tupolev/bustimer/actions/runs/39951852629).
+- [x] Published and validated STIB-MIVB (2,415), [run 39952200679](https://github.com/tupolev/bustimer/actions/runs/39952200679).
+- [x] Published and validated LETEC (30,908), [run 39952313433](https://github.com/tupolev/bustimer/actions/runs/39952313433).
+- [x] Published and validated De Lijn (25,468), [run 39952320177](https://github.com/tupolev/bustimer/actions/runs/39952320177).
+- [x] Verified Belgian GeoNames town index (2,257 entries), including multilingual aliases, [refresh run 39953151061](https://github.com/tupolev/bustimer/actions/runs/39953151061).
+- [x] Enable country as experimental with all four published scheduled providers, per-operator namespaced IDs, country-scoped city+stop searches and localized country label. No unsupported realtime claim.
+- [x] Confirm JavaScript and four real compiled dataset CI passed ([run 39952812129](https://github.com/tupolev/bustimer/actions/runs/39952812129)) and GitHub Pages deployed ([run 39952811855](https://github.com/tupolev/bustimer/actions/runs/39952811855)).
+- [ ] Manually exercise browser flows for Bruxelles/Brussel → Gare Centrale, Gent → tram/bus, and Liège → TEC; live/browser smoke tests not supplied by current CI.
+- [ ] Expand realtime providers as authentication and licensing permit; never label static times live.
