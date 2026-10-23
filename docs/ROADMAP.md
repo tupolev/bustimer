@@ -453,3 +453,10 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [x] Expand `scripts/smoke_netherlands_api.py` beyond geocoding: request real `/api/v6/stoptimes` for up to four stop candidates per representative city, prefer `nl-` provider IDs, record available line identifiers and CORS response headers. The workflow remains lightweight and does not run Chromium per commit (commit `14533427`).
 - [ ] Check `docs/validation/netherlands-api-latest.json` from the **new** workflow run; prior successful run `39970122882` tested geocoding only and does not prove departure coverage.
 - [ ] Confirm browser smoke and favorites; avoid enabling Netherlands until the live departure evidence supports usability.
+
+
+## Netherlands API live departures verified (2026-10-23)
+
+- [x] GitHub Actions [run 39970478094](https://github.com/tupolev/bustimer/actions/runs/39970478094) passed with real Transitous `/api/v1/geocode` and `/api/v6/stoptimes` calls across Amsterdam, Rotterdam, Utrecht and Den Haag. All 16 queried local `nl-OpenOV` stop candidates returned departures; observed line strings included 18/51/54, D/44/38, 2/8/27/73 and Sprinter/Intercity respectively. All 16 stop-times responses reported CORS `*`.
+- [ ] Verify an actual browser flow from the deployed PWA; the CI probe is a server request with User-Agent, not browser-origin proof. Check the requested central stops and sorting explicitly: geocode results may include nearby but nonmatching stops.
+- [ ] Run manual Playwright flow and assess the result before exposing Netherlands. The country catalog remains gated.
