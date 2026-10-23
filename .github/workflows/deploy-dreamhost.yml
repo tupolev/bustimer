@@ -49,6 +49,22 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+      - name: Verify remote PHP runtime and destination
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DREAMHOST_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DREAMHOST_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DREAMHOST_WEB_ROOT }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
+          [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
+          [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
+          [[ "$DEPLOY_PATH" == "/home/$DEPLOY_USER/bustimer.kodesoft.net/" ]]
+          ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            'php -r '\''if (PHP_VERSION_ID < 80200) {fwrite(STDERR, "PHP >= 8.2 required\\n");exit(1);} foreach (["pdo_sqlite","curl","openssl","mbstring"] as $ext) {if (!extension_loaded($ext)) {fwrite(STDERR,"Missing PHP extension: ".$ext."\\n");exit(1);}} echo PHP_VERSION." OK\\n";'\'''
+          ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
       - name: Upload release without touching server settings or database
         shell: bash
         env:
@@ -60,16 +76,20 @@ jobs:
           test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER" && test -n "$DEPLOY_PATH"
           [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
-          [[ "$DEPLOY_PATH" =~ ^/home/[a-zA-Z0-9_-]+/[a-zA-Z0-9_./-]+$ ]]
-          [[ "$DEPLOY_PATH" != "/" && "$DEPLOY_PATH" != *".."* ]]
-          ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
-          rsync -az --itemize-changes \
+          [[ "$DEPLOY_PATH" == "/home/$DEPLOY_USER/bustimer.kodesoft.net/" ]]
+          rsync -az --itemize-changes --no-perms --no-owner --no-group \
             --exclude='server/settings.php' \
             --exclude='server/private/' \
             --exclude='*.sqlite' --exclude='*.sqlite-shm' --exclude='*.sqlite-wal' \
             -e 'ssh -o StrictHostKeyChecking=yes' \
             stage/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
-      - name: Verify public health endpoint
+      - name: Verify deployed PWA and API presence
+        shell: bash
         run: |
-          curl --fail --silent --show-error --location --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/ >/dev/null
-          echo 'PWA is reachable. API will be functional only after private settings and cron are configured.'
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/ | grep -qi 'bustimer'
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 https://bustimer.kodesoft.net/sw.js | grep -q 'bustimer-shell'
+          # Before private settings exist, api.php may respond 500. A 404 means it was not deployed.
+          api_status=$(curl --silent --show-error -o /dev/null -w '%{http_code}' https://bustimer.kodesoft.net/server/api.php?action=config)
+          if [[ "$api_status" == "404" || "$api_status" == "000" ]]; then echo "API not reachable: $api_status"; exit 1; fi
+          echo "API HTTP status: $api_status (200 requires private settings)."
