@@ -179,28 +179,7 @@ async function belgiumDepartures(provider,id){
  }
  return all.sort((a,b)=>new Date(a._time)-new Date(b._time));
 }
-async function netherlandsIndex(){return cachedJSON("./data/netherlands/search.json",3600000)}
-async function netherlandsServices(){return cachedJSON("./data/netherlands/services.json",3600000)}
-async function netherlandsDepartures(id){
- const [index,services]=await Promise.all([netherlandsIndex(),netherlandsServices()]);
- const stop=index.stops.find(s=>String(s.id)===String(id));
- if(!stop)throw Error("Netherlands stop not found");
- const rows=await cachedJSON("./data/netherlands/stops/"+stop.file+".json",MIN_REFRESH_MS);
- const local=berlinParts(new Date()),now=Date.now(),all=[];
- for(let offset=-1;offset<=1;offset++){
-  const day=gtfsDateUTC(local,offset);
-  for(const [minute,service,line,direction,kind] of rows){
-   if(!serviceRuns(services,service,day))continue;
-   const clock=berlinTimestamp(day,minute);
-   if(!clock||clock.getTime()<now-30000||clock.getTime()>now+120*60000)continue;
-   const code=String(kind),product=code==="0"||code==="900"?"tram":code==="1"||code==="400"?"subway":code==="2"||code==="100"?"regional":code==="4"||code==="1000"?"ferry":"bus";
-   all.push({_time:clock.toISOString(),plannedWhen:clock.toISOString(),when:null,delay:null,_product:product,_line:String(line),direction:direction||"",line:{name:String(line),product}});
-  }
- }
- return all.sort((a,b)=>new Date(a._time)-new Date(b._time));
-}
 const DATA_PROVIDERS={
-  nl:id=>netherlandsDepartures(id),
   belgiumRail: id=>belgiumDepartures("belgiumRail",id),
   belgiumStib: id=>belgiumDepartures("belgiumStib",id),
   belgiumTec: id=>belgiumDepartures("belgiumTec",id),
@@ -212,8 +191,8 @@ const DATA_PROVIDERS={
   vbb: id=>cachedJSON(url("berlin","/stops/"+encodeURIComponent(id)+"/departures",{duration:90,results:100,remarks:false,pretty:false}),MIN_REFRESH_MS).then(extractDepartures),
   db: id=>cachedJSON(url("cologne","/stops/"+encodeURIComponent(id)+"/departures",{duration:90,results:100,remarks:false,pretty:false}),MIN_REFRESH_MS).then(extractDepartures)
 };
-function defaultProvider(city,id){return city==="malaga"||String(id).startsWith("emt:")?"emt":String(id).startsWith("vrs:")?"vrs":String(id).startsWith("lux:")?"lux":String(id).startsWith("nl:")?"nl":String(id).startsWith("belgiumRail:")?"belgiumRail":String(id).startsWith("belgiumStib:")?"belgiumStib":String(id).startsWith("belgiumTec:")?"belgiumTec":String(id).startsWith("belgiumDelijn:")?"belgiumDelijn":city==="berlin"?"vbb":city==="cologne"||city==="dusseldorf"?"db":"transitous"}
-function providerLinks(city,id,more=[]){const first={provider:defaultProvider(city,id),id:String(id).replace(/^(?:emt|vrs|lux|nl|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};return [first,...more].filter((s,i,a)=>s&&DATA_PROVIDERS[s.provider]&&a.findIndex(x=>x&&x.provider===s.provider&&String(x.id)===String(s.id))===i)}
+function defaultProvider(city,id){return city==="malaga"||String(id).startsWith("emt:")?"emt":String(id).startsWith("vrs:")?"vrs":String(id).startsWith("lux:")?"lux":String(id).startsWith("belgiumRail:")?"belgiumRail":String(id).startsWith("belgiumStib:")?"belgiumStib":String(id).startsWith("belgiumTec:")?"belgiumTec":String(id).startsWith("belgiumDelijn:")?"belgiumDelijn":city==="berlin"?"vbb":city==="cologne"||city==="dusseldorf"?"db":"transitous"}
+function providerLinks(city,id,more=[]){const first={provider:defaultProvider(city,id),id:String(id).replace(/^(?:emt|vrs|lux|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};return [first,...more].filter((s,i,a)=>s&&DATA_PROVIDERS[s.provider]&&a.findIndex(x=>x&&x.provider===s.provider&&String(x.id)===String(s.id))===i)}
 function mergeDepartures(rows){const prioritized=[...rows].sort((a,b)=>Number(Boolean(b._realtime))-Number(Boolean(a._realtime)));const out=[];for(const d of prioritized){const planned=new Date(d.plannedWhen||d._time).getTime();if(out.some(x=>x._source!==d._source&&x._line===d._line&&x._product===d._product&&x.direction===d.direction&&Math.abs(new Date(x.plannedWhen||x._time).getTime()-planned)<90000))continue;out.push(d)}return out.sort((a,b)=>new Date(a._time)-new Date(b._time))}
 async function departures(city,id,more=[]){const refs=providerLinks(city,id,more);const results=await Promise.allSettled(refs.map(s=>DATA_PROVIDERS[s.provider](s.id)));if(results.every(x=>x.status==="rejected"))throw Error("All sources failed");return mergeDepartures(results.flatMap((r,i)=>r.status==="fulfilled"?r.value.map(d=>({...d,_source:refs[i].provider})):[]))}
 
@@ -223,7 +202,7 @@ function motisStops(data){const list=Array.isArray(data)?data:(data?.matches||da
 
 function normalizeStopName(name){return String(name).toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ · .*$/,"").replace(/[^a-z0-9]/g,"")}
 function stopDistance(a,b){const lat1=Number(a.lat),lat2=Number(b.lat),lon1=Number(a.lon),lon2=Number(b.lon);if(![lat1,lat2,lon1,lon2].every(Number.isFinite))return Infinity;const rad=Math.PI/180;return Math.hypot((lat1-lat2)*111195,(lon1-lon2)*111195*Math.cos((lat1+lat2)/2*rad))}
-function joinStopResults(stops){const out=[];for(const s of stops){const other=out.find(x=>normalizeStopName(x.name)===normalizeStopName(s.name)&&stopDistance(x,s)<75);const ref={provider:s.provider,id:String(s.id).replace(/^(?:emt|vrs|lux|nl|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};if(other){other.providers.push(ref)}else{out.push({...s,providers:[ref]})}}return out}
+function joinStopResults(stops){const out=[];for(const s of stops){const other=out.find(x=>normalizeStopName(x.name)===normalizeStopName(s.name)&&stopDistance(x,s)<75);const ref={provider:s.provider,id:String(s.id).replace(/^(?:emt|vrs|lux|belgiumRail|belgiumStib|belgiumTec|belgiumDelijn):/,"")};if(other){other.providers.push(ref)}else{out.push({...s,providers:[ref]})}}return out}
 // Country configuration drives all searches; providers retain their own IDs.
 const COUNTRY_FALLBACK={
  germany:{geocode:"Deutschland",bounds:[47.2,55.1,5.8,15.2],regional:["vbb","db","vrs"]},
@@ -253,11 +232,6 @@ async function regionalStops(provider,query){if(BELGIUM_OPERATORS.includes(provi
    .map(s=>({id:String(s.id),name:s.name,type:"stop",lat:s.latitude,lon:s.longitude,provider:"db"}))
    .filter(s=>inBounds(s,REGION_BOUNDS.db));
  }
- if(provider==="nl"){
-   const index=await netherlandsIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
-   if(q.length<2)return [];
-   return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q)).map(s=>({id:"nl:"+s.id,name:s.name,type:"stop",lat:s.lat,lon:s.lon,provider:"nl"}));
- }
  if(provider==="lux"){
    const index=await luxIndex(),q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
    if(q.length<2)return [];
@@ -271,7 +245,7 @@ async function regionalStops(provider,query){if(BELGIUM_OPERATORS.includes(provi
  if(provider==="emt"){const q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/malaga/g,"").trim();if(q.length<2)return [];const index=await malagaIndex();return index.stops.filter(s=>s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q)).slice(0,15).map(s=>({id:"emt:"+s.id,name:s.name+" · Málaga",type:"stop",lat:s.lat,lon:s.lon,provider:"emt"})).filter(s=>inBounds(s,REGION_BOUNDS.emt))}
  return []}
 let COUNTRY_CATALOG=COUNTRY_FALLBACK;
-async function searchCountryStops(country,query,town){const cfg=COUNTRY_CATALOG[country];if(!cfg)throw Error("Country unavailable");const url="https://api.transitous.org/api/v1/geocode?"+new URLSearchParams({text:query+", "+town+", "+cfg.geocode,type:"STOP"});const nationalRequest=(country==="belgium"||country==="netherlands")?Promise.resolve([]):cachedJSON(url,120000).then(motisStops).then(stops=>stops.map(s=>({...s,lat:s.latitude,lon:s.longitude,provider:"transitous"})).filter(s=>inBounds(s,cfg.bounds))).catch(()=>[]);const jobs=[nationalRequest,...cfg.regional.map(p=>regionalStops(p,query).catch(()=>[]))];const [allNational,...other]=await Promise.all(jobs);const national=allNational.filter(s=>stopDistance(s,chosenTown)<20000||canonicalStopName(s.name).includes(canonicalStopName(town)));let local=other.flat();if(country==="spain"&&!/m[aá]laga/i.test(query)&&!national.some(s=>inBounds(s,REGION_BOUNDS.emt)))local=[];const townName=canonicalStopName(town);local=local.filter(s=>!townName||canonicalStopName(s.name).includes(townName)||chosenTown&&stopDistance(s,chosenTown)<18000);const list=joinProviderStops([...local,...national]);if(!list.length)return [];const normalizedQuery=canonicalStopName(query);return list.sort((a,b)=>{const match=Number(canonicalStopName(b.name).startsWith(normalizedQuery))-Number(canonicalStopName(a.name).startsWith(normalizedQuery));return match||stopDistance(a,chosenTown)-stopDistance(b,chosenTown)}).slice(0,20)}
+async function searchCountryStops(country,query,town){const cfg=COUNTRY_CATALOG[country];if(!cfg)throw Error("Country unavailable");const url="https://api.transitous.org/api/v1/geocode?"+new URLSearchParams({text:query+", "+town+", "+cfg.geocode,type:"STOP"});const nationalRequest=country==="belgium"?Promise.resolve([]):cachedJSON(url,120000).then(motisStops).then(stops=>stops.map(s=>({...s,lat:s.latitude,lon:s.longitude,provider:"transitous"})).filter(s=>inBounds(s,cfg.bounds))).catch(()=>[]);const jobs=[nationalRequest,...cfg.regional.map(p=>regionalStops(p,query).catch(()=>[]))];const [allNational,...other]=await Promise.all(jobs);const national=allNational.filter(s=>stopDistance(s,chosenTown)<20000||canonicalStopName(s.name).includes(canonicalStopName(town)));let local=other.flat();if(country==="spain"&&!/m[aá]laga/i.test(query)&&!national.some(s=>inBounds(s,REGION_BOUNDS.emt)))local=[];const townName=canonicalStopName(town);local=local.filter(s=>!townName||canonicalStopName(s.name).includes(townName)||chosenTown&&stopDistance(s,chosenTown)<18000);const list=joinProviderStops([...local,...national]);if(!list.length)return [];const normalizedQuery=canonicalStopName(query);return list.sort((a,b)=>{const match=Number(canonicalStopName(b.name).startsWith(normalizedQuery))-Number(canonicalStopName(a.name).startsWith(normalizedQuery));return match||stopDistance(a,chosenTown)-stopDistance(b,chosenTown)}).slice(0,20)}
 async function searchGermanyStops(query){return searchCountryStops("germany",query)}
 async function searchSpainStops(query){return searchCountryStops("spain",query)}
 
