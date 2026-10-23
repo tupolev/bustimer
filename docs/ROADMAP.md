@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.9.7** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.9.8** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -207,3 +207,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Qualify Transitous stop queries with city and country; locally narrow regional results by town names where present.
 - [ ] Improve city UX with geocoded city suggestion/selection and radius-based filtering of regional stops, especially stations not named after their municipality.
 - [ ] Browser smoke-test city-to-stop flows in Germany, Spain and Luxembourg.
+
+## City suggestion bugfix (v0.9.8)
+
+- [x] Replace free-text city entry with debounced Photon/OSM city autocomplete, filtered by selected country's coordinates. Users choose a city suggestion to enable stop search.
+- [x] Clear stale suggestions on country or city changes, avoid delayed responses overwriting newer results; support Enter and Escape.
+- [x] Filter national stop results by a selected city's 20 km radius or matching city name, and regional results by city name/proximity.
+- [ ] Test in a real browser for Bonn, Köln, Málaga and Luxembourg; Photon public demo has rate limits and no uptime guarantee, so plan an owned/alternative city catalog for high-scale usage.
