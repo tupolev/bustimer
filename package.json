@@ -6,9 +6,13 @@
   "scripts": {
     "check": "node scripts/check-js.mjs",
     "test": "node --test tests/*.test.mjs",
-    "ci": "npm run check && npm test"
+    "ci": "npm run check && npm test",
+    "test:e2e": "playwright test"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
   }
 }
