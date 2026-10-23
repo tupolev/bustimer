@@ -18,8 +18,27 @@ jobs:
           test "$(stat -c %s "$RUNNER_TEMP/nl.zip")" -lt 400000000
       - name: Inspect archive without publishing schedules
         run: python3 scripts/inspect_netherlands.py "$RUNNER_TEMP/nl.zip" --report "$RUNNER_TEMP/nl-report.json"
+      - name: Compile staged Netherlands timetable shards
+        run: python3 scripts/build_netherlands.py "$RUNNER_TEMP/nl.zip" --out "$RUNNER_TEMP/nl-stage"
+      - name: Verify staged index and schedules
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=Path(os.environ["RUNNER_TEMP"])/"nl-stage"
+          report=json.loads((d/"validation.json").read_text())
+          index=json.loads((d/"search.json").read_text())
+          assert report["stops"]>=1000
+          assert len(index["stops"])==report["stops"]
+          for stop in index["stops"][:100]:
+              assert (d/"stops"/(stop["file"]+".json")).is_file()
+          print(report)
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: netherlands-gtfs-inspection
-          path: ${{ runner.temp }}/nl-report.json
+          path: |
+            ${{ runner.temp }}/nl-report.json
+            ${{ runner.temp }}/nl-stage/validation.json
+            ${{ runner.temp }}/nl-stage/search.json
           retention-days: 14
