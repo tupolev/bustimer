@@ -449,7 +449,15 @@ const ALARM_MINUTES=[2,5,10,15,20,30,45,60];
 const ALARM_LABELS={
  en:["Departure alert","Remove after alert","Set alert","Remove alert","Keep BusTimer open for reliable alerts.","Notification permission required."],
  es:["Alarma de salida","Eliminar al sonar","Activar alarma","Quitar alarma","Mantén BusTimer abierto para recibir el aviso.","Se necesita permiso para notificaciones."],
- de:["Abfahrtsalarm","Nach Alarm entfernen","Alarm aktivieren","Alarm entfernen","Für zuverlässige Alarme BusTimer geöffnet lassen.","Benachrichtigungen müssen erlaubt sein."]
+ de:["Abfahrtsalarm","Nach Alarm entfernen","Alarm aktivieren","Alarm entfernen","Für zuverlässige Alarme BusTimer geöffnet lassen.","Benachrichtigungen müssen erlaubt sein."],
+ fr:["Alerte de départ","Supprimer après l’alerte","Activer l’alerte","Supprimer l’alerte","Gardez BusTimer ouvert pour recevoir les alertes.","Autorisez les notifications."],
+ pt:["Alerta de partida","Eliminar após o aviso","Ativar alerta","Remover alerta","Mantenha o BusTimer aberto para receber alertas.","Autorize as notificações."],
+ nl:["Vertrekmelding","Na melding verwijderen","Melding instellen","Melding verwijderen","Laat BusTimer open voor meldingen.","Sta meldingen toe."],
+ it:["Avviso di partenza","Rimuovi dopo l’avviso","Attiva avviso","Rimuovi avviso","Tieni BusTimer aperto per gli avvisi.","Consenti le notifiche."],
+ cs:["Upozornění na odjezd","Po upozornění odstranit","Zapnout upozornění","Odebrat upozornění","Pro upozornění nechte BusTimer otevřený.","Povolte oznámení."],
+ pl:["Powiadomienie o odjeździe","Usuń po powiadomieniu","Włącz powiadomienie","Usuń powiadomienie","Pozostaw BusTimer otwarty, aby otrzymywać powiadomienia.","Zezwól na powiadomienia."],
+ da:["Afgangsalarm","Fjern efter første alarm","Aktivér alarm","Fjern alarm","Hold BusTimer åben for at få alarmer.","Tillad notifikationer."],
+ sv:["Avgångslarm","Ta bort efter första larmet","Aktivera larm","Ta bort larm","Håll BusTimer öppet för att få larm.","Tillåt aviseringar."]
 };
 function alarmLabel(i){return (ALARM_LABELS[prefs.language]||ALARM_LABELS.en)[i]}
 function checkDepartureAlarms(){
