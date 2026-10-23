@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 from datetime import date
 
-REQUIRED={"stops.txt","routes.txt","trips.txt","stop_times.txt","calendar_dates.txt"}
+REQUIRED={"stops.txt","routes.txt","trips.txt","stop_times.txt"}
 MAX_UNCOMPRESSED=5_000_000_000
 
 def records(archive, name):
@@ -38,10 +38,15 @@ def validate(path):
         if stops<1000:raise ValueError("Unexpectedly small Netherlands stop index")
         services=0;relevant=0
         today=date.today().strftime("%Y%m%d")
-        for row in records(archive,"calendar_dates.txt"):
-            services+=1
-            if row.get("date","")>=today: relevant+=1
-        if not relevant:raise ValueError("No future calendar_dates entries")
+        if "calendar_dates.txt" in members:
+            for row in records(archive,"calendar_dates.txt"):
+                services+=1
+                if row.get("date","")>=today: relevant+=1
+        if "calendar.txt" in members:
+            for row in records(archive,"calendar.txt"):
+                services+=1
+                if row.get("end_date","")>=today: relevant+=1
+        if not relevant:raise ValueError("No current/future service calendars")
         return {"stops_in_bounds":stops,"stops_outside":outside,"calendar_date_rows":services,
                 "future_calendar_date_rows":relevant,"route_modes":dict(modes),
                 "uncompressed_bytes":sum(i.file_size for i in members.values()),
