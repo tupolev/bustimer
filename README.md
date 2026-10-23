@@ -24,7 +24,9 @@ The Transitous API is a best-effort, community resource for lightweight, open-so
 
 ## Netherlands availability (October 2026)
 
-The Netherlands API-first adapter and offline city index are implemented, but **Netherlands is temporarily disabled in the country selector**. A live four-city Transitous API smoke test from GitHub Actions ([run 39969565345](https://github.com/tupolev/bustimer/actions/runs/39969565345)) returned HTTP 403 for Amsterdam, Rotterdam, Utrecht and Den Haag. This could be specific to GitHub Actions request headers/origin; browser CORS and real public access must be verified before enabling the country. No national GTFS mirror is required or published. The Playwright Netherlands fixture tests the local flow with simulated provider responses, not guaranteed upstream availability.
+The Netherlands is **enabled as experimental API-first coverage**, with no nationally mirrored GTFS files. BusTimer uses [Transitous](https://transitous.org/api/) for Dutch stop lookup and upcoming departures, plus a small local GeoNames city list.
+
+**Validation evidence:** live Transitous stop search and arrivals worked for multiple OpenOV stop IDs in Amsterdam, Rotterdam, Utrecht and Den Haag ([GitHub Actions run 39970478094](https://github.com/tupolev/bustimer/actions/runs/39970478094)). A separate mocked end-to-end Playwright Chromium test passed for country → city → stop → mode → line → direction → favorite → reload ([run 39970861237](https://github.com/tupolev/bustimer/actions/runs/39970861237)). The simulated browser test is not proof that all live endpoints work in every browser; the normal service depends on third-party API availability and upstream feed coverage. Scheduled and realtime data must remain correctly distinguished.
 
 ## Features
 
