@@ -1,0 +1,58 @@
+name: Publish Belgium TEC GTFS
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '19 6 * * 5'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/belgium-tec.yml'
+permissions:
+  contents: write
+concurrency:
+  group: belgium-tec-refresh
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test importer
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Build TEC GTFS
+        run: python3 scripts/build_belgium_operator.py --operator tec --out "$RUNNER_TEMP/belgium-tec"
+      - name: Validate dataset
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"belgium-tec"
+          x=json.loads((root/"search.json").read_text())
+          sv=json.loads((root/"services.json").read_text())
+          assert x["timezone"]=="Europe/Brussels"
+          assert 500<=len(x["stops"])<=80000
+          assert sv["calendar"] or sv["exceptions"]
+          assert all((root/"stops"/(s["file"]+".json")).exists() for s in x["stops"])
+          print("VALIDATED: TEC",len(x["stops"]))
+          PY
+      - name: Publish validated GTFS
+        run: |
+          rm -rf data/belgium-tec
+          cp -a "$RUNNER_TEMP/belgium-tec" data/belgium-tec
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/belgium-tec
+          if ! git diff --cached --quiet; then
+            git commit --quiet -m "data: publish TEC GTFS"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
