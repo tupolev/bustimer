@@ -23,3 +23,9 @@ test("source stop and town labels remain literal",()=>{
  assert.match(source,/button\.textContent=item\.label/);
  assert.match(source,/new Option\(x,x\)/);
 });
+
+test("stop search remains gated on selected city, including language changes",()=>{
+ assert.match(source,/function setCityNote\(\)[^\n]*\$\("#stop-query"\)\.disabled=!chosenTown/);
+ assert.match(source,/function selectTown\(town\)/);
+ assert.match(source,/chosenTown=town/);
+});
