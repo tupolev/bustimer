@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.12.0** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.13.0** (seven-country consolidation)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -478,3 +478,14 @@ Architecture changed on user request: do not mirror ~53,493 stop timetables for 
 - [ ] Confirm latest fast CI checks on the most recent `main` commit (the GitHub commit-status API returned no individual status objects; this alone is not evidence of success or failure).
 - [ ] Perform a real browser smoke against the **deployed GitHub Pages origin**; upstream HTTP/CORS success from GitHub Actions and mocked Chromium UI tests are useful but not a substitute.
 - [ ] Continue reliability improvements and country-specific stop/line direction edge cases only after gathering reproducible failures; do not expand static GTFS hosting by default.
+
+## Release v0.13.0 — Seven countries and API-first (2026-10-23)
+
+- [x] Raise app About version and package version to 0.13.0; rotate PWA shell cache so updated code reaches installed clients.
+- [x] Update README with scope, seven enabled countries, attribution and verification evidence. The Netherlands remains experimental, with no national GTFS mirror.
+- [x] Previously verified: [fast CI run 39972036832](https://github.com/tupolev/bustimer/actions/runs/39972036832), [deployed Pages/browser/Transitous run 39972036506](https://github.com/tupolev/bustimer/actions/runs/39972036506), [Pages deployment 39972157853](https://github.com/tupolev/bustimer/actions/runs/39972157853). These were recorded **before** the version-bump commits.
+- [ ] Confirm the fast CI and Pages deployment associated with **v0.13.0** changes, not only the preceding stable commits. No formal GitHub Release tag has been created yet.
+- [ ] **Germany coverage audit:** focus on Köln/Bonn KVB/VRS interchange and Düsseldorf/Rheinbahn/VRR. Collect concrete stop IDs and demonstrate presence/absence in Transitous and regional APIs before adding an adapter; avoid treating a query error as a coverage gap.
+- [ ] **Spain coverage audit:** Málaga EMT plus two cities in different regions; compare local timetable fallback and live Transitous data, with explicit missing routes, service calendars, source licensing and CORS.
+- [ ] Identify cross-provider line/direction inconsistencies and eliminate duplicate stop IDs without mixing distinct platforms.
+- [ ] Prefer direct HTTPS APIs when usable from the PWA; only ingest static GTFS when independent timetables are needed to cover a demonstrated gap.
