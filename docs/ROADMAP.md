@@ -1,6 +1,6 @@
 # BusTimer — Implementation roadmap
 
-Last reviewed: 2026-10-23 · Current application version: **0.10.1** (tests rollout)  
+Last reviewed: 2026-10-23 · Current application version: **0.10.2** (tests rollout)  
 [Live app](https://tupolev.github.io/bustimer/) · [Repository](https://github.com/tupolev/bustimer)
 
 > **Working agreement:** update this checklist in the **same commit or PR** as the implementation whenever possible. Mark a task complete only after its acceptance criteria have been met. Code committed ≠ feature verified in production.
@@ -242,3 +242,10 @@ Workflow: [Tests and JavaScript checks](https://github.com/tupolev/bustimer/acti
 - [x] Added checks that EN/ES/DE dictionaries expose all key six-step form labels and errors.
 - [ ] Validate new tests in GitHub CI and follow with an actual browser interaction test (the new fixture tests are not a browser smoke test).
 - [ ] Begin Belgian operator feed integration after browser coverage and the Photon city suggestion issue are stable.
+
+## Photon resilience (v0.10.2)
+
+- [x] Use standard Photon `q`, `limit`, `countrycode`, `bbox` parameters and country-bounded results; retry a documented minimal query only when the demo rejects optional parameters with HTTP 400.
+- [x] Prefer Photon `osm_value` to classify actual city/town/village entities, ignoring unrelated POIs; slow typeahead request cadence to 850 ms to reduce stress on public demo.
+- [x] Extend regression tests for optional-parameter fallback and region filtering.
+- [ ] Browser-network smoke test and consider a backed service or static city catalog if demo API is rate-limited/unavailable.
