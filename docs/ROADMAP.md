@@ -397,3 +397,11 @@ The first national compiler is an initial staging implementation, not a performa
 - [ ] Check actual resulting run/job outcome and report. No successful feed-run evidence is available yet; do not assert the national import has passed.
 - [ ] If compilation succeeds, inspect index size, export footprint, feed-specific conditions and service semantics, then design a storage strategy that avoids committing unbounded stop files to `main`.
 - [ ] M1/M2/M3 acceptance gates and the real browser/operator tests still apply before Netherlands can be enabled.
+
+## Netherlands national feed — validation evidence (2026-10-23)
+
+- [x] Official national GTFS inspection and SQLite compilation completed successfully in GitHub Actions [run 39966942756](https://github.com/tupolev/bustimer/actions/runs/39966942756), job `inspect`, conclusion `success`.
+- [x] Machine-readable evidence committed at `docs/validation/netherlands-latest.json`: 71,886 candidate stops within NL bounds, 53,493 scheduled stop shards, 3,473 exception-service keys and 1,306,120,103 uncompressed GTFS bytes. 61,768 future calendar-date rows were reported; no regular `calendar.txt` service was found.
+- [ ] Size production assets and select a bounded publishing/hosting approach for >53k stop shards, rather than committing blindly to `main`.
+- [ ] Validate future departures, service exceptions and timezone on representative Amsterdam/Rotterdam/Utrecht/Den Haag stops before release; offline city search also requires a published NL town index.
+- [ ] Implement and verify Netherlands browser search/departure adapters and only then enable the country in `countries.json`.
