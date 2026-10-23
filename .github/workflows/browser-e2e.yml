@@ -6,7 +6,7 @@ on:
     paths:
       - ".github/workflows/browser-e2e.yml"
 permissions:
-  contents: read
+  contents: write
 jobs:
   browser:
     runs-on: ubuntu-latest
@@ -24,6 +24,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Browser end-to-end tests
+        id: e2e
+        continue-on-error: true
         run: npm run test:e2e
       - name: Upload Playwright trace on failure
         if: failure()
@@ -32,3 +34,37 @@ jobs:
           name: playwright-trace
           path: test-results/
           retention-days: 7
+      - name: Publish browser check result
+        if: always() && steps.e2e.outcome != 'skipped'
+        env:
+          RESULT: ${{ steps.e2e.outcome }}
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          from datetime import datetime,timezone
+          path=Path("docs/validation/browser-e2e-latest.json")
+          path.parent.mkdir(parents=True,exist_ok=True)
+          path.write_text(json.dumps({
+            "run_id":os.environ["GITHUB_RUN_ID"],
+            "commit":os.environ["GITHUB_SHA"],
+            "outcome":os.environ["RESULT"],
+            "checked_at":datetime.now(timezone.utc).isoformat(),
+            "suite":"Playwright Chromium",
+          },indent=2)+"\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/validation/browser-e2e-latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record Chromium browser E2E result"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+          fi
+      - name: Require successful browser tests
+        if: steps.e2e.outcome == 'failure'
+        run: exit 1
