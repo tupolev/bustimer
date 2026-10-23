@@ -2,7 +2,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.5.1** · No build step · No backend · MIT licensed
+**Version 0.6.0** · No build step · No backend · MIT licensed
 
 ## Features
 
@@ -129,3 +129,7 @@ Internal adapters for Transitous, EMT Málaga, VBB and DB now select sources wit
 The public dropdown now shows only **Deutschland** and **España**. VBB, DB and EMT Málaga are internal provider adapters, not selectable cities. Existing previously saved Berlin/VBB, Köln/DB, Düsseldorf/DB and Málaga/EMT favorites retain their original identifiers and continue using their original provider.
 
 German stop searches combine Transitous national search and the VBB regional API results. Candidates with matching names and geocoordinates within 75 metres can be merged while keeping both providers' actual stop IDs; no foreign IDs are sent to another provider. DB remains available for previously saved favorites; an automatic DB stop-ID mapping for other German regions is not implemented yet. Results may remain duplicated when identifiers or coordinates are insufficient. This is a safe incremental step, not a claim of complete provider arbitration across Germany.
+
+## EU-ready provider discovery (v0.6.0)
+
+One `COUNTRY_CATALOG` routes Germany and Spain through a national Transitous search and country-specific regional adapters. Regional responses are geographically checked and matched by name and coordinates within 75 metres, preserving original source IDs. A failure of one source does not prevent others returning results. Other EU countries are not enabled until their feed coverage, API contract, licensing and browser access are checked; EU National Access Points are catalogs, not one universal live API.
