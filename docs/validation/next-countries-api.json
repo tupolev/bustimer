@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-23T15:01:00.135062+00:00",
-  "run_id": "39974550688",
+  "checked_at": "2026-10-23T15:05:07.668941+00:00",
+  "run_id": "39975149002",
   "countries": {
     "austria": {
       "query": "Wien Hauptbahnhof, Wien, Österreich",
@@ -33,13 +33,13 @@
             "id": "at-Railway-Current-Reference-Data-2026_Pat:49:1349",
             "name": "Wien Hauptbahnhof"
           },
-          "count": 24,
+          "count": 20,
           "cors": "*",
           "sample_lines": [
-            "O",
+            "309",
             "U1",
-            "69A",
-            "REX 22348"
+            "U1",
+            "O"
           ]
         },
         {
@@ -104,13 +104,13 @@
             "id": "at-Railway-Current-Reference-Data-2026_ch:23026:688:91:3",
             "name": "Zürich HB"
           },
-          "count": 23,
+          "count": 22,
           "cors": "*",
           "sample_lines": [
-            "S6",
-            "S11",
-            "IC8",
-            "IC8"
+            "IC2",
+            "RE48",
+            "IR16",
+            "S23"
           ]
         },
         {
@@ -121,7 +121,7 @@
           "count": 20,
           "cors": "*",
           "sample_lines": [
-            "S10",
+            "76",
             "76",
             "76",
             "76"
@@ -135,9 +135,9 @@
           "count": 20,
           "cors": "*",
           "sample_lines": [
+            "14",
+            "14",
             "9",
-            "14",
-            "14",
             "9"
           ]
         }
@@ -163,13 +163,13 @@
             "id": "it-trenitalia_01700:station",
             "name": "Milano Centrale"
           },
-          "count": 19,
+          "count": 23,
           "cors": "*",
           "sample_lines": [
-            "91",
-            "42",
-            "87",
-            "90"
+            "92",
+            "10",
+            "RE2",
+            "IC"
           ]
         },
         {
@@ -180,10 +180,10 @@
           "count": 20,
           "cors": "*",
           "sample_lines": [
+            "2",
             "60",
             "2",
-            "5",
-            "2"
+            "5"
           ]
         }
       ],
@@ -220,13 +220,13 @@
             "id": "cz-CZPTT_czptt:stop:CZ:57076",
             "name": "Praha, hlavni nadrazi"
           },
-          "count": 20,
+          "count": 21,
           "cors": "*",
           "sample_lines": [
-            "RJ 1047",
+            "R16",
+            "R16",
             "S9",
-            "S9",
-            "R9"
+            "Ex2"
           ]
         },
         {
@@ -251,10 +251,213 @@
           "count": 23,
           "cors": "*",
           "sample_lines": [
-            "7",
             "9",
             "C",
-            "7"
+            "15",
+            "15"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "poland": {
+      "query": "Warszawa Centralna, Warszawa, Polska",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "pl-PKP-Intercity_33605_parent",
+          "name": "Warszawa Centralna"
+        },
+        {
+          "id": "pl-Plusbus_11",
+          "name": "Warszawa, Dw. Centralny"
+        },
+        {
+          "id": "pl-PKS-Nova_1849974:1918392",
+          "name": "Warszawa, Dw.Centralny (06) (DW)"
+        },
+        {
+          "id": "lt-kautra_19772",
+          "name": "Warszawa, Dw. Centralny, Jana Pawla al."
+        },
+        {
+          "id": "pl-Polish-Trains_37440_parent",
+          "name": "Warszawa Wileńska"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "pl-PKP-Intercity_33605_parent",
+            "name": "Warszawa Centralna"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "IC",
+            "EIC",
+            "IR",
+            "IC"
+          ]
+        },
+        {
+          "stop": {
+            "id": "pl-Plusbus_11",
+            "name": "Warszawa, Dw. Centralny"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "BIAŁYSTOK - WARSZAWA",
+            "BIAŁYSTOK - WARSZAWA",
+            "BIAŁYSTOK - WARSZAWA",
+            "BIAŁYSTOK - WARSZAWA"
+          ]
+        },
+        {
+          "stop": {
+            "id": "pl-PKS-Nova_1849974:1918392",
+            "name": "Warszawa, Dw.Centralny (06) (DW)"
+          },
+          "count": 0,
+          "cors": "*",
+          "sample_lines": []
+        }
+      ],
+      "passed": true
+    },
+    "denmark": {
+      "query": "København H, København, Danmark",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "de-DELFI_000008601309",
+          "name": "København H"
+        },
+        {
+          "id": "nl-OpenOV_4177268",
+          "name": "København Hovedb."
+        },
+        {
+          "id": "no-Entur_NSR:StopPlace:64109",
+          "name": "København Syd St."
+        },
+        {
+          "id": "nl-OpenOV_stoparea:642228",
+          "name": "København Hovedbanegård"
+        },
+        {
+          "id": "no-Entur_NSR:StopPlace:58004",
+          "name": "København lufthavn"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "de-DELFI_000008601309",
+            "name": "København H"
+          },
+          "count": 21,
+          "cors": "*",
+          "sample_lines": [
+            "E",
+            "C",
+            "RE",
+            "B"
+          ]
+        },
+        {
+          "stop": {
+            "id": "nl-OpenOV_4177268",
+            "name": "København Hovedb."
+          },
+          "count": 0,
+          "cors": "*",
+          "sample_lines": []
+        },
+        {
+          "stop": {
+            "id": "no-Entur_NSR:StopPlace:64109",
+            "name": "København Syd St."
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "E",
+            "F",
+            "M4",
+            "E"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "sweden": {
+      "query": "Stockholm Centralstation, Stockholm, Sverige",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "se-Trafiklab_740000001",
+          "name": "Stockholm Centralstation"
+        },
+        {
+          "id": "fi-fintraffic_361295",
+          "name": "Stockholm"
+        },
+        {
+          "id": "fi-fintraffic_379927",
+          "name": "Stockholm"
+        },
+        {
+          "id": "se-Trafiklab_740001617",
+          "name": "Stockholm City station"
+        },
+        {
+          "id": "se-Trafiklab_740000765",
+          "name": "Stockholm södra station"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "se-Trafiklab_740000001",
+            "name": "Stockholm Centralstation"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "7850",
+            "103",
+            "443",
+            "20954"
+          ]
+        },
+        {
+          "stop": {
+            "id": "fi-fintraffic_361295",
+            "name": "Stockholm"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "stop": {
+            "id": "fi-fintraffic_379927",
+            "name": "Stockholm"
+          },
+          "count": 21,
+          "cors": "*",
+          "sample_lines": [
+            "",
+            "",
+            "",
+            ""
           ]
         }
       ],
