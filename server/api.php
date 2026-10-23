@@ -23,6 +23,11 @@ if($action==='subscribe'&&$method==='POST'){
 }
 $device=validText($_SERVER['HTTP_X_BUSTIMER_DEVICE']??'',80);
 if(!authorized($device))respond(401,['error'=>'Unauthorized']);
+if($action==='alarms'&&$method==='GET'){
+ $stmt=db()->prepare('SELECT favorite_id FROM alarms WHERE device_id=?');
+ $stmt->execute([$device]);
+ respond(200,['favoriteIds'=>$stmt->fetchAll(PDO::FETCH_COLUMN)]);
+}
 if($action==='alarm'&&$method==='PUT'){
  $p=payload();$favorite=validText($p['favoriteId']??null,128);$city=validText($p['city']??null,40);$stop=validText($p['stopId']??null,400);$line=validText($p['line']??null,80);
  $mode=validText($p['mode']??null,40);$direction=is_string($p['direction']??null)?substr($p['direction'],0,160):'';
