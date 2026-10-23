@@ -13,7 +13,7 @@ function slice(start,end){
 }
 const snippets=[
  slice("function stopDistance(","function regionalStops("),
- slice("function searchCountryStops(","async function searchGermanyStops(")
+ slice("async function searchCountryStops(","async function searchGermanyStops(")
 ].join("\n");
 const central={lat:50.8451,lon:4.3596};
 const indexes={
