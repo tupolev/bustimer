@@ -4,7 +4,7 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.9.4**
+**Version 0.9.5**
 
 **Automated checks:** [GitHub Actions CI](https://github.com/tupolev/bustimer/actions/workflows/ci.yml) — syntax, unit tests; integration/browser tests on the roadmap. Run locally with `npm run ci` (Node.js 22). Test run is pending validation.
 
@@ -197,3 +197,7 @@ GTFS importer now produces `data/vrs/search.json` for stop lookup and `data/vrs/
 ## Luxembourg GTFS importer (staged)
 
 \`scripts/build_luxembourg.py\` selects the latest official GTFS ZIP using the public Luxembourg catalog API, then reuses the split VRS GTFS builder. The [Luxembourg GTFS validation workflow](https://github.com/tupolev/bustimer/actions/workflows/luxembourg-gtfs.yml) currently runs manually and does not publish the full dataset. Luxembourg remains disabled pending end-to-end validation.
+
+## Luxembourg app adapter (v0.9.5)
+
+The PWA now contains a Luxembourg static GTFS provider adapter for search, service dates and scheduled-only departures, backed by `data/luxembourg/`. The country remains **disabled** in the selector pending dataset publication and live verification. GTFS scheduled departures never imply realtime accuracy.
