@@ -2,7 +2,9 @@
 
 A lightweight, responsive, installable PWA to monitor the next departures of saved stops and lines.
 
-**Version 0.8.0** · No build step · No backend · MIT licensed
+**Version 0.8.0**
+
+**Project tracking:** [Implementation roadmap and checklist](docs/ROADMAP.md) — priorities, verified vs. unverified status, country expansion, blockers and session handoff instructions. · No build step · No backend · MIT licensed
 
 ## Features
 
