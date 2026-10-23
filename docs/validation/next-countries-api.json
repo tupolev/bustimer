@@ -1,0 +1,264 @@
+{
+  "checked_at": "2026-10-23T15:01:00.135062+00:00",
+  "run_id": "39974550688",
+  "countries": {
+    "austria": {
+      "query": "Wien Hauptbahnhof, Wien, Österreich",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "at-Railway-Current-Reference-Data-2026_Pat:49:1349",
+          "name": "Wien Hauptbahnhof"
+        },
+        {
+          "id": "at-PTA-Eastern-Region-Flex-2026_Pat:49:905",
+          "name": "Wien Hauptbahnhof Ost"
+        },
+        {
+          "id": "at-Railway-Current-Reference-Data-2026_Pat:49:1350",
+          "name": "Wien Hauptbahnhof Autoreisezug"
+        },
+        {
+          "id": "at-Railway-Current-Reference-Data-2026_Pat:49:1468",
+          "name": "Wien Westbahnhof"
+        },
+        {
+          "id": "at-PTA-Eastern-Region-Flex-2026_at:49:427:0:1",
+          "name": "Wien Am Bahnhof"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "at-Railway-Current-Reference-Data-2026_Pat:49:1349",
+            "name": "Wien Hauptbahnhof"
+          },
+          "count": 24,
+          "cors": "*",
+          "sample_lines": [
+            "O",
+            "U1",
+            "69A",
+            "REX 22348"
+          ]
+        },
+        {
+          "stop": {
+            "id": "at-PTA-Eastern-Region-Flex-2026_Pat:49:905",
+            "name": "Wien Hauptbahnhof Ost"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "D",
+            "D",
+            "D",
+            "D"
+          ]
+        },
+        {
+          "stop": {
+            "id": "at-Railway-Current-Reference-Data-2026_Pat:49:1350",
+            "name": "Wien Hauptbahnhof Autoreisezug"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "NJ 19946",
+            "NJ 19946",
+            "NJ 19946",
+            "NJ 19946"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "switzerland": {
+      "query": "Zürich HB, Zürich, Schweiz",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "at-Railway-Current-Reference-Data-2026_ch:23026:688:91:3",
+          "name": "Zürich HB"
+        },
+        {
+          "id": "ch-opentransportdataswiss26_Parentch:1:sloid:3051",
+          "name": "Zürich, Binz"
+        },
+        {
+          "id": "ch-opentransportdataswiss26_Parentch:1:sloid:91427",
+          "name": "Zürich, Werd"
+        },
+        {
+          "id": "ch-opentransportdataswiss26_Parentch:1:sloid:91442",
+          "name": "Zürich, Zoo"
+        },
+        {
+          "id": "ch-opentransportdataswiss26_Parentch:1:sloid:3053",
+          "name": "Zürich, Schweighof"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "at-Railway-Current-Reference-Data-2026_ch:23026:688:91:3",
+            "name": "Zürich HB"
+          },
+          "count": 23,
+          "cors": "*",
+          "sample_lines": [
+            "S6",
+            "S11",
+            "IC8",
+            "IC8"
+          ]
+        },
+        {
+          "stop": {
+            "id": "ch-opentransportdataswiss26_Parentch:1:sloid:3051",
+            "name": "Zürich, Binz"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "S10",
+            "76",
+            "76",
+            "76"
+          ]
+        },
+        {
+          "stop": {
+            "id": "ch-opentransportdataswiss26_Parentch:1:sloid:91427",
+            "name": "Zürich, Werd"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "9",
+            "14",
+            "14",
+            "9"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "italy": {
+      "query": "Milano Centrale, Milano, Italia",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "it-trenitalia_01700:station",
+          "name": "Milano Centrale"
+        },
+        {
+          "id": "it-Lombardia-ATM_CENTRALE FS",
+          "name": "CENTRALE FS"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "it-trenitalia_01700:station",
+            "name": "Milano Centrale"
+          },
+          "count": 19,
+          "cors": "*",
+          "sample_lines": [
+            "91",
+            "42",
+            "87",
+            "90"
+          ]
+        },
+        {
+          "stop": {
+            "id": "it-Lombardia-ATM_CENTRALE FS",
+            "name": "CENTRALE FS"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "60",
+            "2",
+            "5",
+            "2"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "czechia": {
+      "query": "Praha hlavní nádraží, Praha, Česko",
+      "geocode_cors": "*",
+      "nearby": [
+        {
+          "id": "cz-CZPTT_czptt:stop:CZ:57076",
+          "name": "Praha, hlavni nadrazi"
+        },
+        {
+          "id": "cz-JDF-merged_jdf:stop:30105",
+          "name": "Praha,Hlavní nádraží"
+        },
+        {
+          "id": "cz-PID_U142S1",
+          "name": "Hlavní nádraží"
+        },
+        {
+          "id": "cz-CZPTT_czptt:stop:CZ:57236",
+          "name": "Praha Masarykovo nádraží"
+        },
+        {
+          "id": "cz-JDF-merged_jdf:stop:10272",
+          "name": "Praha,Nádraží Holešovice"
+        }
+      ],
+      "times": [
+        {
+          "stop": {
+            "id": "cz-CZPTT_czptt:stop:CZ:57076",
+            "name": "Praha, hlavni nadrazi"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "RJ 1047",
+            "S9",
+            "S9",
+            "R9"
+          ]
+        },
+        {
+          "stop": {
+            "id": "cz-JDF-merged_jdf:stop:30105",
+            "name": "Praha,Hlavní nádraží"
+          },
+          "count": 20,
+          "cors": "*",
+          "sample_lines": [
+            "918",
+            "912",
+            "904",
+            "903"
+          ]
+        },
+        {
+          "stop": {
+            "id": "cz-PID_U142S1",
+            "name": "Hlavní nádraží"
+          },
+          "count": 23,
+          "cors": "*",
+          "sample_lines": [
+            "7",
+            "9",
+            "C",
+            "7"
+          ]
+        }
+      ],
+      "passed": true
+    }
+  }
+}
