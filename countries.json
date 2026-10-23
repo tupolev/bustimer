@@ -209,13 +209,13 @@
       "name": "Österreich",
       "flag": "🇦🇹",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "notes": "Experimental API-first Transitous. Geographic sample geocode and departures verified (run 39974550688); operator coverage and realtime not guaranteed.",
       "geocode": "Österreich",
       "bounds": [
         46.3,
@@ -230,13 +230,13 @@
       "name": "Schweiz / Suisse",
       "flag": "🇨🇭",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "notes": "Experimental API-first Transitous. Geographic sample geocode and departures verified (run 39974550688); operator coverage and realtime not guaranteed.",
       "geocode": "Schweiz",
       "bounds": [
         45.8,
@@ -263,13 +263,13 @@
       "name": "Česko",
       "flag": "🇨🇿",
       "tier": "neighbor",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "notes": "Experimental API-first Transitous. Geographic sample geocode and departures verified (run 39974550688); operator coverage and realtime not guaranteed.",
       "geocode": "Česko",
       "bounds": [
         48.4,
@@ -308,13 +308,13 @@
       "name": "Italia",
       "flag": "🇮🇹",
       "tier": "later",
-      "status": "candidate",
-      "enabled": false,
+      "status": "experimental",
+      "enabled": true,
       "regional": [],
       "sources": [
         "transitous"
       ],
-      "notes": "API-first candidate; city index generation and sampled live stop-times/browser validation required before activation.",
+      "notes": "Experimental API-first Transitous. Geographic sample geocode and departures verified (run 39974550688); operator coverage and realtime not guaranteed.",
       "geocode": "Italia",
       "bounds": [
         35.4,
