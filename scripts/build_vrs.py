@@ -79,7 +79,9 @@ def build(zip_path, out):
             raise ValueError("Suspiciously small VRS import: "+str(len(index)))
         if not any((row["from"]<=datetime.now(timezone.utc).strftime("%Y%m%d")<=row["to"]) for row in calendar.values()) and not any(datetime.now(timezone.utc).strftime("%Y%m%d") in ex for ex in exceptions.values()):
             raise ValueError("GTFS has no calendar service for current date")
-        write(out/"index.json",{"updated":datetime.now(timezone.utc).isoformat(),"timezone":"Europe/Berlin","source":DEFAULT_URL,"license":"Datenlizenz Deutschland Zero 2.0 — VRS","stops":index,"calendar":calendar,"exceptions":exceptions})
+        metadata={"updated":datetime.now(timezone.utc).isoformat(),"timezone":"Europe/Berlin","source":DEFAULT_URL,"license":"Datenlizenz Deutschland Zero 2.0 — VRS"}
+        write(out/"search.json",{**metadata,"stops":index})
+        write(out/"services.json",{**metadata,"calendar":calendar,"exceptions":exceptions})
         print("Built",len(index),"VRS stops")
 
 def main():
