@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+import time
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 from build_vrs import build
@@ -31,8 +33,24 @@ def newest_feed(resources):
         raise ValueError("Unexpected download host")
     return url
 
+def open_with_retries(url, timeout, attempts=4):
+    """Retry temporary upstream failures, never substitute an older GTFS feed."""
+    for attempt in range(attempts):
+        try:
+            return urlopen(Request(url, headers={"User-Agent": "BusTimer/GTFS (+https://github.com/tupolev/bustimer)", "Accept": "application/json, application/zip"}), timeout=timeout)
+        except HTTPError as exc:
+            if exc.code not in (429, 500, 502, 503, 504) or attempt == attempts - 1:
+                raise
+            print(f"Upstream returned HTTP {exc.code}; retry {attempt + 1}/{attempts - 1}", flush=True)
+        except (URLError, TimeoutError) as exc:
+            if attempt == attempts - 1:
+                raise
+            print(f"Upstream request failed; retry {attempt + 1}/{attempts - 1}", flush=True)
+        time.sleep(min(2 ** attempt * 2, 12))
+
+
 def load_catalog():
-    with urlopen(Request(DATASET,headers={"User-Agent":"BusTimer/GTFS (+https://github.com/tupolev/bustimer)"}),timeout=40) as r:
+    with open_with_retries(DATASET, timeout=40) as r:
         data=json.load(r)
     return newest_feed(data["resources"])
 
@@ -46,7 +64,7 @@ def main():
         root=Path(temp)
         archive=root/"feed.zip"
         if url.startswith("https://"):
-            with urlopen(Request(url,headers={"User-Agent":"BusTimer/GTFS (+https://github.com/tupolev/bustimer)"}),timeout=120) as r, archive.open("wb") as dest:
+            with open_with_retries(url, timeout=120) as r, archive.open("wb") as dest:
                 shutil.copyfileobj(r,dest)
         else:
             shutil.copyfile(url,archive)
