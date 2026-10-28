@@ -230,7 +230,13 @@ function belgiumAsset(provider,type){
  if(!folder)throw Error("Unknown Belgium provider");
  const key=provider+":"+type;
  if(!belgiumCache.has(key)){
-  const pending=getJSON("./data/"+folder+"/"+type+".json").catch(e=>{belgiumCache.delete(key);throw e});
+  const pending=(provider==="belgiumRail"&&type==="services"
+   ?fetch("./data/"+folder+"/services.json.gz").then(async response=>{
+      if(!response.ok)throw Error("SNCB calendar HTTP "+response.status);
+      if(!("DecompressionStream" in window))throw Error("Compressed SNCB calendar needs DecompressionStream");
+      return new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).json();
+    })
+   :getJSON("./data/"+folder+"/"+type+".json")).catch(e=>{belgiumCache.delete(key);throw e});
   belgiumCache.set(key,pending);
  }
  return belgiumCache.get(key);
