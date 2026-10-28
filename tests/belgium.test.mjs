@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import zlib from "node:zlib";
 
 const cfg=JSON.parse(fs.readFileSync("countries.json","utf8"));
 const country=cfg.countries.find(x=>x.id==="belgium");
@@ -19,7 +20,13 @@ for(const [label,folder,min] of [
  test(label+" generated schedules are locally readable and attributed",()=>{
   const root=path.join("data",folder);
   const search=JSON.parse(fs.readFileSync(path.join(root,"search.json"),"utf8"));
-  const service=JSON.parse(fs.readFileSync(path.join(root,"services.json"),"utf8"));
+  const serviceFile=path.join(root,folder==="belgium-rail"?"services.json.gz":"services.json");
+  const raw=fs.readFileSync(serviceFile);
+  const service=JSON.parse(folder==="belgium-rail"?zlib.gunzipSync(raw).toString("utf8"):raw.toString("utf8"));
+  if(folder==="belgium-rail"){
+   assert.ok(raw.length<95_000_000,"SNCB compressed calendar stays below GitHub file limit");
+   assert.equal(fs.existsSync(path.join(root,"services.json")),false,"uncompressed oversized SNCB calendar must not be committed");
+  }
   assert.ok(search.stops.length>=min);
   assert.equal(search.timezone,"Europe/Brussels");
   assert.match(search.license,/CC BY 4.0/);
@@ -46,4 +53,16 @@ test("Belgian multilingual alternative city names resolve to one literal city",(
  assert.ok(brussels);
  assert.ok(brussels[5].includes("Bruxelles"));
  assert.ok(brussels[5].includes("Brussel"));
+});
+
+test("SNCB PWA reader loads the published gzip calendar via DecompressionStream",async()=>{
+ const app=fs.readFileSync("index.html","utf8");
+ assert.match(app,/provider==="belgiumRail"&&type==="services"/);
+ assert.match(app,/services\.json\.gz/);
+ assert.match(app,/new DecompressionStream\("gzip"\)/);
+ const compressed=fs.readFileSync("data/belgium-rail/services.json.gz");
+ const stream=new ReadableStream({start(controller){controller.enqueue(compressed);controller.close();}});
+ const response=new Response(stream.pipeThrough(new DecompressionStream("gzip")));
+ const services=await response.json();
+ assert.ok(Object.keys(services.calendar).length||Object.keys(services.exceptions).length);
 });
