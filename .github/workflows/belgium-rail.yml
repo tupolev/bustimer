@@ -28,11 +28,13 @@ jobs:
       - name: Validate Belgian GTFS publication
         run: |
           python3 - <<'PY'
-          import json,os
+          import gzip,json,os
           from pathlib import Path
           root=Path(os.environ["RUNNER_TEMP"])/"belgium-rail"
           data=json.loads((root/"search.json").read_text())
-          sv=json.loads((root/"services.json").read_text())
+          with gzip.open(root/"services.json.gz","rt",encoding="utf-8") as fh:
+              sv=json.load(fh)
+          assert (root/"services.json.gz").stat().st_size < 95_000_000
           assert data["timezone"]=="Europe/Brussels"
           assert 100<=len(data["stops"])<=5000
           assert sv["calendar"] or sv["exceptions"]
