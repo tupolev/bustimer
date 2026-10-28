@@ -87,7 +87,10 @@ jobs:
           [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9.-]+$ ]]
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_-]+$ ]]
           [[ "$DEPLOY_PATH" == "/home/$DEPLOY_USER/bustimer.kodesoft.net/" ]]
-          # Composer rebuilds vendor/ on each run, changing timestamps even if bytes match.\n          # --checksum skips identical file contents; --delay-updates stages changed files\n          # and renames them into place when transfer completes. Never delete remote files.\n          rsync -az --checksum --delay-updates --omit-dir-times --itemize-changes --stats --no-perms --no-owner --no-group \
+          # Composer rebuilds vendor/ on each run, changing timestamps even if bytes match.
+          # --checksum skips identical file contents; --delay-updates stages changed files
+          # and renames them into place when transfer completes. Never delete remote files.
+          rsync -az --checksum --delay-updates --omit-dir-times --itemize-changes --stats --no-perms --no-owner --no-group \
             --exclude='server/settings.php' \
             --exclude='server/private/' \
             --exclude='*.sqlite' --exclude='*.sqlite-shm' --exclude='*.sqlite-wal' \
