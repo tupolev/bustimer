@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stage publicly accessible SNCB/NMBS GTFS, preserving original stop and headsign labels."""
-import argparse,shutil,tempfile,urllib.request
+import argparse,gzip,shutil,tempfile,urllib.request
 from pathlib import Path
 from build_vrs import build
 
@@ -19,6 +19,15 @@ def main():
         else:shutil.copyfile(args.source,archive)
         compiled=root/"compiled"
         build(archive,compiled,bounds=(49.45,51.62,2.45,6.5),source=args.source,license=LICENSE,timezone_name="Europe/Brussels",min_stops=100)
+        # SNCB's service exceptions can exceed GitHub's 100 MB per-file limit.
+        # Store as one gzip asset instead of an oversized JSON Git blob.
+        services=compiled/"services.json"
+        compressed=compiled/"services.json.gz"
+        with services.open("rb") as src, gzip.open(compressed,"wb",compresslevel=9) as dst:
+            shutil.copyfileobj(src,dst)
+        if compressed.stat().st_size>=95_000_000:
+            raise ValueError("Compressed SNCB services still too large for GitHub")
+        services.unlink()
         target=Path(args.out)
         if target.exists():shutil.rmtree(target)
         target.parent.mkdir(parents=True,exist_ok=True)
